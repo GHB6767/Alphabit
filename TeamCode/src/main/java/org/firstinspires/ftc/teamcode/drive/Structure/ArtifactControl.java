@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.opmode.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Gyroscope;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 
 public class ArtifactControl {
     Gamepad gamepad2;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
-    Gyroscope gyroscope = new Gyroscope();
+    GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
     SampleMecanumDrive drive;
     TwoWheelTrackingLocalizer twoWheelTrackingLocalizer;
 
@@ -40,7 +40,7 @@ public class ArtifactControl {
         gamepad2 = gmpd;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
-        gyroscope.Init(hwdmap);
+        gyroscope.gyroscope_init(hwdmap);
 
         drive = new SampleMecanumDrive(hwdmap);
         switch(fieldCase){
@@ -121,7 +121,6 @@ public class ArtifactControl {
     }
 
     public void Run(){
-        gyroscope.updateOrientation();
         aprilTagIdentification.telemetryAprilTag();
         drive.update();
 

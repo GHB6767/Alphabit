@@ -4,7 +4,8 @@ package org.firstinspires.ftc.teamcode.drive.Structure;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Gyroscope;
+
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 
 public class FieldCentricControl {
 
@@ -12,7 +13,7 @@ public class FieldCentricControl {
 
     ChasisInit csint;
 
-    Gyroscope gyroscope = new Gyroscope();
+    GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
 
     public double Limit = 1;
 
@@ -20,16 +21,13 @@ public class FieldCentricControl {
     {
         this.gamepad = gamepad;
 
-        gyroscope.Init(hwmap);
+        gyroscope.gyroscope_init(hwmap);
 
         csint = new ChasisInit(hwmap);
     }
 
     public void Run()
     {
-
-        gyroscope.updateOrientation();
-
         double x = Range.clip(gamepad.left_stick_x * 1.1,-Limit,Limit);
         double y = Range.clip(-gamepad.left_stick_y,-Limit,Limit);
         double rx = Range.clip(gamepad.right_stick_x,-Limit,Limit);
