@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
 
@@ -17,32 +18,13 @@ public class TeleOp_Decode extends LinearOpMode {
     ArtifactControl artifactControl;
 
     int endCase = 0;
-    boolean buttonTrigger = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
+        endCase = VarStorage.autonomous_case;
+
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         chasis_control = new ChasisControl(hardwareMap, gamepad1);
-
-        while(opModeInInit() && !gamepad1.dpad_left){
-            if(gamepad1.dpad_down && endCase < 3){
-                if(!buttonTrigger) {
-                    endCase = endCase + 1;
-                    buttonTrigger = true;
-                }
-            }else if(gamepad1.dpad_right && endCase > 0){
-                if(!buttonTrigger) {
-                    endCase = endCase - 1;
-                    buttonTrigger = true;
-                }
-            }else{
-                buttonTrigger = false;
-            }
-
-            telemetrys.addData("[+] 0: Red Audience, 1: Blue Audience, 2: Red Basket, 3","Blue Basket [+]");
-            telemetrys.addData("[->] Case : ", endCase);
-            telemetrys.update();
-        }
-
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, telemetrys,endCase);
 
         while(opModeInInit()){

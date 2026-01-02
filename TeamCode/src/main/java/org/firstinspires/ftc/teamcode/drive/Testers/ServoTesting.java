@@ -10,7 +10,7 @@ public class ServoTesting {
     Gamepad gamepad_2;
     public ServoTesting(HardwareMap hwdmap, Gamepad gmpd){
         gamepad_2 = gmpd;
-        ServoTest = hwdmap.get(Servo.class,"ServoTest");
+        ServoTest = hwdmap.get(Servo.class,"LeftTurret");
     }
 
     double max_position = 1;

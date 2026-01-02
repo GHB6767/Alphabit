@@ -22,7 +22,6 @@ public class ChasisEngineering extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         chasis_control = new ChasisControl(hardwareMap, gamepad1);
         motorTesting = new MotorTesting(hardwareMap, gamepad1, telemetrys);
         intakeTesting = new ServoTesting(hardwareMap, gamepad2);
@@ -33,18 +32,26 @@ public class ChasisEngineering extends LinearOpMode {
             chasis_control.Run();
             motorTesting.Run();
             intakeTesting.Run();
-            telemetrys.addData("[!]Chasis on gamepad1 is ", " enabled[!]");
-            telemetrys.addData("[->] To test/set servo position use ","gamepad2");
-            telemetrys.addData("[->] To test motor position use ","gamepad1");
+            telemetrys.addData("[!] Chassis on gamepad1 is ", " enabled [!]");
+            telemetrys.addData("[!] Set the name in DriverHub to the Servo you want to Test as ", "ServoTest [!]");
+            telemetrys.addData("[!] Set the name in DriverHub to the Motor you want to Test as ", "MotorTest [!]");
 
-            telemetrys.addData("[Intake] Press Left Bumber/Right Bumber "," to change Current Position");
-            telemetrys.addData("[Intake] Press A "," to set the Position");
+            telemetrys.addData(" ", " ");
+
+            telemetrys.addData("[->] To test/set Servo position use ", "gamepad2");
+            telemetrys.addData("[->] To test Motor position use ", "gamepad1");
+
+            telemetrys.addData(" ", " ");
+
+            telemetrys.addData("[Intake] Press Left Bumper/Right Bumper ", " to change Current Position");
+            telemetrys.addData("[Intake] Press A ", " to set the Position");
             telemetrys.addData("[Intake] Intake Current Position ", intakeTesting.current_position);
             telemetrys.addData("[Intake] Intake Last Position ", intakeTesting.last_position);
 
+            telemetrys.addData(" ", " ");
 
-            telemetrys.addData("[Motor] Press Left Bumber/Right Bumber "," to change Current Power");
-            telemetrys.addData("[Motor] Press Dpad Up/Down "," to give power to motor");
+            telemetrys.addData("[Motor] Press Left Bumper/Right Bumper ", " to change Current Power");
+            telemetrys.addData("[Motor] Press Dpad Up/Down ", " to give power to motor");
             telemetrys.addData("[Motor] Motor Current Power ", motorTesting.current_power);
             telemetrys.addData("[Motor] Motor Current Position ", motorTesting.motor_position);
 

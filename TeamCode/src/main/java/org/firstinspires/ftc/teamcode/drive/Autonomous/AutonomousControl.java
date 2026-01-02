@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 
 //FTC Decode 2026 AutonomousControl
 @Autonomous
@@ -88,6 +89,8 @@ public class AutonomousControl extends LinearOpMode {
         }
 
         waitForStart();
+
+        VarStorage.autonomous_case = autoCase;
 
         switch(autoCase){
             case 0:
