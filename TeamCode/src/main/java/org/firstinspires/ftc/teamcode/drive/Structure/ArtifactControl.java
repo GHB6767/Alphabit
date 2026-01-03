@@ -243,13 +243,17 @@ public class ArtifactControl {
         double basketAngle;
         if(targetAngle - headingAngle > 0){
             basketAngle = targetAngle - headingAngle;
-            rotateToLeft = true;
+            if(targetAngle - headingAngle >= 180){
+                rotateToLeft = false;
+            }else{
+                rotateToLeft = true;
+            }
         }else{
             basketAngle = 360 - Math.abs((headingAngle - targetAngle));
             if(headingAngle-targetAngle >= 180){
-                rotateToLeft = true;
-            }else{
                 rotateToLeft = false;
+            }else{
+                rotateToLeft = true;
             }
         }
 
@@ -273,6 +277,7 @@ public class ArtifactControl {
     public double getTurretPosition(){
         double servoAngleToPosition;
         servoAngleToPosition = getBasketDirection() * turretServoPosToDegree;
+
         return servoAngleToPosition;
     }
 
@@ -288,8 +293,21 @@ public class ArtifactControl {
     }
 
     public void updateShooter() {
-        current_angleturret_position = getTurretAngle();
-        current_leftturret_position = getTurretPosition();
+        double servoPos = getTurretPosition();
+        current_angleturret_position = 0.2 + getTurretAngle();
+        if(rotateToLeft){
+            if((current_leftturret_position-servoPos) >= min_leftturret_position) {
+                current_leftturret_position = current_leftturret_position - servoPos;
+            }else{
+                current_leftturret_position = 0;
+            }
+        }else{
+            if((current_leftturret_position+servoPos) <= max_leftturret_position) {
+                current_leftturret_position = current_leftturret_position + servoPos;
+            }else{
+                current_leftturret_position = 1;
+            }
+        }
         LeftTurret.setPosition(current_leftturret_position);
         AngleTurret.setPosition(current_angleturret_position);
     }
