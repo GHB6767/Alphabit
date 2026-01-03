@@ -113,6 +113,10 @@ public class ArtifactControl {
 
     boolean toggleButton = false;
     boolean stoggleButton = false;
+
+    double servoPosToCm = 0.7/7;
+    public boolean allowedToShoot = false;
+
     public void initServo(){
         AngleTurret.setPosition(current_angleturret_position);
         LeftTurret.setPosition(current_leftturret_position);
@@ -134,12 +138,14 @@ public class ArtifactControl {
         y_position = robotPose.getY();
         rr_headingAngle = Math.toDegrees(robotPose.getHeading());
 
+        areaOfThrowing();
+
         if(gamepad2.a){
             BlockArtifact.setPosition(artifact_block_position);
             Intake_LeftMotor.setPower(1);
             Intake_RightMotor.setPower(1);
             artifact_status_blocked = true;
-        }else if(gamepad2.y){
+        }else if(gamepad2.y && allowedToShoot){
             BlockArtifact.setPosition(artifact_unblock_position);
             Outtake_LeftMotor.setPower(1);
             Outtake_RightMotor.setPower(1);
@@ -177,18 +183,68 @@ public class ArtifactControl {
 
         if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position) {
             if(!stoggleButton) {
-                current_angleturret_position = current_angleturret_position - 0.1;
+                current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
         } else if (gamepad2.dpad_down && current_angleturret_position < min_angleturret_position) {
             if(!stoggleButton) {
-                current_angleturret_position = current_angleturret_position + 0.1;
+                current_angleturret_position = current_angleturret_position + 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
         }else{
             stoggleButton = false;
         }
+    }
+
+    public void areaOfThrowing(){
+        double marginThreshold = 7;
+
+        if(y_position >= 0 && x_position < (0 + marginThreshold)){
+            if((Math.abs(x_position)+marginThreshold) > y_position){
+                allowedToShoot = true;
+            }else{
+                allowedToShoot = false;
+            }
+        }else if(y_position < 0 && x_position < 0){
+            if((Math.abs(x_position)+marginThreshold) > Math.abs(y_position)){
+                allowedToShoot = true;
+            }else{
+                allowedToShoot = false;
+            }
+        }else if(x_position > (50-marginThreshold)){
+            if(((x_position - 50) + marginThreshold) > Math.abs(y_position)){
+                allowedToShoot = true;
+            }else{
+                allowedToShoot = false;
+            }
+        }
+
+        if(allowedToShoot){
+            gamepad2.rumble(1000);
+        }else{
+            gamepad2.stopRumble();
+        }
+    }
+
+    double getBasketDirection(){
+
+        return 0;
+    }
+
+    double getBasketDistance(){
+        return 0;
+    }
+
+    public double getTurretPosition(){
+        double servoAngleToPosition;
+        servoAngleToPosition = getBasketDirection() * servoPosToCm;
+        return servoAngleToPosition;
+    }
+
+    public double getTurretAngle(){
+
+        return 0;
     }
 }
