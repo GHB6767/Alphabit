@@ -36,6 +36,8 @@ public class ArtifactControl {
     Pose2d endPose_RedAudience = new Pose2d(59, 20, Math.toRadians(90));
     Pose2d endPose_BlueAudience = new Pose2d(59, -20, Math.toRadians(-90));
 
+    double endAngle = 0;
+    double targetAngle = 0;
     public boolean isRedAlliance = false;
 
     public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, MultipleTelemetry telemetrys, int fieldCase){
@@ -48,15 +50,19 @@ public class ArtifactControl {
         switch(fieldCase){
             case 0:
                 drive.setPoseEstimate(endPose_RedAudience);
+                endAngle = 90;
                 break;
             case 1:
                 drive.setPoseEstimate(endPose_BlueAudience);
+                endAngle = -90;
                 break;
             case 2:
                 drive.setPoseEstimate(endPose_RedBasket);
+                endAngle = 90;
                 break;
             case 3:
                 drive.setPoseEstimate(endPose_BlueBasket);
+                endAngle = -90;
                 break;
         }
 
@@ -64,6 +70,9 @@ public class ArtifactControl {
 
         if(fieldCase == 0 || fieldCase == 2){
             isRedAlliance = true;
+            targetAngle = 36.5;
+        }else{
+            targetAngle = 143.5;
         }
 
         Intake_LeftMotor = hwdmap.get(DcMotor.class, "Intake_LeftMotor");
@@ -109,13 +118,20 @@ public class ArtifactControl {
     public double headingAngle = 0.0;
     public double x_position = 0.0;
     public double y_position = 0.0;
-    public double rr_headingAngle = 0.0;
 
     boolean toggleButton = false;
     boolean stoggleButton = false;
 
-    double servoPosToCm = 0.7/7;
+    double turretServoPosToDegree = 0.9/12;
+    double angleServoPosToDegree = 0.7/7;
     public boolean allowedToShoot = false;
+    boolean rotateToLeft = false;
+
+    double x_blue_basket = -65.0;
+    double x_red_basket = -65.0;
+
+    double y_blue_basket = -58.0;
+    double y_red_basket = 60;
 
     public void initServo(){
         AngleTurret.setPosition(current_angleturret_position);
@@ -136,9 +152,9 @@ public class ArtifactControl {
         headingAngle = gyroscope.getHeading();
         x_position = robotPose.getX();
         y_position = robotPose.getY();
-        rr_headingAngle = Math.toDegrees(robotPose.getHeading());
 
         areaOfThrowing();
+        updateShooter();
 
         if(gamepad2.a){
             BlockArtifact.setPosition(artifact_block_position);
@@ -229,22 +245,58 @@ public class ArtifactControl {
     }
 
     double getBasketDirection(){
+        double basketAngle;
+        if(targetAngle - headingAngle > 0){
+            basketAngle = targetAngle - headingAngle;
+            rotateToLeft = true;
+        }else{
+            basketAngle = 360 - Math.abs((headingAngle - targetAngle));
+            if(headingAngle-targetAngle >= 180){
+                rotateToLeft = true;
+            }else{
+                rotateToLeft = false;
+            }
+        }
 
-        return 0;
+        if(basketAngle > 180){
+            basketAngle = 360 - basketAngle;
+        }
+
+        return basketAngle;
     }
 
     double getBasketDistance(){
-        return 0;
+        double distanceToBasket;
+        if(isRedAlliance) {
+            distanceToBasket = Math.sqrt(Math.pow(x_red_basket - x_position, 2) + Math.pow(y_red_basket - y_position, 2));
+        }else{
+            distanceToBasket = Math.sqrt(Math.pow(x_blue_basket - x_position, 2) + Math.pow(y_blue_basket - y_position, 2));
+        }
+        return distanceToBasket;
     }
 
     public double getTurretPosition(){
         double servoAngleToPosition;
-        servoAngleToPosition = getBasketDirection() * servoPosToCm;
+        servoAngleToPosition = getBasketDirection() * turretServoPosToDegree;
         return servoAngleToPosition;
     }
 
     public double getTurretAngle(){
+        double max_angle = 7;
+        double min_angle = 0;
+        double max_distance = 0;
+        double anglePerInch = max_distance/(max_angle-min_angle);
+        double angleToCm;
+        angleToCm = getBasketDistance() * anglePerInch;
+        double cmToPosition = angleToCm * angleServoPosToDegree;
 
-        return 0;
+        return cmToPosition;
+    }
+
+    public void updateShooter() {
+        current_angleturret_position = getTurretAngle();
+        current_leftturret_position = getTurretPosition();
+        LeftTurret.setPosition(current_leftturret_position);
+        AngleTurret.setPosition(current_angleturret_position);
     }
 }

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class GyroscopeBHIMU {
     IMU imu;
 
+    double customHeadingAngle = 0;
     public void gyroscope_init(HardwareMap hwdmap) {
         imu = hwdmap.get(IMU.class, "imu");
 
@@ -21,7 +22,11 @@ public class GyroscopeBHIMU {
     }
 
     public double getHeading(){
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        customHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        if(customHeadingAngle < 0){
+            customHeadingAngle = 360 - Math.abs(customHeadingAngle);
+        }
+        return customHeadingAngle;
     }
 
     public void resetHeading(){
