@@ -122,7 +122,6 @@ public class ArtifactControl {
     boolean stoggleButton = false;
 
     double turretServoPosToDegree = 0.9/12; // neededed to be changed
-    double angleServoPosToDegree = 0.7/7; // neededed to be changed
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
 
@@ -132,7 +131,7 @@ public class ArtifactControl {
     double y_blue_basket = -58.0;
     double y_red_basket = 60;
 
-    public boolean sensorFault = false;
+    public boolean manualControl = false;
     boolean toggleS = false;
 
     public void initServo(){
@@ -155,7 +154,7 @@ public class ArtifactControl {
         x_position = robotPose.getX();
         y_position = robotPose.getY();
 
-        if(!sensorFault) {
+        if(!manualControl) {
             areaOfThrowing();
             updateShooter();
         }
@@ -163,9 +162,9 @@ public class ArtifactControl {
         if(gamepad2.a){
             getArtifacts();
         }else if(gamepad2.y){
-            if(allowedToShoot && !sensorFault) {
+            if(allowedToShoot && !manualControl) {
                 throwArtifacts();
-            }else if(sensorFault){
+            }else if(manualControl){
                 throwArtifacts();
             }
         }
@@ -177,7 +176,7 @@ public class ArtifactControl {
             Outtake_RightMotor.setPower(0);
         }
 
-        if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && sensorFault) {
+        if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position - 0.05;
                 current_rightturret_position = current_rightturret_position - 0.05;
@@ -185,7 +184,7 @@ public class ArtifactControl {
                 RightTurret.setPosition(current_rightturret_position);
                 toggleButton = true;
             }
-        }else if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && sensorFault) {
+        }else if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position + 0.05;
                 current_rightturret_position = current_rightturret_position + 0.05;
@@ -197,13 +196,13 @@ public class ArtifactControl {
             toggleButton = false;
         }
 
-        if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position && sensorFault) {
+        if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
-        } else if (gamepad2.dpad_down && current_angleturret_position < min_angleturret_position && sensorFault) {
+        } else if (gamepad2.dpad_down && current_angleturret_position < min_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position + 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
@@ -215,7 +214,7 @@ public class ArtifactControl {
 
         if(gamepad2.left_trigger > 75 && gamepad2.right_trigger > 75){
             if(!toggleS) {
-                sensorFault = !sensorFault;
+                manualControl = !manualControl;
                 toggleS = true;
             }
         }else{
@@ -312,14 +311,14 @@ public class ArtifactControl {
     }
 
     public double getTurretAngle(){
-        double max_angle = 7; // need to be changed
-        double min_angle = 0; // need to be changed
-        double max_distance = 144;
-        double anglePerInch = (max_angle-min_angle)/max_distance;
         double angleToCm;
+        double max_angle = 0.9;
+        double min_angle = 0.2;
+        double max_distance = 146;
+        double anglePerInch = (max_angle-min_angle)/max_distance;
         angleToCm = getBasketDistance() * anglePerInch;
 
-        return angleToCm * angleServoPosToDegree;
+        return angleToCm;
     }
 
     public void updateShooter() {

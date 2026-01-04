@@ -41,9 +41,9 @@ public class TeleOp_Decode extends LinearOpMode {
             chasis_control.Run();
             artifactControl.Run();
 
-            if(artifactControl.sensorFault){
-                telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
-                telemetrys.addData("[->] SENSOR FAULT ", " [<-]");
+            if(artifactControl.manualControl){
+                telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVATED [<-]");
+                telemetrys.addData(" ", " ");
             }
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
