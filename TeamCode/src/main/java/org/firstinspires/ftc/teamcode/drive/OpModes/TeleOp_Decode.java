@@ -41,6 +41,11 @@ public class TeleOp_Decode extends LinearOpMode {
             chasis_control.Run();
             artifactControl.Run();
 
+            if(artifactControl.sensorFault){
+                telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
+                telemetrys.addData("[->] SENSOR FAULT ", " [<-]");
+            }
+
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
             telemetrys.addData("[Artifact] Current Right Turret Position ", artifactControl.current_rightturret_position);
             telemetrys.addData("[Artifact] Current Angle Turret Position ", artifactControl.current_angleturret_position);
@@ -49,6 +54,10 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
             telemetrys.addData("[Artifact] allowedToShoot ", artifactControl.allowedToShoot);
+            telemetrys.addData("[Artifact] Basket angle ", artifactControl.getBasketDirection());
+            telemetrys.addData("[Artifact] Basket distance ", artifactControl.getBasketDistance());
+            telemetrys.addData("[Artifact] Turret position ", artifactControl.getTurretPosition());
+            telemetrys.addData("[Artifact] Turret angle ", artifactControl.getTurretAngle());
 
             telemetrys.update();
         }

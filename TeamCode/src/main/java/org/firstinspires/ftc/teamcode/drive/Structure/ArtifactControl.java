@@ -94,8 +94,8 @@ public class ArtifactControl {
         BlockArtifact = hwdmap.get(Servo.class,"BlockArtifact");
     }
 
-    double leftTurret_initPosition = 0.5;
-    double rightTurret_initPosition = 0.5;
+    double leftTurret_initPosition = 0.5; // neededed to be changed
+    double rightTurret_initPosition = 0.5; // neededed to be changed
     double angleTurret_initPosition = 0.9;
 
     double min_leftturret_position = 0;
@@ -121,8 +121,8 @@ public class ArtifactControl {
     boolean toggleButton = false;
     boolean stoggleButton = false;
 
-    double turretServoPosToDegree = 0.9/12;
-    double angleServoPosToDegree = 0.7/7;
+    double turretServoPosToDegree = 0.9/12; // neededed to be changed
+    double angleServoPosToDegree = 0.7/7; // neededed to be changed
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
 
@@ -131,6 +131,9 @@ public class ArtifactControl {
 
     double y_blue_basket = -58.0;
     double y_red_basket = 60;
+
+    public boolean sensorFault = false;
+    boolean toggleS = false;
 
     public void initServo(){
         AngleTurret.setPosition(angleTurret_initPosition);
@@ -152,21 +155,19 @@ public class ArtifactControl {
         x_position = robotPose.getX();
         y_position = robotPose.getY();
 
-        areaOfThrowing();
-        updateShooter();
+        if(!sensorFault) {
+            areaOfThrowing();
+            updateShooter();
+        }
 
         if(gamepad2.a){
-            BlockArtifact.setPosition(artifact_block_position);
-            Intake_LeftMotor.setPower(1);
-            Intake_RightMotor.setPower(1);
-            artifact_status_blocked = true;
-        }else if(gamepad2.y && allowedToShoot){
-            BlockArtifact.setPosition(artifact_unblock_position);
-            Outtake_LeftMotor.setPower(1);
-            Outtake_RightMotor.setPower(1);
-            Intake_LeftMotor.setPower(1);
-            Intake_RightMotor.setPower(1);
-            artifact_status_blocked = false;
+            getArtifacts();
+        }else if(gamepad2.y){
+            if(allowedToShoot && !sensorFault) {
+                throwArtifacts();
+            }else if(sensorFault){
+                throwArtifacts();
+            }
         }
 
         if(gamepad2.b){
@@ -176,7 +177,7 @@ public class ArtifactControl {
             Outtake_RightMotor.setPower(0);
         }
 
-        if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position) {
+        if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && sensorFault) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position - 0.05;
                 current_rightturret_position = current_rightturret_position - 0.05;
@@ -184,7 +185,7 @@ public class ArtifactControl {
                 RightTurret.setPosition(current_rightturret_position);
                 toggleButton = true;
             }
-        }else if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position) {
+        }else if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && sensorFault) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position + 0.05;
                 current_rightturret_position = current_rightturret_position + 0.05;
@@ -196,13 +197,13 @@ public class ArtifactControl {
             toggleButton = false;
         }
 
-        if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position) {
+        if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position && sensorFault) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
-        } else if (gamepad2.dpad_down && current_angleturret_position < min_angleturret_position) {
+        } else if (gamepad2.dpad_down && current_angleturret_position < min_angleturret_position && sensorFault) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position + 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
@@ -211,6 +212,31 @@ public class ArtifactControl {
         }else{
             stoggleButton = false;
         }
+
+        if(gamepad2.left_trigger > 75 && gamepad2.right_trigger > 75){
+            if(!toggleS) {
+                sensorFault = !sensorFault;
+                toggleS = true;
+            }
+        }else{
+            toggleS = false;
+        }
+    }
+
+    void getArtifacts(){
+        BlockArtifact.setPosition(artifact_block_position);
+        Intake_LeftMotor.setPower(1);
+        Intake_RightMotor.setPower(1);
+        artifact_status_blocked = true;
+    }
+
+    void throwArtifacts(){
+        BlockArtifact.setPosition(artifact_unblock_position);
+        Outtake_LeftMotor.setPower(1);
+        Outtake_RightMotor.setPower(1);
+        Intake_LeftMotor.setPower(1);
+        Intake_RightMotor.setPower(1);
+        artifact_status_blocked = false;
     }
 
     public void areaOfThrowing(){
@@ -243,7 +269,7 @@ public class ArtifactControl {
         }
     }
 
-    double getBasketDirection(){
+    public double getBasketDirection(){
         double basketAngle;
         if(targetAngle - headingAngle > 0){
             basketAngle = targetAngle - headingAngle;
@@ -268,7 +294,7 @@ public class ArtifactControl {
         return basketAngle;
     }
 
-    double getBasketDistance(){
+    public double getBasketDistance(){
         double distanceToBasket;
         if(isRedAlliance) {
             distanceToBasket = Math.sqrt(Math.pow(x_red_basket - x_position, 2) + Math.pow(y_red_basket - y_position, 2));
@@ -280,14 +306,14 @@ public class ArtifactControl {
 
     public double getTurretPosition(){
         double servoAngleToPosition;
-        servoAngleToPosition = getBasketDirection() * turretServoPosToDegree;
+        servoAngleToPosition = getBasketDirection() * turretServoPosToDegree; // neededed to be changed
 
         return servoAngleToPosition;
     }
 
     public double getTurretAngle(){
-        double max_angle = 7;
-        double min_angle = 0;
+        double max_angle = 7; // need to be changed
+        double min_angle = 0; // need to be changed
         double max_distance = 144;
         double anglePerInch = (max_angle-min_angle)/max_distance;
         double angleToCm;
