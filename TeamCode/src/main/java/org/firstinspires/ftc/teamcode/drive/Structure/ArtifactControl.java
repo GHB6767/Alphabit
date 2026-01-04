@@ -78,8 +78,8 @@ public class ArtifactControl {
 
         Intake_LeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Intake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        Outtake_LeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        Outtake_RightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        Outtake_LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        Outtake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Intake_LeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Intake_RightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,6 +94,10 @@ public class ArtifactControl {
         BlockArtifact = hwdmap.get(Servo.class,"BlockArtifact");
     }
 
+    double leftTurret_initPosition = 0.5;
+    double rightTurret_initPosition = 0.5;
+    double angleTurret_initPosition = 0.9;
+
     double min_leftturret_position = 0;
     double min_rightturret_position = 0;
     double min_angleturret_position = 0.9;
@@ -102,9 +106,9 @@ public class ArtifactControl {
     double max_rightturret_position = 1;
     double max_angleturret_position = 0.2;
 
-    public double current_rightturret_position= 0.5;
-    public double current_leftturret_position = 0.5;
-    public double current_angleturret_position = 0.9;
+    public double current_rightturret_position= rightTurret_initPosition;
+    public double current_leftturret_position = leftTurret_initPosition;
+    public double current_angleturret_position = angleTurret_initPosition;
 
     public boolean artifact_status_blocked = false;
     double artifact_block_position = 0.9;
@@ -129,9 +133,9 @@ public class ArtifactControl {
     double y_red_basket = 60;
 
     public void initServo(){
-        AngleTurret.setPosition(current_angleturret_position);
-        LeftTurret.setPosition(current_leftturret_position);
-        RightTurret.setPosition(current_rightturret_position);
+        AngleTurret.setPosition(angleTurret_initPosition);
+        LeftTurret.setPosition(leftTurret_initPosition);
+        RightTurret.setPosition(rightTurret_initPosition);
     }
 
     public void updateAprilTag(){
@@ -296,14 +300,14 @@ public class ArtifactControl {
         double servoPos = getTurretPosition();
         current_angleturret_position = 0.2 + getTurretAngle();
         if(rotateToLeft){
-            if((current_leftturret_position-servoPos) >= min_leftturret_position) {
-                current_leftturret_position = current_leftturret_position - servoPos;
+            if((leftTurret_initPosition-servoPos) >= min_leftturret_position) {
+                current_leftturret_position = leftTurret_initPosition - servoPos;
             }else{
                 current_leftturret_position = 0;
             }
         }else{
-            if((current_leftturret_position+servoPos) <= max_leftturret_position) {
-                current_leftturret_position = current_leftturret_position + servoPos;
+            if((leftTurret_initPosition+servoPos) <= max_leftturret_position) {
+                current_leftturret_position = leftTurret_initPosition + servoPos;
             }else{
                 current_leftturret_position = 1;
             }
