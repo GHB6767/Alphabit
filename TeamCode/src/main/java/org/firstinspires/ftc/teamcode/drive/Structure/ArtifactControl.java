@@ -374,9 +374,9 @@ public class ArtifactControl {
     void setAngleTurretAngle(double x_pos, double y_pos, boolean redAlliance){
         double distanceToBasket;
         if(redAlliance) {
-            distanceToBasket = Math.sqrt(Math.pow(x_red_basket - x_pos, 2) + Math.pow(y_red_basket - y_pos, 2));
+            distanceToBasket = Math.sqrt(Math.pow(x_red_basket_angleTurret - x_pos, 2) + Math.pow(y_red_basket_angleTurret - y_pos, 2));
         }else{
-            distanceToBasket = Math.sqrt(Math.pow(x_blue_basket - x_pos, 2) + Math.pow(y_blue_basket - y_pos, 2));
+            distanceToBasket = Math.sqrt(Math.pow(x_blue_basket_angleTurret - x_pos, 2) + Math.pow(y_blue_basket_angleTurret - y_pos, 2));
         }
 
         double max_angle = 0.9;
