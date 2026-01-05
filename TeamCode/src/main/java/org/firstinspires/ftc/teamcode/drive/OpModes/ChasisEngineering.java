@@ -43,10 +43,10 @@ public class ChasisEngineering extends LinearOpMode {
 
             telemetrys.addData(" ", " ");
 
-            telemetrys.addData("[Intake] Press Left Bumper/Right Bumper ", " to change Current Position");
-            telemetrys.addData("[Intake] Press A ", " to set the Position");
-            telemetrys.addData("[Intake] Intake Current Position ", intakeTesting.current_position);
-            telemetrys.addData("[Intake] Intake Last Position ", intakeTesting.last_position);
+            telemetrys.addData("[Servo] Press Left Bumper/Right Bumper ", " to change Current Position");
+            telemetrys.addData("[Servo] Press A ", " to set the Position");
+            telemetrys.addData("[Servo] Intake Current Position ", intakeTesting.current_position);
+            telemetrys.addData("[Servo] Intake Last Position ", intakeTesting.last_position);
 
             telemetrys.addData(" ", " ");
 
