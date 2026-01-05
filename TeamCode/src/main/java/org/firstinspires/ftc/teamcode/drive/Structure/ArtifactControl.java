@@ -65,9 +65,6 @@ public class ArtifactControl {
 
         if(fieldCase == 0 || fieldCase == 2){
             isRedAlliance = true;
-            targetAngle = 36.5;
-        }else{
-            targetAngle = 323.5;
         }
 
         Intake_LeftMotor = hwdmap.get(DcMotor.class, "Intake_LeftMotor");
@@ -121,15 +118,15 @@ public class ArtifactControl {
     boolean toggleButton = false;
     boolean stoggleButton = false;
 
-    double turretServoPosToDegree = 0.9/12; // neededed to be changed
+    double turretServoPosToDegree = 0.9/12; // needs to be changed
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
 
-    double x_blue_basket = -65.0;
-    double x_red_basket = -65.0;
+    double x_blue_basket = -69.0;
+    double x_red_basket = -69.0;
 
-    double y_blue_basket = -58.0;
-    double y_red_basket = 60;
+    double y_blue_basket = -62.0;
+    double y_red_basket = 64;
 
     public boolean manualControl = false;
     boolean toggleS = false;
@@ -272,8 +269,17 @@ public class ArtifactControl {
         }
     }
 
+    public void dynamicTargetAngle(){
+        double positive_x_position = x_position + 70;
+        double ipotenuza = getBasketDistance();
+        targetAngle = Math.toDegrees(Math.sin(positive_x_position/ipotenuza));
+    }
+
     public double getBasketDirection(){
         double basketAngle;
+
+        dynamicTargetAngle();
+
         if(targetAngle - headingAngle > 0){
             basketAngle = targetAngle - headingAngle;
             if(targetAngle - headingAngle >= 180){
@@ -283,7 +289,7 @@ public class ArtifactControl {
             }
         }else{
             basketAngle = 360 - Math.abs((headingAngle - targetAngle));
-            if(headingAngle-targetAngle >= 180){
+            if(basketAngle >= 180){
                 rotateToLeft = false;
             }else{
                 rotateToLeft = true;
