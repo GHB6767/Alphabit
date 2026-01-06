@@ -246,7 +246,7 @@ public class ArtifactControl {
             }else{
                 allowedToShoot = false;
             }
-        }else if(y_position < 0 && x_position < 0){
+        }else if(y_position <= 0 && x_position < (0 + marginThreshold)){
             if((Math.abs(x_position)+marginThreshold) > Math.abs(y_position)){
                 allowedToShoot = true;
             }else{
@@ -258,6 +258,8 @@ public class ArtifactControl {
             }else{
                 allowedToShoot = false;
             }
+        }else{
+            allowedToShoot = false;
         }
 
         if(allowedToShoot){
