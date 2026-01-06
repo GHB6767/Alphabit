@@ -122,12 +122,6 @@ public class ArtifactControl {
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
 
-    double x_blue_basket = -70.0;
-    double x_red_basket = -70.0;
-
-    double y_blue_basket = -63.0;
-    double y_red_basket = 65;
-
     double x_red_basket_angleTurret = -57.0;
     double x_blue_basket_angleTurret = -57.0;
     double y_red_basket_angleTurret = 45.0;
@@ -279,13 +273,19 @@ public class ArtifactControl {
 
     public void dynamicTargetAngle(){
         double positive_x_position = x_position + 70;
-        double ipotenuza;
-        if(isRedAlliance) {
-            ipotenuza = Math.sqrt(Math.pow(x_red_basket - x_position, 2) + Math.pow(y_red_basket - y_position, 2));
-            targetAngle = Math.toDegrees(Math.sin(positive_x_position/ipotenuza));
+        double positive_y_position;
+        if(isRedAlliance){
+            positive_y_position = Math.abs((y_position -64));
         }else{
-            ipotenuza = Math.sqrt(Math.pow(x_blue_basket - x_position, 2) + Math.pow(y_blue_basket - y_position, 2));
-            targetAngle = 360 - Math.toDegrees(Math.sin(positive_x_position/ipotenuza));
+            positive_y_position = Math.abs((y_position + 64));
+        }
+
+        double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));
+
+        if(isRedAlliance){
+            targetAngle = calculatedAngle;
+        }else{
+            targetAngle = 360 - calculatedAngle;
         }
     }
 
