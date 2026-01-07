@@ -308,7 +308,7 @@ public class ArtifactControl {
             }
         }
 
-        if(basketAngle > 180){
+        if(basketAngle >= 180){
             basketAngle = 360 - basketAngle;
         }
 
