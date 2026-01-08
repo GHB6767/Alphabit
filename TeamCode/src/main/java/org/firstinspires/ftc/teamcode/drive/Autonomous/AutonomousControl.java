@@ -42,7 +42,7 @@ public class AutonomousControl extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-12, 15, Math.toRadians(90)))
                 .addTemporalMarker(() -> artifactControl.setAutonomousShooter(46.5, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(5)
-                .addTemporalMarker(() -> artifactControl.throwArtifacts(artifactControl.getFlyWheelPower(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true, true), false))
+                .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(10)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
                 .lineTo(new Vector2d(12,25))
