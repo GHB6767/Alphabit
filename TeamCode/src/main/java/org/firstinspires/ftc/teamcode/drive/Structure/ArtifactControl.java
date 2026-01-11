@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 
 public class ArtifactControl {
     Gamepad gamepad2;
@@ -37,13 +38,37 @@ public class ArtifactControl {
     double targetAngle;
     public boolean isRedAlliance = false;
 
+    public enum fieldPattern{
+        UNKNOWN,
+        GPP,
+        PGP,
+        PPG
+    }
+
+    public fieldPattern artifactPattern = fieldPattern.UNKNOWN;
+
     public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, MultipleTelemetry telemetrys, int fieldCase){
         gamepad2 = gmpd;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
         gyroscope.gyroscope_init(hwdmap);
 
+        if(VarStorage.artifacts_pattern != 0){
+            switch(VarStorage.artifacts_pattern){
+                case 21:
+                    artifactPattern = fieldPattern.GPP;
+                    break;
+                case 22:
+                    artifactPattern = fieldPattern.PGP;
+                    break;
+                case 23:
+                    artifactPattern = fieldPattern.PPG;
+                    break;
+            }
+        }
+
         drive = new SampleMecanumDrive(hwdmap);
+
         switch(fieldCase){
             case 0:
                 drive.setPoseEstimate(endPose_RedAudience);
