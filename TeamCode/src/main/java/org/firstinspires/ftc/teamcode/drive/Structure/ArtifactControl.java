@@ -127,6 +127,7 @@ public class ArtifactControl {
 
     public boolean manualControl = false;
     boolean toggleS = false;
+    boolean oneTimeRumble = false;
 
     public void initServo(){
         AngleTurret.setPosition(angleTurret_initPosition);
@@ -267,10 +268,12 @@ public class ArtifactControl {
             allowedToShoot = false;
         }
 
-        if(allowedToShoot){
+        if(allowedToShoot && !oneTimeRumble){
             gamepad2.rumble(1000);
-        }else{
-            gamepad2.stopRumble();
+            oneTimeRumble = true;
+        }else if(!allowedToShoot && oneTimeRumble){
+            gamepad2.rumble(500);
+            oneTimeRumble = false;
         }
     }
 
