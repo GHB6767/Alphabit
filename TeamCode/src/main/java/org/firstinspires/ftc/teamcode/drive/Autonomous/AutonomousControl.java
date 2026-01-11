@@ -194,7 +194,11 @@ public class AutonomousControl extends LinearOpMode {
                     }
                     firstButtonTrigger = true;
                 }
-            } else if (gamepad1.dpad_up) {
+            }else{
+                firstButtonTrigger = false;
+            }
+
+            if (gamepad1.dpad_up) {
                 if (!secondButtonTrigger) {
                     if(!nearBasket){
                         autoCase = autoCase + 2;
@@ -206,7 +210,6 @@ public class AutonomousControl extends LinearOpMode {
                     secondButtonTrigger = true;
                 }
             }else{
-                firstButtonTrigger = false;
                 secondButtonTrigger = false;
             }
 
