@@ -139,7 +139,7 @@ public class ArtifactControl {
     boolean toggleButton = false;
     boolean stoggleButton = false;
 
-    double turretServoPosToDegree = 0.9/12; // needs to be changed
+    double turretServoPosToDegree = 1.0/300.0; // needs to be changed
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
 
