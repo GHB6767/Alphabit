@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 @Autonomous
 public class AutonomousControl extends LinearOpMode {
     SampleMecanumDrive drive;
+    AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry multipleTelemetry;
     ArtifactControl artifactControl;
     TrajectorySequence trajectoryRedBasket, trajectoryBlueBasket, trajectoryRedAudience, trajectoryBlueAudience;
@@ -26,9 +28,18 @@ public class AutonomousControl extends LinearOpMode {
 
     boolean blueAlliance = false;
     boolean nearBasket = false;
-    int autoCase = 0;
     boolean firstButtonTrigger = false;
     boolean secondButtonTrigger = false;
+    boolean patternFound = false;
+    int autoCase = 0;
+
+    enum ObeliskPattern{
+        GPP,
+        PGP,
+        PPG
+    }
+
+    ObeliskPattern currentPattern = ObeliskPattern.GPP;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -36,7 +47,9 @@ public class AutonomousControl extends LinearOpMode {
         multipleTelemetry = new MultipleTelemetry();
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, multipleTelemetry, 0);
 
-        drive.setPoseEstimate(startPose_RedBasket);
+        artifactControl.initServo();
+
+        aprilTagIdentification.init(hardwareMap, multipleTelemetry);
 
         trajectoryRedBasket = drive.trajectorySequenceBuilder(startPose_RedBasket)
                 .lineToLinearHeading(new Pose2d(-12, 15, Math.toRadians(90)))
@@ -169,8 +182,10 @@ public class AutonomousControl extends LinearOpMode {
                 if (!firstButtonTrigger) {
                     if(!blueAlliance) {
                         autoCase = autoCase + 1;
+                        blueAlliance = true;
                     }else{
                         autoCase = autoCase - 1;
+                        blueAlliance = false;
                     }
                     firstButtonTrigger = true;
                 }
@@ -178,13 +193,37 @@ public class AutonomousControl extends LinearOpMode {
                 if (!secondButtonTrigger) {
                     if(!nearBasket){
                         autoCase = autoCase + 2;
+                        nearBasket = true;
                     }else{
                         autoCase = autoCase - 2;
+                        nearBasket = false;
                     }
                     secondButtonTrigger = true;
                 }
             }else{
+                firstButtonTrigger = false;
                 secondButtonTrigger = false;
+            }
+
+            if(!patternFound && !nearBasket){
+                if(aprilTagIdentification.getPatternId() != 0){
+                    switch((int) aprilTagIdentification.getPatternId()){
+                        case 21:
+                            currentPattern = ObeliskPattern.GPP;
+                            break;
+                        case 22:
+                            currentPattern = ObeliskPattern.PGP;
+                            break;
+                        case 23:
+                            currentPattern = ObeliskPattern.PPG;
+                            break;
+                    }
+                    patternFound = true;
+                }
+            }
+
+            if(patternFound){
+                telemetry.addData("[->] Pattern ", currentPattern);
             }
 
             telemetry.addData("[->] Case ", autoCase);
@@ -197,15 +236,19 @@ public class AutonomousControl extends LinearOpMode {
 
         switch(autoCase){
             case 0:
+                drive.setPoseEstimate(startPose_RedAudience);
                 drive.followTrajectorySequenceAsync(trajectoryRedAudience);
                 break;
             case 1:
+                drive.setPoseEstimate(startPose_BlueAudience);
                 drive.followTrajectorySequenceAsync(trajectoryBlueAudience);
                 break;
             case 2:
+                drive.setPoseEstimate(startPose_RedBasket);
                 drive.followTrajectorySequenceAsync(trajectoryRedBasket);
                 break;
             case 3:
+                drive.setPoseEstimate(startPose_BlueBasket);
                 drive.followTrajectorySequenceAsync(trajectoryBlueBasket);
                 break;
         }
