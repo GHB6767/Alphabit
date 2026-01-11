@@ -28,6 +28,7 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, telemetrys,endCase);
 
         while(opModeInInit()){
+            telemetrys.addData("[->] Pattern ", artifactControl.artifactPattern);
             telemetrys.addData("[->] Case selected ", endCase);
             artifactControl.updateAprilTag();
             telemetrys.update();

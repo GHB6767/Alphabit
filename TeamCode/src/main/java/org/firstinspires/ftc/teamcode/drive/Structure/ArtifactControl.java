@@ -163,7 +163,7 @@ public class ArtifactControl {
     }
 
     public void Run(){
-        aprilTagIdentification.telemetryAprilTag();
+        updateAprilTag();
         drive.update();
 
         Pose2d robotPose = drive.getPoseEstimate();
