@@ -138,6 +138,7 @@ public class ArtifactControl {
 
     boolean toggleButton = false;
     boolean stoggleButton = false;
+    boolean manualResetPoseToggle = false;
 
     double turretServoPosToDegree = 1.0/300.0; // needs to be changed
     public boolean allowedToShoot = false;
@@ -147,6 +148,10 @@ public class ArtifactControl {
     double x_blue_basket_angleTurret = -50.0;
     double y_red_basket_angleTurret = 48.0;
     double y_blue_basket_angleTurret = -48.0;
+
+    double x_apriltag_position = -58.0;
+    double red_y_apriltag_position = 55.0;
+    double blue_y_apriltag_position = -55.0;
 
     public boolean manualControl = false;
     boolean toggleS = false;
@@ -234,6 +239,13 @@ public class ArtifactControl {
             }
         }else{
             toggleS = false;
+        }
+
+        if(gamepad2.dpad_left && !manualResetPoseToggle && manualControl){
+            manuallyResetPose();
+            manualResetPoseToggle = true;
+        }else{
+            manualResetPoseToggle = false;
         }
     }
 
@@ -404,6 +416,14 @@ public class ArtifactControl {
         }
 
         return finalPower;
+    }
+
+    public void manuallyResetPose(){
+        if(isRedAlliance) {
+            drive.setPoseEstimate(new Pose2d(-9, 9, Math.toRadians(90)));
+        }else{
+            drive.setPoseEstimate(new Pose2d(-9, 9, Math.toRadians(-90)));
+        }
     }
 
     public void updateShooter() {
