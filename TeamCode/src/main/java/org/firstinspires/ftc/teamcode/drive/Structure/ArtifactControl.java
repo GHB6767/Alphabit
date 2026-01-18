@@ -112,8 +112,8 @@ public class ArtifactControl {
         BlockArtifact = hwdmap.get(Servo.class,"BlockArtifact");
     }
 
-    double leftTurret_initPosition = 0.5; // needs to be changed
-    double rightTurret_initPosition = 0.5; // needs to be changed
+    double leftTurret_initPosition = 0.5;
+    double rightTurret_initPosition = 0.5;
     double angleTurret_initPosition = 0.9;
 
     double min_leftturret_position = 0;
@@ -140,7 +140,7 @@ public class ArtifactControl {
     boolean stoggleButton = false;
     boolean manualResetPoseToggle = false;
 
-    double turretServoPosToDegree = 1.0/300.0; // needs to be changed
+    double turretServoPosToDegree = 1.0/300.0;
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
     public double defaultFlyWheelPower = 1.0;
