@@ -153,7 +153,7 @@ public class ArtifactControl {
     double red_y_apriltag_position = 55.0;
     double blue_y_apriltag_position = -55.0;
 
-    public boolean manualControl = false;
+    public boolean manualControl = true;
     boolean toggleS = false;
     boolean oneTimeRumble = false;
 
@@ -161,10 +161,16 @@ public class ArtifactControl {
         AngleTurret.setPosition(angleTurret_initPosition);
         LeftTurret.setPosition(leftTurret_initPosition);
         RightTurret.setPosition(rightTurret_initPosition);
+
+        gyroscope.resetHeading();
     }
 
     public void updateAprilTag(){
         aprilTagIdentification.telemetryAprilTag();
+    }
+
+    public int getCurrentTag(){
+        return aprilTagIdentification.getPatternId();
     }
 
     public void Run(){
@@ -241,7 +247,7 @@ public class ArtifactControl {
             toggleS = false;
         }
 
-        if(gamepad2.dpad_left && !manualResetPoseToggle && manualControl){
+        if(gamepad2.dpad_left && !manualResetPoseToggle){
             manuallyResetPose();
             manualResetPoseToggle = true;
         }else{
