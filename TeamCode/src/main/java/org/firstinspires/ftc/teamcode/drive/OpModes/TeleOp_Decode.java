@@ -27,7 +27,7 @@ public class TeleOp_Decode extends LinearOpMode {
         while(opModeInInit()){
             telemetrys.addData("[->] Pattern ", artifactControl.artifactPattern);
             telemetrys.addData("[->] Case selected ", VarStorage.autonomous_case);
-            artifactControl.updateAprilTag();
+
             telemetrys.update();
         }
 
