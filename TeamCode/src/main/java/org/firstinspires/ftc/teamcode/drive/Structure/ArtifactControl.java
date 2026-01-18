@@ -381,19 +381,29 @@ public class ArtifactControl {
 
     public double getBasketDistance(double custom_x_pos, double custom_y_pos, boolean redAlliance, boolean useCustomPos){
         double distanceToBasket;
+        double dx;
+        double dy;
+
         if(!useCustomPos) {
             if (isRedAlliance) {
-                distanceToBasket = Math.sqrt(Math.pow(x_red_basket_angleTurret - x_position, 2) + Math.pow(y_red_basket_angleTurret - y_position, 2));
+                dx = x_red_basket_angleTurret - x_position;
+                dy = y_red_basket_angleTurret - y_position;
             } else {
-                distanceToBasket = Math.sqrt(Math.pow(x_blue_basket_angleTurret - x_position, 2) + Math.pow(y_blue_basket_angleTurret - y_position, 2));
+                dx = x_blue_basket_angleTurret - x_position;
+                dy = y_blue_basket_angleTurret - y_position;
             }
         }else{
             if(redAlliance){
-                distanceToBasket = Math.sqrt(Math.pow(x_red_basket_angleTurret - custom_x_pos, 2) + Math.pow(y_red_basket_angleTurret - custom_y_pos, 2));
+                dx = x_red_basket_angleTurret - custom_x_pos;
+                dy = y_red_basket_angleTurret - custom_y_pos;
             }else{
-                distanceToBasket = Math.sqrt(Math.pow(x_blue_basket_angleTurret - custom_x_pos, 2) + Math.pow(y_blue_basket_angleTurret - custom_y_pos, 2));
+                dx = x_blue_basket_angleTurret - custom_x_pos;
+                dy = y_blue_basket_angleTurret - custom_y_pos;
             }
         }
+
+        distanceToBasket = Math.sqrt((dx*dx) + (dy*dy));
+
         return distanceToBasket;
     }
 
@@ -482,10 +492,11 @@ public class ArtifactControl {
 
     void setAngleTurretAngle(double x_pos, double y_pos, boolean redAlliance){
         double distanceToBasket;
+
         if(redAlliance) {
-            distanceToBasket = Math.sqrt(Math.pow(x_red_basket_angleTurret - x_pos, 2) + Math.pow(y_red_basket_angleTurret - y_pos, 2));
+            distanceToBasket = getBasketDistance(x_pos,y_pos,true,true);
         }else{
-            distanceToBasket = Math.sqrt(Math.pow(x_blue_basket_angleTurret - x_pos, 2) + Math.pow(y_blue_basket_angleTurret - y_pos, 2));
+            distanceToBasket = getBasketDistance(x_pos,y_pos,false,true);
         }
 
         double anglePerInch = Math.abs(((max_TurretAngle-min_TurretAngle)/max_TurretAngleDistance));
