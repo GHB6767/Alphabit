@@ -1,5 +1,29 @@
 package org.firstinspires.ftc.teamcode.drive.Structure;
 
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_FlyWheelDistance;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_FlyWheelPower;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_TurretAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_TurretAngleDistance;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_FlyWheelPower;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_TurretAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.rightTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_leftturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_rightturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_angleturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_leftturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_rightturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_angleturret_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_block_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_unblock_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.turretServoPosToDegree;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.x_red_basket_angleTurret;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.x_blue_basket_angleTurret;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_red_basket_angleTurret;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_blue_basket_angleTurret;
+
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -112,25 +136,9 @@ public class ArtifactControl {
         BlockArtifact = hwdmap.get(Servo.class,"BlockArtifact");
     }
 
-    double leftTurret_initPosition = 0.5;
-    double rightTurret_initPosition = 0.5;
-    double angleTurret_initPosition = 0.9;
-
-    double min_leftturret_position = 0;
-    double min_rightturret_position = 0;
-    double min_angleturret_position = 0.9;
-
-    double max_leftturret_position = 1;
-    double max_rightturret_position = 1;
-    double max_angleturret_position = 0.2;
-
     public double current_rightturret_position= rightTurret_initPosition;
     public double current_leftturret_position = leftTurret_initPosition;
     public double current_angleturret_position = angleTurret_initPosition;
-
-    public boolean artifact_status_blocked = false;
-    double artifact_block_position = 0.9;
-    double artifact_unblock_position = 1.0;
 
     public double headingAngle = 0.0;
     public double x_position = 0.0;
@@ -139,22 +147,12 @@ public class ArtifactControl {
     boolean toggleButton = false;
     boolean stoggleButton = false;
     boolean manualResetPoseToggle = false;
+    public boolean artifact_status_blocked = false;
+    public boolean manualControl = true;
 
-    double turretServoPosToDegree = 1.0/300.0;
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
     public double defaultFlyWheelPower = 1.0;
-
-    double x_red_basket_angleTurret = -50.0;
-    double x_blue_basket_angleTurret = -50.0;
-    double y_red_basket_angleTurret = 48.0;
-    double y_blue_basket_angleTurret = -48.0;
-
-    double x_apriltag_position = -58.0;
-    double red_y_apriltag_position = 55.0;
-    double blue_y_apriltag_position = -55.0;
-
-    public boolean manualControl = true;
 
     boolean flyToggle = false;
     boolean toggleS = false;
@@ -304,8 +302,6 @@ public class ArtifactControl {
     }
 
     public void areaOfThrowing(){
-        double marginThreshold = 7;
-
         if(y_position >= 0 && x_position < (0 + marginThreshold)){
             if((Math.abs(x_position)+marginThreshold) > y_position){
                 allowedToShoot = true;
@@ -410,10 +406,7 @@ public class ArtifactControl {
 
     public double getTurretAngle(){
         double angleToCm;
-        double max_angle = 0.2;
-        double min_angle = 0.9;
-        double max_distance = 130;
-        double anglePerInch = Math.abs(((max_angle-min_angle)/max_distance));
+        double anglePerInch = Math.abs(((max_TurretAngle-min_TurretAngle)/max_TurretAngleDistance));
         angleToCm = getBasketDistance(0,0,false,false) * anglePerInch;
 
         if(angleToCm > 0.7){
@@ -424,10 +417,7 @@ public class ArtifactControl {
     }
 
     public double getFlyWheelPower(double custom_x_pos, double custom_y_pos, boolean redAlliance, boolean useCustomPos){
-        double min_power = 0.5;
-        double max_power = 1.0;
-        double max_distance = 130;
-        double powerPerInch = Math.abs((max_power-min_power)/max_distance);
+        double powerPerInch = Math.abs((max_FlyWheelPower-min_FlyWheelPower)/max_FlyWheelDistance);
         double distance;
         if(!useCustomPos) {
             distance = getBasketDistance(0, 0, false, false);
@@ -435,7 +425,7 @@ public class ArtifactControl {
             distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true);
         }
 
-        double finalPower = min_power + (distance * powerPerInch);
+        double finalPower = min_FlyWheelPower + (distance * powerPerInch);
 
         if(finalPower > 1.0){
             finalPower = 1.0;
@@ -498,10 +488,7 @@ public class ArtifactControl {
             distanceToBasket = Math.sqrt(Math.pow(x_blue_basket_angleTurret - x_pos, 2) + Math.pow(y_blue_basket_angleTurret - y_pos, 2));
         }
 
-        double max_angle = 0.2;
-        double min_angle = 0.9;
-        double max_distance = 130;
-        double anglePerInch = Math.abs(((max_angle-min_angle)/max_distance));
+        double anglePerInch = Math.abs(((max_TurretAngle-min_TurretAngle)/max_TurretAngleDistance));
         double angleToCm = distanceToBasket * anglePerInch;
 
         if(angleToCm > 0.7){
