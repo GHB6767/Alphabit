@@ -153,6 +153,7 @@ public class ArtifactControl {
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
     public double defaultFlyWheelPower = 1.0;
+    double basketDistance = 0.0;
 
     boolean flyToggle = false;
     boolean toggleS = false;
@@ -185,6 +186,7 @@ public class ArtifactControl {
         y_position = robotPose.getY();
 
         if(!manualControl) {
+            basketDistance = getBasketDistance(0,0,false,false);
             areaOfThrowing();
             updateShooter();
         }
@@ -417,7 +419,7 @@ public class ArtifactControl {
     public double getTurretAngle(){
         double angleToCm;
         double anglePerInch = Math.abs(((max_TurretAngle-min_TurretAngle)/max_TurretAngleDistance));
-        angleToCm = getBasketDistance(0,0,false,false) * anglePerInch;
+        angleToCm = basketDistance * anglePerInch;
 
         if(angleToCm > 0.7){
             angleToCm = 0.7;
@@ -430,7 +432,7 @@ public class ArtifactControl {
         double powerPerInch = Math.abs((max_FlyWheelPower-min_FlyWheelPower)/max_FlyWheelDistance);
         double distance;
         if(!useCustomPos) {
-            distance = getBasketDistance(0, 0, false, false);
+            distance = basketDistance;
         }else{
             distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true);
         }
