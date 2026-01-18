@@ -1,5 +1,58 @@
 package org.firstinspires.ftc.teamcode.drive.Autonomous;
 
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Audience_firstAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Audience_secondAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_cyclePath_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_cyclePath_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getArtifact_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getArtifact_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getCornerArtifact_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getCornerArtifact_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_mainShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_mainShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_preparePickup_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_preparePickup_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_getFirstPattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_getFirstPattern_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_getMiddlePattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_getMiddlePattern_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_lastShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_lastShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_mainShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_mainShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_openTunnel_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_openTunnel_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_returnTunnel_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_returnTunnel_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_startPickupMiddlePattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_startPickupMiddlePattern_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_firstAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_secondAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_cyclePath_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_cyclePath_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getArtifact_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getArtifact_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getCornerArtifact_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getCornerArtifact_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_mainShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_mainShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_preparePickup_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_preparePickup_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_getFirstPattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_getFirstPattern_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_getMiddlePattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_getMiddlePattern_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_lastShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_lastShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_mainShooting_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_mainShooting_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_openTunnel_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_openTunnel_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_returnTunnel_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_returnTunnel_Y;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_startPickupMiddlePattern_X;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RB_startPickupMiddlePattern_Y;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -52,31 +105,31 @@ public class AutonomousControl extends LinearOpMode {
         artifactControl.initServo();
 
         trajectoryRedBasket = drive.trajectorySequenceBuilder(startPose_RedBasket)
-                .lineToLinearHeading(new Pose2d(-12, 15, Math.toRadians(90)))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(46.5, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .lineToLinearHeading(new Pose2d(RB_mainShooting_X, RB_mainShooting_Y, Math.toRadians(90)))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_firstAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(12,25))
+                .lineTo(new Vector2d(RB_startPickupMiddlePattern_X,RB_startPickupMiddlePattern_Y))
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(12,45))
+                .lineTo(new Vector2d(RB_getMiddlePattern_X,RB_getMiddlePattern_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(4,52))
-                .lineTo(new Vector2d(4,25))
-                .lineTo(new Vector2d(-12,15))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(46.5, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .lineTo(new Vector2d(RB_openTunnel_X,RB_openTunnel_Y))
+                .lineTo(new Vector2d(RB_returnTunnel_X,RB_returnTunnel_Y))
+                .lineTo(new Vector2d(RB_mainShooting_X,RB_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_firstAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(-12,45))
+                .lineTo(new Vector2d(RB_getFirstPattern_X,RB_getFirstPattern_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(-20,25))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(48, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .lineTo(new Vector2d(RB_lastShooting_X,RB_lastShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_secondAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
@@ -84,31 +137,31 @@ public class AutonomousControl extends LinearOpMode {
                 .build();
 
         trajectoryBlueBasket = drive.trajectorySequenceBuilder(startPose_BlueBasket)
-                .lineToLinearHeading(new Pose2d(-12, -15, Math.toRadians(-90)))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(46.5, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .lineToLinearHeading(new Pose2d(BB_mainShooting_X, BB_mainShooting_Y, Math.toRadians(-90)))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_firstAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(12,-25))
+                .lineTo(new Vector2d(BB_startPickupMiddlePattern_X,BB_startPickupMiddlePattern_Y))
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(12,-45))
+                .lineTo(new Vector2d(BB_getMiddlePattern_X,BB_getMiddlePattern_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(4,-52))
-                .lineTo(new Vector2d(4,-25))
-                .lineTo(new Vector2d(-12,-15))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(46.5, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .lineTo(new Vector2d(BB_openTunnel_X,BB_openTunnel_Y))
+                .lineTo(new Vector2d(BB_returnTunnel_X,BB_returnTunnel_Y))
+                .lineTo(new Vector2d(BB_mainShooting_X,BB_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_firstAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(-12,-45))
+                .lineTo(new Vector2d(BB_getFirstPattern_X,BB_getFirstPattern_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(-20,-25))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(48, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .lineTo(new Vector2d(BB_lastShooting_X,BB_lastShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Basket_secondAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
@@ -116,30 +169,30 @@ public class AutonomousControl extends LinearOpMode {
                 .build();
 
         trajectoryBlueAudience = drive.trajectorySequenceBuilder(startPose_BlueAudience)
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(67, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_firstAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineToLinearHeading(new Pose2d(36,-25, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(BA_preparePickup_X, BA_preparePickup_Y, Math.toRadians(-90)))
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(36,-45))
+                .lineTo(new Vector2d(BA_getArtifact_X, BA_getArtifact_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(59,-20))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(69, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .lineTo(new Vector2d(BA_mainShooting_X, BA_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_secondAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(59,-53))
-                .lineTo(new Vector2d(60.2,-57))
+                .lineTo(new Vector2d(BA_cyclePath_X, BA_cyclePath_Y))
+                .lineTo(new Vector2d(BA_getCornerArtifact_X, BA_getCornerArtifact_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(59,-53))
-                .lineTo(new Vector2d(59,-20))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(69, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
+                .lineTo(new Vector2d(BA_cyclePath_X, BA_cyclePath_Y))
+                .lineTo(new Vector2d(BA_mainShooting_X, BA_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_secondAngle, false, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), false))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
@@ -147,30 +200,30 @@ public class AutonomousControl extends LinearOpMode {
                 .build();
 
         trajectoryRedAudience = drive.trajectorySequenceBuilder(startPose_RedAudience)
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(67, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_firstAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineToLinearHeading(new Pose2d(36,25, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(RA_preparePickup_X, RA_preparePickup_Y, Math.toRadians(90)))
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(36,45))
+                .lineTo(new Vector2d(RA_getArtifact_X, RA_getArtifact_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(59,20))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(69, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .lineTo(new Vector2d(RA_mainShooting_X, RA_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_secondAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
                 .addTemporalMarker(() -> artifactControl.getArtifacts())
-                .lineTo(new Vector2d(59,55))
-                .lineTo(new Vector2d(60.2,59))
+                .lineTo(new Vector2d(RA_cyclePath_X, RA_cyclePath_Y))
+                .lineTo(new Vector2d(RA_getCornerArtifact_X, RA_getCornerArtifact_Y))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.stopIntakeOuttake())
-                .lineTo(new Vector2d(59,55))
-                .lineTo(new Vector2d(59,20))
-                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(69, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
+                .lineTo(new Vector2d(RA_cyclePath_X, RA_cyclePath_Y))
+                .lineTo(new Vector2d(RA_mainShooting_X, RA_mainShooting_Y))
+                .addTemporalMarker(() -> artifactControl.setAutonomousShooter(Audience_secondAngle, true, drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), true))
                 .waitSeconds(2)
                 .addTemporalMarker(() -> artifactControl.throwArtifacts(0, false))
                 .waitSeconds(4)
