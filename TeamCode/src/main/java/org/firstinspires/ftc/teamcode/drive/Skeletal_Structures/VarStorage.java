@@ -39,4 +39,6 @@ public class VarStorage {
     public static double min_FlyWheelPower = 0.5;
     public static double max_FlyWheelPower = 1.0;
     public static double max_FlyWheelDistance = 130;
+    public static double horizontalTurretDeadzone = 0.005;
+    public static double verticalTurretDeadzone = 0.003;
 }

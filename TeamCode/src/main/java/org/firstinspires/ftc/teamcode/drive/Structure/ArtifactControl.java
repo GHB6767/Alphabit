@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.Structure;
 
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_FlyWheelDistance;
@@ -19,6 +20,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_block_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_unblock_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.turretServoPosToDegree;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.verticalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.x_red_basket_angleTurret;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.x_blue_basket_angleTurret;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_red_basket_angleTurret;
@@ -143,7 +145,9 @@ public class ArtifactControl {
     public double headingAngle = 0.0;
     public double x_position = 0.0;
     public double y_position = 0.0;
-
+    double lastLeftTurretPos = 2.0;
+    double lastRightTurretPos = 2.0;
+    double lastVerticalPos = 2.0;
     boolean toggleButton = false;
     boolean stoggleButton = false;
     boolean manualResetPoseToggle = false;
@@ -474,9 +478,17 @@ public class ArtifactControl {
                 current_rightturret_position = 1;
             }
         }
-        LeftTurret.setPosition(current_leftturret_position);
-        RightTurret.setPosition(current_rightturret_position);
-        AngleTurret.setPosition(current_angleturret_position);
+
+        if((Math.abs(lastLeftTurretPos-current_leftturret_position) > horizontalTurretDeadzone) || (Math.abs(lastRightTurretPos-current_rightturret_position) > horizontalTurretDeadzone)) {
+            LeftTurret.setPosition(current_leftturret_position);
+            RightTurret.setPosition(current_rightturret_position);
+            lastLeftTurretPos = current_leftturret_position;
+            lastRightTurretPos = current_rightturret_position;
+        }
+        if((Math.abs(lastVerticalPos-current_angleturret_position) > verticalTurretDeadzone)) {
+            AngleTurret.setPosition(current_angleturret_position);
+            lastVerticalPos = current_angleturret_position;
+        }
     }
 
     void setTurretAngle(double angle, boolean rotateLeft){
@@ -495,11 +507,7 @@ public class ArtifactControl {
     void setAngleTurretAngle(double x_pos, double y_pos, boolean redAlliance){
         double distanceToBasket;
 
-        if(redAlliance) {
-            distanceToBasket = getBasketDistance(x_pos,y_pos,true,true);
-        }else{
-            distanceToBasket = getBasketDistance(x_pos,y_pos,false,true);
-        }
+        distanceToBasket = getBasketDistance(x_pos,y_pos,redAlliance,true);
 
         double anglePerInch = Math.abs(((max_TurretAngle-min_TurretAngle)/max_TurretAngleDistance));
         double angleToCm = distanceToBasket * anglePerInch;
