@@ -19,6 +19,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_angleturret_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_block_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_unblock_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.targetFlyWheelSpeed;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.turretServoPosToDegree;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.verticalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.x_red_basket_angleTurret;
@@ -29,6 +30,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -38,6 +40,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VoltageReader;
 
 public class ArtifactControl {
     Gamepad gamepad2;
@@ -45,11 +48,12 @@ public class ArtifactControl {
     MultipleTelemetry telemetry;
     GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
     SampleMecanumDrive drive;
+    VoltageReader voltageReader;
 
-    DcMotor Intake_LeftMotor;
-    DcMotor Intake_RightMotor;
-    DcMotor Outtake_LeftMotor;
-    DcMotor Outtake_RightMotor;
+    DcMotorEx Intake_LeftMotor;
+    DcMotorEx Intake_RightMotor;
+    DcMotorEx Outtake_LeftMotor;
+    DcMotorEx Outtake_RightMotor;
 
     Servo LeftTurret;
     Servo RightTurret;
@@ -78,6 +82,7 @@ public class ArtifactControl {
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
         gyroscope.gyroscope_init(hwdmap);
+        voltageReader = new VoltageReader(hwdmap);
 
         if(VarStorage.artifacts_pattern != 0){
             switch(VarStorage.artifacts_pattern){
@@ -114,16 +119,21 @@ public class ArtifactControl {
             isRedAlliance = true;
         }
 
-        Intake_LeftMotor = hwdmap.get(DcMotor.class, "Intake_LeftMotor");
-        Intake_RightMotor = hwdmap.get(DcMotor.class, "Intake_RightMotor");
+        Intake_LeftMotor = hwdmap.get(DcMotorEx.class, "Intake_LeftMotor");
+        Intake_RightMotor = hwdmap.get(DcMotorEx.class, "Intake_RightMotor");
 
-        Outtake_LeftMotor = hwdmap.get(DcMotor.class, "Outtake_LeftMotor");
-        Outtake_RightMotor = hwdmap.get(DcMotor.class, "Outtake_RightMotor");
+        Outtake_LeftMotor = hwdmap.get(DcMotorEx.class, "Outtake_LeftMotor");
+        Outtake_RightMotor = hwdmap.get(DcMotorEx.class, "Outtake_RightMotor");
 
         Intake_LeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Intake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         Outtake_LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         Outtake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        Outtake_LeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Outtake_LeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Outtake_RightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Outtake_RightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Intake_LeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Intake_RightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -148,11 +158,15 @@ public class ArtifactControl {
     double lastLeftTurretPos = 2.0;
     double lastRightTurretPos = 2.0;
     double lastVerticalPos = 2.0;
+    public double leftFlyWheelSpeed = 0.0;
+    public double rightFlyWheelSpeed = 0.0;
+
     boolean toggleButton = false;
     boolean stoggleButton = false;
     boolean manualResetPoseToggle = false;
     public boolean artifact_status_blocked = false;
     public boolean manualControl = true;
+    boolean wantsToThrowArtifacts = false;
 
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
@@ -189,6 +203,9 @@ public class ArtifactControl {
         x_position = robotPose.getX();
         y_position = robotPose.getY();
 
+        leftFlyWheelSpeed = Outtake_LeftMotor.getVelocity();
+        rightFlyWheelSpeed = Outtake_RightMotor.getVelocity();
+
         if(!manualControl) {
             basketDistance = getBasketDistance(0,0,false,false);
             areaOfThrowing();
@@ -199,10 +216,15 @@ public class ArtifactControl {
             getArtifacts();
         }else if(gamepad2.y){
             if(allowedToShoot && !manualControl) {
+                wantsToThrowArtifacts = true;
                 throwArtifacts(getFlyWheelPower(0,0,false,false), true);
             }else if(manualControl){
                 throwArtifacts(0, false);
             }
+        }
+
+        if(wantsToThrowArtifacts){
+            throwArtifacts(getFlyWheelPower(0,0,false,false), true);
         }
 
         if(gamepad2.b){
@@ -286,18 +308,26 @@ public class ArtifactControl {
     }
 
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower){
-        BlockArtifact.setPosition(artifact_unblock_position);
         if(useCustomPower) {
-            Outtake_LeftMotor.setPower(customFlyWheelPower);
-            Outtake_RightMotor.setPower(customFlyWheelPower);
+            Outtake_LeftMotor.setPower(customFlyWheelPower * voltageReader.getCompensation());
+            Outtake_RightMotor.setPower(customFlyWheelPower * voltageReader.getCompensation());
         }else{
-            Outtake_LeftMotor.setPower(defaultFlyWheelPower);
-            Outtake_RightMotor.setPower(defaultFlyWheelPower);
+            Outtake_LeftMotor.setPower(defaultFlyWheelPower * voltageReader.getCompensation());
+            Outtake_RightMotor.setPower(defaultFlyWheelPower * voltageReader.getCompensation());
         }
 
-        Intake_LeftMotor.setPower(1);
-        Intake_RightMotor.setPower(1);
-        artifact_status_blocked = false;
+        if(wantsToThrowArtifacts && ((Outtake_LeftMotor.getVelocity() > targetFlyWheelSpeed) || (Outtake_RightMotor.getVelocity() > targetFlyWheelSpeed)) && !manualControl) {
+            BlockArtifact.setPosition(artifact_unblock_position);
+            Intake_LeftMotor.setPower(1);
+            Intake_RightMotor.setPower(1);
+            artifact_status_blocked = false;
+            wantsToThrowArtifacts = false;
+        }else if(manualControl){
+            BlockArtifact.setPosition(artifact_unblock_position);
+            Intake_LeftMotor.setPower(1);
+            Intake_RightMotor.setPower(1);
+            artifact_status_blocked = false;
+        }
     }
 
     public void stopIntakeOuttake(){

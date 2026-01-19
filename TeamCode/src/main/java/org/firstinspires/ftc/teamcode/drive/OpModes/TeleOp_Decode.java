@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VoltageReader;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
 
@@ -16,7 +17,6 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,7 +59,8 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] FlyWheel Power ", artifactControl.getFlyWheelPower(0,0,false,false));
             telemetrys.addData("[Artifact] Default FlyWheel Power ", artifactControl.defaultFlyWheelPower);
             telemetrys.addData("[Artifact] Pattern ", artifactControl.artifactPattern);
-
+            telemetrys.addData("[Artifact] Left FlyWheel Speed ", artifactControl.leftFlyWheelSpeed);
+            telemetrys.addData("[Artifact] Right FlyWheel Speed ", artifactControl.rightFlyWheelSpeed);
             telemetrys.update();
         }
     }
