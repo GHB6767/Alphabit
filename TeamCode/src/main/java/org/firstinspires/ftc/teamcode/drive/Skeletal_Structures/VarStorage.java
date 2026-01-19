@@ -10,6 +10,7 @@ public class VarStorage {
     public static double leftTurret_initPosition = 0.5;
     public static double rightTurret_initPosition = 0.5;
     public static double angleTurret_initPosition = 0.9;
+    public static double angleTurret_manualPosition = 0.7;
 
     public static double min_leftturret_position = 0;
     public static double min_rightturret_position = 0;

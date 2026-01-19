@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.Structure;
 
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_manualPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
@@ -40,7 +41,6 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VoltageReader;
 
 public class ArtifactControl {
     Gamepad gamepad2;
@@ -48,7 +48,6 @@ public class ArtifactControl {
     MultipleTelemetry telemetry;
     GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
     SampleMecanumDrive drive;
-    VoltageReader voltageReader;
 
     DcMotorEx Intake_LeftMotor;
     DcMotorEx Intake_RightMotor;
@@ -82,7 +81,6 @@ public class ArtifactControl {
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
         gyroscope.gyroscope_init(hwdmap);
-        voltageReader = new VoltageReader(hwdmap);
 
         if(VarStorage.artifacts_pattern != 0){
             switch(VarStorage.artifacts_pattern){
@@ -176,6 +174,7 @@ public class ArtifactControl {
     boolean flyToggle = false;
     boolean toggleS = false;
     boolean oneTimeRumble = false;
+    boolean firstTimeManual = false;
 
     public void initServo(){
         AngleTurret.setPosition(angleTurret_initPosition);
@@ -193,6 +192,14 @@ public class ArtifactControl {
         return aprilTagIdentification.getPatternId();
     }
 
+    public void manualModeInit(){
+        LeftTurret.setPosition(leftTurret_initPosition);
+        RightTurret.setPosition(rightTurret_initPosition);
+        AngleTurret.setPosition(angleTurret_manualPosition);
+
+        defaultFlyWheelPower = 1.0;
+    }
+
     public void Run(){
         updateAprilTag();
         drive.update();
@@ -205,6 +212,13 @@ public class ArtifactControl {
 
         leftFlyWheelSpeed = Outtake_LeftMotor.getVelocity();
         rightFlyWheelSpeed = Outtake_RightMotor.getVelocity();
+
+        if(!firstTimeManual && manualControl){
+            manualModeInit();
+            firstTimeManual = true;
+        }else if(firstTimeManual && !manualControl){
+            firstTimeManual = false;
+        }
 
         if(!manualControl) {
             basketDistance = getBasketDistance(0,0,false,false);
@@ -309,11 +323,11 @@ public class ArtifactControl {
 
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower){
         if(useCustomPower) {
-            Outtake_LeftMotor.setPower(customFlyWheelPower * voltageReader.getCompensation());
-            Outtake_RightMotor.setPower(customFlyWheelPower * voltageReader.getCompensation());
+            Outtake_LeftMotor.setPower(customFlyWheelPower);
+            Outtake_RightMotor.setPower(customFlyWheelPower);
         }else{
-            Outtake_LeftMotor.setPower(defaultFlyWheelPower * voltageReader.getCompensation());
-            Outtake_RightMotor.setPower(defaultFlyWheelPower * voltageReader.getCompensation());
+            Outtake_LeftMotor.setPower(defaultFlyWheelPower);
+            Outtake_RightMotor.setPower(defaultFlyWheelPower); //.setVelocity(defaultFlyWheelPower*targetFlyWheelSpeed)
         }
 
         if(wantsToThrowArtifacts && ((Outtake_LeftMotor.getVelocity() > targetFlyWheelSpeed) || (Outtake_RightMotor.getVelocity() > targetFlyWheelSpeed)) && !manualControl) {

@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VoltageReader;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
 
