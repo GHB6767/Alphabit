@@ -60,6 +60,11 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Pattern ", artifactControl.artifactPattern);
             telemetrys.addData("[Artifact] Left FlyWheel Speed ", artifactControl.leftFlyWheelSpeed);
             telemetrys.addData("[Artifact] Right FlyWheel Speed ", artifactControl.rightFlyWheelSpeed);
+            telemetrys.addData("[Artifact] Burst counter ", artifactControl.burstCounter);
+            telemetrys.addData("[Artifact] WantsToThrowArtifacts ", artifactControl.wantsToThrowArtifacts);
+            telemetrys.addData("[Artifact] Force Activate Intake Counter ", artifactControl.forceActivationOfIntake_counter);
+            telemetrys.addData("[Artifact] PushArtifact ", artifactControl.pushArtifact);
+
             telemetrys.update();
         }
     }

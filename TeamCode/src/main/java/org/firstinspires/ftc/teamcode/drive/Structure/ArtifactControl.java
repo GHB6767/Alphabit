@@ -171,7 +171,7 @@ public class ArtifactControl {
     boolean manualResetPoseToggle = false;
     public boolean artifact_status_blocked = false;
     public boolean manualControl = true;
-    boolean wantsToThrowArtifacts = false;
+    public boolean wantsToThrowArtifacts = false;
 
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
@@ -187,10 +187,10 @@ public class ArtifactControl {
     boolean oneTimeBurst = false;
     boolean intakeRunning = false;
     boolean pushArtifactToggle = false;
-    boolean pushArtifact = false;
+    public boolean pushArtifact = false;
 
-    int burstCounter = 0;
-    int forceActivationOfIntake_counter = 0;
+    public int burstCounter = 0;
+    public int forceActivationOfIntake_counter = 0;
 
     public void initServo(){
         AngleTurret.setPosition(angleTurret_initPosition);
