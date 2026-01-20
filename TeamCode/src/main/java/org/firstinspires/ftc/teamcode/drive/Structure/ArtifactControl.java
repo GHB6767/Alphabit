@@ -281,6 +281,8 @@ public class ArtifactControl {
             stopIntakeOuttake();
             wantsToThrowArtifacts = false;
             oneTimeBurst = false;
+            intakeRunning = false;
+            forceActivationOfIntake_counter = 0;
             burstCounter = 0;
             PushArtifactServo.setPosition(pushArtifact_retract_position);
             pushArtifact = false;
