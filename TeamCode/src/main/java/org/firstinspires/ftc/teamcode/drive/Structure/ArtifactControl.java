@@ -517,9 +517,9 @@ public class ArtifactControl {
 
     public void manuallyResetPose(){
         if(isRedAlliance) {
-            drive.setPoseEstimate(new Pose2d(-9, 9, Math.toRadians(90)));
+            drive.setPoseEstimate(new Pose2d(-57, 45, Math.toRadians(126.5)));
         }else{
-            drive.setPoseEstimate(new Pose2d(-9, 9, Math.toRadians(-90)));
+            drive.setPoseEstimate(new Pose2d(-57, -43, Math.toRadians(-126.5)));
         }
     }
 

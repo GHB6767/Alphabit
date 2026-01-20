@@ -10,6 +10,7 @@ public class GyroscopeBHIMU {
     IMU imu;
 
     double customHeadingAngle = 0;
+    double angleOffset = 0.00;
     public void gyroscope_init(HardwareMap hwdmap) {
         imu = hwdmap.get(IMU.class, "imu");
 
@@ -21,11 +22,17 @@ public class GyroscopeBHIMU {
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
 
+    public void setAngleOffset(double angle){
+        angleOffset = angle;
+    }
+
     public double getHeading(){
-        customHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        customHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + angleOffset;
+
         if(customHeadingAngle < 0){
             customHeadingAngle = 360 - Math.abs(customHeadingAngle);
         }
+
         return customHeadingAngle;
     }
 
