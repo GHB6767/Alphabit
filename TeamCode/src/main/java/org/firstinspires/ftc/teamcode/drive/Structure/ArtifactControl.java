@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.Structure;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_manualPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeMaxIdleRunTime;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeRunTime;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
@@ -10,6 +11,8 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_FlyWheelPower;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_TurretAngleDistance;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_FlyWheelPower;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_push_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_retract_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.rightTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_leftturret_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_rightturret_position;
@@ -59,6 +62,7 @@ public class ArtifactControl {
     Servo RightTurret;
     Servo AngleTurret;
     Servo BlockArtifact;
+    Servo PushArtifactServo;
 
     Pose2d endPose_RedBasket = new Pose2d(-20, 25, Math.toRadians(90));
     Pose2d endPose_BlueBasket = new Pose2d(-20, -25, Math.toRadians(-90));
@@ -145,6 +149,8 @@ public class ArtifactControl {
         AngleTurret = hwdmap.get(Servo.class,"AngleTurret");
 
         BlockArtifact = hwdmap.get(Servo.class,"BlockArtifact");
+
+        PushArtifactServo = hwdmap.get(Servo.class, "PushLastArtifact");
     }
 
     public double current_rightturret_position= rightTurret_initPosition;
@@ -180,7 +186,8 @@ public class ArtifactControl {
     boolean artifactToggle = false;
     boolean oneTimeBurst = false;
     boolean intakeRunning = false;
-    boolean oneCallToggle = false;
+    boolean pushArtifactToggle = false;
+    boolean pushArtifact = false;
 
     int burstCounter = 0;
     int forceActivationOfIntake_counter = 0;
@@ -189,8 +196,10 @@ public class ArtifactControl {
         AngleTurret.setPosition(angleTurret_initPosition);
         LeftTurret.setPosition(leftTurret_initPosition);
         RightTurret.setPosition(rightTurret_initPosition);
+        PushArtifactServo.setPosition(pushArtifact_retract_position);
 
         gyroscope.resetHeading();
+        pushArtifact = false;
     }
 
     public void updateAprilTag(){
@@ -205,8 +214,10 @@ public class ArtifactControl {
         LeftTurret.setPosition(leftTurret_initPosition);
         RightTurret.setPosition(rightTurret_initPosition);
         AngleTurret.setPosition(angleTurret_manualPosition);
+        PushArtifactServo.setPosition(pushArtifact_retract_position);
 
         defaultFlyWheelPower = 1.0;
+        pushArtifact = false;
     }
 
     public void Run(){
@@ -267,6 +278,23 @@ public class ArtifactControl {
             wantsToThrowArtifacts = false;
             oneTimeBurst = false;
             burstCounter = 0;
+            PushArtifactServo.setPosition(pushArtifact_retract_position);
+            pushArtifact = false;
+        }
+
+        if(gamepad2.x && manualControl){
+            if(!pushArtifactToggle){
+                if(!pushArtifact){
+                    PushArtifactServo.setPosition(pushArtifact_push_position);
+                    pushArtifact = true;
+                }else{
+                    PushArtifactServo.setPosition(pushArtifact_retract_position);
+                    pushArtifact = false;
+                }
+                pushArtifactToggle = true;
+            }
+        }else{
+            pushArtifactToggle = false;
         }
 
         if (gamepad2.left_bumper && current_leftturret_position < min_leftturret_position && current_rightturret_position < min_rightturret_position && manualControl) {
@@ -340,6 +368,7 @@ public class ArtifactControl {
 
     public void getArtifacts(){
         BlockArtifact.setPosition(artifact_block_position);
+        PushArtifactServo.setPosition(pushArtifact_retract_position);
         Intake_LeftMotor.setPower(1);
         Intake_RightMotor.setPower(1);
         artifact_status_blocked = true;
@@ -379,11 +408,28 @@ public class ArtifactControl {
                 intakeRunning = true;
             }
 
-            if(timer.milliseconds() < intakeRunTime && intakeRunning){
+            if(burstCounter == 2 && intakeRunning && timer.milliseconds() < intakeMaxIdleRunTime){
                 BlockArtifact.setPosition(artifact_unblock_position);
                 Intake_LeftMotor.setPower(1);
                 Intake_RightMotor.setPower(1);
-            }else{
+                PushArtifactServo.setPosition(pushArtifact_push_position);
+            }else if(burstCounter == 2 && intakeRunning && timer.milliseconds() > intakeMaxIdleRunTime){
+                Intake_LeftMotor.setPower(0);
+                Intake_RightMotor.setPower(0);
+                BlockArtifact.setPosition(artifact_block_position);
+                PushArtifactServo.setPosition(pushArtifact_retract_position);
+                artifact_status_blocked = true;
+                if(intakeRunning) {
+                    burstCounter = burstCounter + 1;
+                    intakeRunning = false;
+                }
+            }
+
+            if(timer.milliseconds() < intakeRunTime && intakeRunning && burstCounter < 2){
+                BlockArtifact.setPosition(artifact_unblock_position);
+                Intake_LeftMotor.setPower(1);
+                Intake_RightMotor.setPower(1);
+            }else if(timer.milliseconds() > intakeRunTime && intakeRunning && burstCounter < 2){
                 Intake_LeftMotor.setPower(0);
                 Intake_RightMotor.setPower(0);
                 BlockArtifact.setPosition(artifact_block_position);

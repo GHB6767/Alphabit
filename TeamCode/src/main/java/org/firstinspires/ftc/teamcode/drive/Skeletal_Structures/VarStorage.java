@@ -22,6 +22,8 @@ public class VarStorage {
 
     public static double artifact_block_position = 0.9;
     public static double artifact_unblock_position = 1.0;
+    public static double pushArtifact_push_position = 1.0;
+    public static double pushArtifact_retract_position = 0.0;
 
     public static double x_red_basket_angleTurret = -50.0;
     public static double x_blue_basket_angleTurret = -50.0;
@@ -42,4 +44,5 @@ public class VarStorage {
     public static double verticalTurretDeadzone = 0.003;
     public static double targetFlyWheelSpeed = 1600.0;
     public static double intakeRunTime = 100.0;
+    public static double intakeMaxIdleRunTime = 1500.0;
 }
