@@ -383,10 +383,11 @@ public class ArtifactControl {
             Outtake_RightMotor.setPower(defaultFlyWheelPower);
         }
 
-        if(wantsToThrowArtifacts && !manualControl) {
+        if(wantsToThrowArtifacts && !manualControl && forceActivationOfIntake_counter < 3) {
             burstShootingArtifacts();
         }else if(forceActivationOfIntake_counter >= 3){
             BlockArtifact.setPosition(artifact_unblock_position);
+            PushArtifactServo.setPosition(pushArtifact_retract_position);
             Intake_LeftMotor.setPower(1);
             Intake_RightMotor.setPower(1);
             artifact_status_blocked = false;
@@ -394,6 +395,7 @@ public class ArtifactControl {
             forceActivationOfIntake_counter = 0;
         } else if(manualControl){
             BlockArtifact.setPosition(artifact_unblock_position);
+            PushArtifactServo.setPosition(pushArtifact_retract_position);
             Intake_LeftMotor.setPower(1);
             Intake_RightMotor.setPower(1);
             artifact_status_blocked = false;
