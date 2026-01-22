@@ -55,6 +55,7 @@ public class TeleOp_Decode extends LinearOpMode {
         waitForStart();
 
         artifactControl.initServo();
+        artifactControl.resetYaw();
         artifactControl.initRobotPose();
 
         while(opModeIsActive()){
