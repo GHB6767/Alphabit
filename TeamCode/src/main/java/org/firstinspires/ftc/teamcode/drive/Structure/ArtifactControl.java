@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.Structure;
 
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurretSafePosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_manualPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.defaultFlyWheelSafePower;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeMaxIdleRunTime;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeRunTime;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurretSafePosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.leftTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_FlyWheelDistance;
@@ -13,6 +15,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_FlyWheelPower;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_push_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_retract_position;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.rightTurretSafePosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.rightTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_leftturret_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_rightturret_position;
@@ -170,6 +173,7 @@ public class ArtifactControl {
     boolean intakeRunning = false;
     boolean pushArtifactToggle = false;
     public boolean pushArtifact = false;
+    public boolean universalFlyWheelToggle = false;
 
     public int burstCounter = 0;
     public int forceActivationOfIntake_counter = 0;
@@ -214,12 +218,12 @@ public class ArtifactControl {
     }
 
     public void manualModeInit(){
-        LeftTurret.setPosition(leftTurret_initPosition);
-        RightTurret.setPosition(rightTurret_initPosition);
-        AngleTurret.setPosition(angleTurret_manualPosition);
+        LeftTurret.setPosition(leftTurretSafePosition);
+        RightTurret.setPosition(rightTurretSafePosition);
+        AngleTurret.setPosition(angleTurretSafePosition);
         PushArtifactServo.setPosition(pushArtifact_retract_position);
 
-        defaultFlyWheelPower = 1.0;
+        defaultFlyWheelPower = defaultFlyWheelSafePower;
         pushArtifact = false;
     }
 
@@ -259,13 +263,20 @@ public class ArtifactControl {
             if(!artifactToggle) {
                 if (allowedToShoot && !manualControl) {
                     wantsToThrowArtifacts = true;
+                    universalFlyWheelToggle = true;
                     oneTimeBurst = false;
                     burstCounter = 0;
-                    timer.reset();
-                    throwArtifacts(getFlyWheelPower(0, 0, false, false), true);
+
+                    if(forceActivationOfIntake_counter == 0) {
+                        timer.reset();
+                    }
+
                     forceActivationOfIntake_counter = forceActivationOfIntake_counter + 1;
+
+                    throwArtifacts(getFlyWheelPower(0, 0, false, false), true, false);
                 } else if (manualControl) {
-                    throwArtifacts(0, false);
+                    universalFlyWheelToggle = true;
+                    throwArtifacts(0, false, false);
                 }
                 artifactToggle = true;
             }
@@ -274,7 +285,7 @@ public class ArtifactControl {
         }
 
         if(wantsToThrowArtifacts){
-            throwArtifacts(getFlyWheelPower(0,0,false,false), true);
+            throwArtifacts(getFlyWheelPower(0,0,false,false), true, false);
         }
 
         if(gamepad2.b){
@@ -381,16 +392,20 @@ public class ArtifactControl {
         pushArtifact = false;
     }
 
-    public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower){
-        if(useCustomPower) {
+    public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower, boolean autonomousMode){
+        if(useCustomPower && universalFlyWheelToggle) {
             Outtake_LeftMotor.setPower(customFlyWheelPower);
             Outtake_RightMotor.setPower(customFlyWheelPower);
-        }else{
+            universalFlyWheelToggle = false;
+        }else if(!useCustomPower && universalFlyWheelToggle){
             Outtake_LeftMotor.setPower(defaultFlyWheelPower);
             Outtake_RightMotor.setPower(defaultFlyWheelPower);
+            universalFlyWheelToggle = false;
         }
 
-        if(wantsToThrowArtifacts && !manualControl && forceActivationOfIntake_counter < 3) {
+        if(autonomousMode && wantsToThrowArtifacts){
+            burstShootingArtifacts();
+        }else if(wantsToThrowArtifacts && !manualControl && forceActivationOfIntake_counter < 3) {
             burstShootingArtifacts();
         }else if(forceActivationOfIntake_counter >= 3){
             BlockArtifact.setPosition(artifact_unblock_position);

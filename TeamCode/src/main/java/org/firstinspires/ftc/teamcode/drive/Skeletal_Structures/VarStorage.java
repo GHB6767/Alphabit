@@ -10,7 +10,6 @@ public class VarStorage {
     public static double leftTurret_initPosition = 0.5;
     public static double rightTurret_initPosition = 0.5;
     public static double angleTurret_initPosition = 0.9;
-    public static double angleTurret_manualPosition = 0.7;
 
     public static double min_leftturret_position = 0.0;
     public static double min_rightturret_position = 0.0;
@@ -22,8 +21,9 @@ public class VarStorage {
 
     public static double artifact_block_position = 0.9;
     public static double artifact_unblock_position = 1.0;
-    public static double pushArtifact_push_position = 1.0;
-    public static double pushArtifact_retract_position = 0.0;
+
+    public static double pushArtifact_push_position = 0.7;
+    public static double pushArtifact_retract_position = 1.0;
 
     public static double x_red_basket_angleTurret = -50.0;
     public static double x_blue_basket_angleTurret = -50.0;
@@ -34,7 +34,7 @@ public class VarStorage {
     public static double red_y_apriltag_position = 55.0;
     public static double blue_y_apriltag_position = -55.0;
 
-    public static double marginThreshold = 10.0;
+    public static double marginThreshold = 11.0;
     public static double turretServoPosToDegree = 1.0/300.0;
     public static double max_TurretAngleDistance = 130;
     public static double min_FlyWheelPower = 0.99;
@@ -42,8 +42,13 @@ public class VarStorage {
     public static double max_FlyWheelDistance = 130;
     public static double horizontalTurretDeadzone = 0.005;
     public static double verticalTurretDeadzone = 0.003;
-    public static double targetFlyWheelSpeed = 1700.0;
-    public static double intakeRunTime = 500.0;
+    public static double targetFlyWheelSpeed = 1850.0;
+    public static double intakeRunTime = 300.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;
+
+    public static double angleTurretSafePosition = 0.7;
+    public static double leftTurretSafePosition = 0.5;
+    public static double rightTurretSafePosition = 0.5;
+    public static double defaultFlyWheelSafePower = 1.0;
 }
