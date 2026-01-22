@@ -255,7 +255,9 @@ public class ArtifactControl {
         if(!manualControl) {
             basketDistance = getBasketDistance(0,0,false,false);
             areaOfThrowing();
-            updateShooter();
+            if(allowedToShoot) {
+                updateShooter();
+            }
         }
 
         if(gamepad2.a){
