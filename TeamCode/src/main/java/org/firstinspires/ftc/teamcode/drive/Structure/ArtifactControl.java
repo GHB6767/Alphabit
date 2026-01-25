@@ -148,7 +148,7 @@ public class ArtifactControl {
 
     public double current_rightturret_position= rightTurret_initPosition + rightDirectionManualTurretOffset;
     public double current_leftturret_position = leftTurret_initPosition + rightDirectionManualTurretOffset;
-    public double current_angleturret_position = angleTurret_initPosition;
+    public double current_angleturret_position = angleTurretSafePosition;
 
     public double headingAngle = 0.0;
     public double x_position = 0.0;
@@ -277,12 +277,18 @@ public class ArtifactControl {
                 getArtifacts();
                 artifactToggle = true;
             }
-        }else if(gamepad2.y){
+        }else if(gamepad2.dpad_up || gamepad2.dpad_right || gamepad2.dpad_down){
             if(!artifactToggle) {
                 if (allowedToShoot && !manualControl) {
                     wantsToThrowArtifacts = true;
                     oneTimeBurst = false;
-                    burstCounter = 0;
+                    if(gamepad2.dpad_up){
+                        burstCounter = 0;
+                    }else if(gamepad2.dpad_right){
+                        burstCounter = 1;
+                    }else if(gamepad2.dpad_down){
+                        burstCounter = 2;
+                    }
 
                     if(forceActivationOfIntake_counter == 0) {
                         timer.reset();
@@ -302,7 +308,7 @@ public class ArtifactControl {
                 }
                 artifactToggle = true;
             }
-        }else if(gamepad2.right_stick_button){
+        }else if(gamepad2.y){
             if(!artifactToggle) {
                 timer.reset();
                 pushBackArtifactsBackToggle = true;
@@ -374,7 +380,7 @@ public class ArtifactControl {
             toggleButton = false;
         }
 
-        if (gamepad2.dpad_up && current_angleturret_position > max_angleturret_position && manualControl) {
+        if (gamepad2.dpad_right && current_angleturret_position > max_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
