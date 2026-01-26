@@ -30,10 +30,6 @@ public class VarStorage {
     public static double y_red_basket_angleTurret = 48.0;
     public static double y_blue_basket_angleTurret = -48.0;
 
-    public static double x_apriltag_position = -58.0;
-    public static double red_y_apriltag_position = 55.0;
-    public static double blue_y_apriltag_position = -55.0;
-
     public static double marginThreshold = 11.0;
     public static double turretServoPosToDegree = 1.0/300.0;
     public static double max_TurretAngleAuto = 0.8;
