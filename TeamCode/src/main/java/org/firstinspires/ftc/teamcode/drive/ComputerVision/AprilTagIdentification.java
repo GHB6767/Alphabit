@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -21,7 +23,13 @@ public class AprilTagIdentification {
     VisionPortal visionPortal;
     MultipleTelemetry telemetry;
 
+    Position cameraPosition = new Position(DistanceUnit.INCH, 0, 0, 0, 0);
+    YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES, 0, -90, 0, 0);
+
     public int detectionId = 0;
+    public double robotPose_x = 0.0;
+    public double robotPose_y = 0.0;
+
     public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
         telemetry = telemetrys;
         aprilTagProcessor = new AprilTagProcessor.Builder()
@@ -30,6 +38,7 @@ public class AprilTagIdentification {
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                .setCameraPose(cameraPosition, cameraOrientation)
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -53,6 +62,19 @@ public class AprilTagIdentification {
         }
         return detectionId;
     }
+
+    public void getRobotPose(){
+        List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            if(detection.metadata != null){
+                if(detection.id == 20 || detection.id == 24){
+                    robotPose_x = detection.robotPose.getPosition().x;
+                    robotPose_y = detection.robotPose.getPosition().y;
+                }
+            }
+        }
+    }
+
     public void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
