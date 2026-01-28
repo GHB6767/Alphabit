@@ -701,7 +701,7 @@ public class ArtifactControl {
     public double getTurretAngle(){
         double angleToCm;
         double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        angleToCm = (basketDistance-4.25) * anglePerInch;
+        angleToCm = (basketDistance-15.55) * anglePerInch;
 
                 if(angleToCm > 0.55){
             angleToCm = 0.55;
@@ -714,9 +714,9 @@ public class ArtifactControl {
         double powerPerInch = Math.abs((max_FlyWheelPower-min_FlyWheelPower)/max_FlyWheelDistance);
         double distance;
         if(!useCustomPos) {
-            distance = basketDistance-4.25;
+            distance = basketDistance-15.55;
         }else{
-            distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-4.25;
+            distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-15.55;
         }
 
         double finalPower = min_FlyWheelPower + (distance * powerPerInch);
@@ -805,7 +805,7 @@ public class ArtifactControl {
         distanceToBasket = getBasketDistance(x_pos,y_pos,redAlliance,true);
 
         double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        double angleToCm = (distanceToBasket-4.25) * anglePerInch;
+        double angleToCm = (distanceToBasket-15.55) * anglePerInch;
 
         if(angleToCm > 0.7){
             angleToCm = 0.7;
