@@ -8,11 +8,11 @@ public class AutoStorage {
     public static double Basket_firstAngle = 46.5;
     public static double Basket_secondAngle = 48.0;
 
-    public static double Audience_firstAngle = 70.0;
-    public static double Audience_secondAngle = 69.0;
+    public static double Audience_firstAngle = 67.0;
+    public static double Audience_secondAngle = 71.0;
 
-    public static double Audience_firstAngleTurret = 0.20;
-    public static double Audience_secondAngleTurret = 0.20;
+    public static double Audience_firstAngleTurret = 0.23;
+    public static double Audience_secondAngleTurret = 0.25;
 
     // RED BASKET
 
@@ -53,46 +53,52 @@ public class AutoStorage {
     public static double BB_returnTunnel_X = 4.0;
     public static double BB_returnTunnel_Y = -25.0;
 
-    public static double BB_getFirstPattern_X = -10.5;
-    public static double BB_getFirstPattern_Y = -46.0;
+    public static double BB_getFirstPattern_X = -10.0;
+    public static double BB_getFirstPattern_Y = -53.0;
 
     public static double BB_lastShooting_X = -20.0;
     public static double BB_lastShooting_Y = -25.0;
 
     // RED AUDIENCE
 
-    public static double RA_preparePickup_X = 36.0;
+    public static double RA_preparePickup_X = 33.0;
     public static double RA_preparePickup_Y = 25.0;
 
-    public static double RA_getArtifact_X = 36.0;
+    public static double RA_getArtifact_X = 33.0;
     public static double RA_getArtifact_Y = 62.0;
 
     public static double RA_mainShooting_X = 59.0;
     public static double RA_mainShooting_Y = 20.0;
 
-    public static double RA_cyclePath_X = 59.0;
-    public static double RA_cyclePath_Y = 51.0;
+    public static double RA_cyclePath_X = 58.5;
+    public static double RA_cyclePath_Y = 58.5;
 
-    public static double RA_getCornerArtifact_X = 60.2;
-    public static double RA_getCornerArtifact_Y = 55.0;
+    public static double RA_getSecondCornerArtifact_X=63.0;
+    public static double RA_getSecondCornerArtifact_Y=63.0;
+
+    public static double RA_getCornerArtifact_X = 58.5;
+    public static double RA_getCornerArtifact_Y = 62.0;
 
 
     // BLUE AUDIENCE
 
-    public static double BA_preparePickup_X = 36.0;
+    public static double BA_preparePickup_X = 33.0;
     public static double BA_preparePickup_Y = -25.0;
 
-    public static double BA_getArtifact_X = 36.0;
+    public static double BA_getArtifact_X = 33.0;
     public static double BA_getArtifact_Y = -62.0;
 
     public static double BA_mainShooting_X = 59.0;
     public static double BA_mainShooting_Y = -20.0;
 
-    public static double BA_cyclePath_X = 59.0;
-    public static double BA_cyclePath_Y = -51.0;
+    public static double BA_cyclePath_X = 58.5;
+    public static double BA_cyclePath_Y = -58.5;
 
-    public static double BA_getCornerArtifact_X = 60.0;
-    public static double BA_getCornerArtifact_Y = -53.0;
+    public static double BA_getSecondCornerArtifact_X=63;
+    public static double BA_getSecondCornerArtifact_Y=-63.0;
+
+    public static double BA_getCornerArtifact_X = 58.5;
+    public static double BA_getCornerArtifact_Y = -62.0;
 
 
 }
