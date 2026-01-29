@@ -725,12 +725,12 @@ public class ArtifactControl {
     }
 
     public void dynamicTargetAngle(){
-        double positive_x_position = Math.abs(x_position + 62);
+        double positive_x_position = Math.abs(x_position + 61);
         double positive_y_position;
         if(isRedAlliance){
-            positive_y_position = Math.abs((y_position - 62));
+            positive_y_position = Math.abs((y_position - 61));
         }else{
-            positive_y_position = Math.abs((y_position + 62));
+            positive_y_position = Math.abs((y_position + 61));
         }
 
         double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));
