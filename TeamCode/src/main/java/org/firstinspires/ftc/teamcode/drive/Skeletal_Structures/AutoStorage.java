@@ -11,6 +11,9 @@ public class AutoStorage {
     public static double Audience_firstAngle = 67.0;
     public static double Audience_secondAngle = 71.0;
 
+    public static double redAudience_firstAngle = 64.5;
+    public static double redAudience_secondAngle = 69.5;
+
     public static double Audience_firstAngleTurret = 0.23;
     public static double Audience_secondAngleTurret = 0.25;
 
@@ -61,31 +64,31 @@ public class AutoStorage {
 
     // RED AUDIENCE
 
-    public static double RA_preparePickup_X = 33.0;
+    public static double RA_preparePickup_X = 31.5;
     public static double RA_preparePickup_Y = 25.0;
 
-    public static double RA_getArtifact_X = 33.0;
+    public static double RA_getArtifact_X = 31.5;
     public static double RA_getArtifact_Y = 62.0;
 
     public static double RA_mainShooting_X = 59.0;
     public static double RA_mainShooting_Y = 20.0;
 
-    public static double RA_cyclePath_X = 58.5;
+    public static double RA_cyclePath_X = 57.5;
     public static double RA_cyclePath_Y = 58.5;
 
-    public static double RA_getSecondCornerArtifact_X=63.0;
+    public static double RA_getSecondCornerArtifact_X=59.0;
     public static double RA_getSecondCornerArtifact_Y=63.0;
 
-    public static double RA_getCornerArtifact_X = 58.5;
+    public static double RA_getCornerArtifact_X = 57.5;
     public static double RA_getCornerArtifact_Y = 62.0;
 
 
     // BLUE AUDIENCE
 
-    public static double BA_preparePickup_X = 33.0;
+    public static double BA_preparePickup_X = 31.5;
     public static double BA_preparePickup_Y = -25.0;
 
-    public static double BA_getArtifact_X = 33.0;
+    public static double BA_getArtifact_X = 31.5;
     public static double BA_getArtifact_Y = -62.0;
 
     public static double BA_mainShooting_X = 59.0;

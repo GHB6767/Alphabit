@@ -41,10 +41,10 @@ public class VarStorage {
     public static double horizontalTurretDeadzone = 0.0015;
     public static double verticalTurretDeadzone = 0.0015;
     public static double targetFlyWheelSpeed = 2400.0;
-    public static double intakeRunTime = 350.0;
+    public static double intakeRunTime = 300.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;
-    public static double intakeRunTimeManual = 350.0;
+    public static double intakeRunTimeManual = 300.0;
 
     public static double angleTurretSafePosition = 0.4;
     public static double leftTurretSafePosition = 0.5;
@@ -60,5 +60,5 @@ public class VarStorage {
     public static double robotVelocityThreshold = 2.5;
     public static double robotAngularVelocityThreshold = 0.15;
     public static double minimumBasketDistance = 0.0;
-    public static double flyWheelAggressiveAcceleration = 0.1;
+    public static double flyWheelAggressiveAcceleration = 0.15;
 }

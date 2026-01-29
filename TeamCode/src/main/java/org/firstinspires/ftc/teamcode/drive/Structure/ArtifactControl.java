@@ -538,7 +538,7 @@ public class ArtifactControl {
     }
 
     public void setCustomTargetFlyWheelVelocity(double flyWheelPower){
-        currentTargetFlyWheelVelocity = (targetFlyWheelSpeed * flyWheelPower) - 125.0;
+        currentTargetFlyWheelVelocity = (targetFlyWheelSpeed * flyWheelPower) - 75.0;
     }
 
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower, boolean autonomousMode){
@@ -549,7 +549,7 @@ public class ArtifactControl {
                 Outtake_LeftMotor.setPower(customFlyWheelPower);
                 Outtake_RightMotor.setPower(customFlyWheelPower);
             }else{
-                if (customFlyWheelPower + flyWheelAggressiveAcceleration <= 1) {
+                if (customFlyWheelPower + flyWheelAggressiveAcceleration <= 1.0) {
                     Outtake_LeftMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
                     Outtake_RightMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
                 } else {
