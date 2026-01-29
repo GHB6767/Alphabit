@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.defaultFlyWheelPowerAuto;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.defaultFlyWheelSafePower;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.flyWheelAggressiveAcceleration;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeMaxIdleRunTime;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeRunTime;
@@ -548,9 +549,9 @@ public class ArtifactControl {
                 Outtake_LeftMotor.setPower(customFlyWheelPower);
                 Outtake_RightMotor.setPower(customFlyWheelPower);
             }else{
-                if (customFlyWheelPower + 0.1 <= 1) {
-                    Outtake_LeftMotor.setPower(customFlyWheelPower + 0.1);
-                    Outtake_RightMotor.setPower(customFlyWheelPower + 0.1);
+                if (customFlyWheelPower + flyWheelAggressiveAcceleration <= 1) {
+                    Outtake_LeftMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
+                    Outtake_RightMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
                 } else {
                     Outtake_LeftMotor.setPower(1.0);
                     Outtake_RightMotor.setPower(1.0);
@@ -912,14 +913,15 @@ public class ArtifactControl {
 
         distanceToBasket = getBasketDistance(x_pos,y_pos,redAlliance,true);
 
-        double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        double angleToCm = (distanceToBasket-minimumBasketDistance) * anglePerInch;
+        double angleTurretPosition;
 
-        if(angleToCm > 0.7){
-            angleToCm = 0.7;
+        angleTurretPosition = (0.0000207725 * (distanceToBasket*distanceToBasket)) - (0.00755001*distanceToBasket) + 0.865169;
+
+        if(angleTurretPosition > 0.75){
+            angleTurretPosition = 0.75;
+        }else if(angleTurretPosition < 0.25){
+            angleTurretPosition = 0.25;
         }
-
-        double angleTurretPosition = 0.9 - angleToCm;
 
         AngleTurret.setPosition(angleTurretPosition);
     }

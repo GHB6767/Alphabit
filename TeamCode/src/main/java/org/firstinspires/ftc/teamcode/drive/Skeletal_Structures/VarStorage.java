@@ -59,5 +59,6 @@ public class VarStorage {
     public static double turretServoThreshold = 0.5;
     public static double robotVelocityThreshold = 2.5;
     public static double robotAngularVelocityThreshold = 0.15;
-    public static double minimumBasketDistance = 0.0; //15.5
+    public static double minimumBasketDistance = 0.0;
+    public static double flyWheelAggressiveAcceleration = 0.1;
 }
