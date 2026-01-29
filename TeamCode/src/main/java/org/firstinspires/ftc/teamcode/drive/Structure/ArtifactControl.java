@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.Structure;
 
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurretSafePosition;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.angleTurret_initPosition;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.defaultFlyWheelPowerAuto;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.defaultFlyWheelSafePower;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.horizontalTurretDeadzone;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.intakeMaxIdleRunTime;
@@ -17,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_TurretAngleDistance;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_FlyWheelPower;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.min_TurretAngleAuto;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.minimumBasketDistance;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_push_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_retract_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushBackTime;
@@ -173,11 +175,12 @@ public class ArtifactControl {
 
     public boolean allowedToShoot = false;
     boolean rotateToLeft = false;
-    public double defaultFlyWheelPower = 1.0;
+    public double defaultFlyWheelPower = defaultFlyWheelSafePower;
     double basketDistance = 0.0;
     public double robotVelocity = 0.0;
     public double robotAngleAprilTag = 0.0;
     public double robotAngularVelocity = 0.0;
+    public double currentTargetFlyWheelVelocity = targetFlyWheelSpeed;
 
     boolean flyToggle = false;
     boolean toggleS = false;
@@ -523,8 +526,8 @@ public class ArtifactControl {
     }
 
     public void getArtifacts(){
-        Outtake_RightMotor.setPower(-0.4);
-        Outtake_LeftMotor.setPower(-0.4);
+        Outtake_RightMotor.setPower(-0.5);
+        Outtake_LeftMotor.setPower(-0.5);
         BlockArtifact.setPosition(artifact_block_position);
         PushArtifactServo.setPosition(pushArtifact_retract_position);
         Intake_LeftMotor.setPower(1);
@@ -533,18 +536,42 @@ public class ArtifactControl {
         pushArtifact = false;
     }
 
+    public void setCustomTargetFlyWheelVelocity(double flyWheelPower){
+        currentTargetFlyWheelVelocity = (targetFlyWheelSpeed * flyWheelPower) - 125.0;
+    }
+
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower, boolean autonomousMode){
         if(useCustomPower) {
-            double finalFlyWheelPower = customFlyWheelPower;
-            if(burstCounter == 0 && !manualControl){
-                finalFlyWheelPower = customFlyWheelPower * reductionPercentage;
-            }
+            setCustomTargetFlyWheelVelocity(customFlyWheelPower);
 
-            Outtake_LeftMotor.setPower(finalFlyWheelPower);
-            Outtake_RightMotor.setPower(finalFlyWheelPower);
+            if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) {
+                Outtake_LeftMotor.setPower(customFlyWheelPower);
+                Outtake_RightMotor.setPower(customFlyWheelPower);
+            }else{
+                if (customFlyWheelPower + 0.1 <= 1) {
+                    Outtake_LeftMotor.setPower(customFlyWheelPower + 0.1);
+                    Outtake_RightMotor.setPower(customFlyWheelPower + 0.1);
+                } else {
+                    Outtake_LeftMotor.setPower(1.0);
+                    Outtake_RightMotor.setPower(1.0);
+                }
+            }
         }else{
-            Outtake_LeftMotor.setPower(defaultFlyWheelPower);
-            Outtake_RightMotor.setPower(defaultFlyWheelPower);
+            if(autonomousMode){
+                setCustomTargetFlyWheelVelocity(defaultFlyWheelPowerAuto);
+
+                if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) {
+                    Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto);
+                    Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto);
+                }else{
+                    Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto + 0.1);
+                    Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto + 0.1);
+                }
+            }else{
+                Outtake_LeftMotor.setPower(defaultFlyWheelPower);
+                Outtake_RightMotor.setPower(defaultFlyWheelPower);
+                setCustomTargetFlyWheelVelocity(defaultFlyWheelPower);
+            }
         }
 
         if(autonomousMode && wantsToThrowArtifacts){
@@ -604,7 +631,7 @@ public class ArtifactControl {
 
     public void burstShootingArtifacts(){
         if(burstCounter < 3) {
-            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > targetFlyWheelSpeed || Outtake_RightMotor.getVelocity() > targetFlyWheelSpeed) || timer.milliseconds() > timeoutTime) ){
+            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity) || timer.milliseconds() > timeoutTime) ){
                 timer.reset();
                 oneTimeBurst = true;
                 intakeRunning = true;
@@ -644,7 +671,7 @@ public class ArtifactControl {
                 }
             }
 
-            if(((Outtake_LeftMotor.getVelocity() > targetFlyWheelSpeed || Outtake_RightMotor.getVelocity() > targetFlyWheelSpeed) && !intakeRunning && oneTimeBurst && (timer.milliseconds() > intakeRunTime) && burstCounter < 3) || (timer.milliseconds() > timeoutTime)){
+            if(((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity) && !intakeRunning && oneTimeBurst && (timer.milliseconds() > intakeRunTime) && burstCounter < 3) || (timer.milliseconds() > timeoutTime)){
                 oneTimeBurst = false;
             }
 
@@ -780,10 +807,10 @@ public class ArtifactControl {
     public double getTurretAngle(){
         double angleToCm;
         double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        angleToCm = (basketDistance-15.55) * anglePerInch;
+        angleToCm = (basketDistance-minimumBasketDistance) * anglePerInch;
 
-                if(angleToCm > 0.55){
-            angleToCm = 0.55;
+        if(angleToCm > 0.5){
+            angleToCm = 0.5;
         }
 
         return angleToCm;
@@ -793,15 +820,15 @@ public class ArtifactControl {
         double powerPerInch = Math.abs((max_FlyWheelPower-min_FlyWheelPower)/max_FlyWheelDistance);
         double distance;
         if(!useCustomPos) {
-            distance = basketDistance-15.55;
+            distance = basketDistance-minimumBasketDistance;
         }else{
-            distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-15.55;
+            distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-minimumBasketDistance;
         }
 
         double finalPower = min_FlyWheelPower + (distance * powerPerInch);
 
-        if(finalPower > 1.0){
-            finalPower = 1.0;
+        if(finalPower > 0.87){
+            finalPower = 0.87;
         }
 
         return finalPower;
@@ -821,7 +848,7 @@ public class ArtifactControl {
 
     public void updateShooter() {
         double servoPos = getTurretPosition();
-        current_angleturret_position = 0.8 - getTurretAngle();
+        current_angleturret_position = 0.75 - getTurretAngle();
         if(rotateToLeft){
             if(((leftTurret_initPosition+servoPos) <= max_leftturret_position) && ((rightTurret_initPosition+servoPos) <= max_rightturret_position)) {
                 current_leftturret_position = leftTurret_initPosition + servoPos + leftDirectionAutoTurretOffset;
@@ -884,7 +911,7 @@ public class ArtifactControl {
         distanceToBasket = getBasketDistance(x_pos,y_pos,redAlliance,true);
 
         double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        double angleToCm = (distanceToBasket-15.55) * anglePerInch;
+        double angleToCm = (distanceToBasket-minimumBasketDistance) * anglePerInch;
 
         if(angleToCm > 0.7){
             angleToCm = 0.7;

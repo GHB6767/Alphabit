@@ -32,15 +32,15 @@ public class VarStorage {
 
     public static double marginThreshold = 11.0;
     public static double turretServoPosToDegree = 1.0/300.0;
-    public static double max_TurretAngleAuto = 0.8;
+    public static double max_TurretAngleAuto = 0.75;
     public static double min_TurretAngleAuto = 0.25;
-    public static double max_TurretAngleDistance = 140.0;
-    public static double min_FlyWheelPower = 0.46;
-    public static double max_FlyWheelPower = 1.0;
-    public static double max_FlyWheelDistance = 95.0;
+    public static double max_TurretAngleDistance = 124.0;
+    public static double min_FlyWheelPower = 0.6;
+    public static double max_FlyWheelPower = 0.87;
+    public static double max_FlyWheelDistance = 124.0;
     public static double horizontalTurretDeadzone = 0.0015;
     public static double verticalTurretDeadzone = 0.0015;
-    public static double targetFlyWheelSpeed = 1800.0;
+    public static double targetFlyWheelSpeed = 2400.0;
     public static double intakeRunTime = 350.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;
@@ -50,12 +50,14 @@ public class VarStorage {
     public static double leftTurretSafePosition = 0.5;
     public static double rightTurretSafePosition = 0.5;
     public static double defaultFlyWheelSafePower = 0.65;
+    public static double defaultFlyWheelPowerAuto = 0.85;
     public static double rightDirectionAutoTurretOffset = 0.035;
     public static double rightDirectionManualTurretOffset = 0.015;
     public static double leftDirectionAutoTurretOffset = 0.000;
     public static double reductionPercentage = 0.92;
     public static double pushBackTime = 70.0;
     public static double turretServoThreshold = 0.5;
-    public static double robotVelocityThreshold = 100.0;
-    public static double robotAngularVelocityThreshold = 100.0;
+    public static double robotVelocityThreshold = 2.5;
+    public static double robotAngularVelocityThreshold = 0.15;
+    public static double minimumBasketDistance = 0.0; //15.5
 }
