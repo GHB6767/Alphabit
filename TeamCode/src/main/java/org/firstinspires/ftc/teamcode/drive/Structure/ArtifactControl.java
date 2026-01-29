@@ -805,19 +805,19 @@ public class ArtifactControl {
     }
 
     public double getTurretAngle(){
-        double angleToCm;
-        double anglePerInch = Math.abs(((max_TurretAngleAuto-min_TurretAngleAuto)/max_TurretAngleDistance));
-        angleToCm = (basketDistance-minimumBasketDistance) * anglePerInch;
+        double angleTurretPosition;
 
-        if(angleToCm > 0.5){
-            angleToCm = 0.5;
+        angleTurretPosition = (0.0000207725 * (basketDistance*basketDistance)) - (0.00755001*basketDistance) + 0.865169;
+
+        if(angleTurretPosition > 0.75){
+            angleTurretPosition = 0.75;
+        }else if(angleTurretPosition < 0.25){
+            angleTurretPosition = 0.25;
         }
-
-        return angleToCm;
+        return angleTurretPosition;
     }
 
     public double getFlyWheelPower(double custom_x_pos, double custom_y_pos, boolean redAlliance, boolean useCustomPos){
-        double powerPerInch = Math.abs((max_FlyWheelPower-min_FlyWheelPower)/max_FlyWheelDistance);
         double distance;
         if(!useCustomPos) {
             distance = basketDistance-minimumBasketDistance;
@@ -825,13 +825,15 @@ public class ArtifactControl {
             distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-minimumBasketDistance;
         }
 
-        double finalPower = min_FlyWheelPower + (distance * powerPerInch);
+        double flyWheelPower = ((-3.15936e-7) * distance * distance * distance) + (0.000074273 * distance * distance) - (0.00230794 * distance) + 0.616381;
 
-        if(finalPower > 0.87){
-            finalPower = 0.87;
+        if(flyWheelPower > 0.87){
+            flyWheelPower = 0.87;
+        }else if(flyWheelPower < 0.6){
+            flyWheelPower = 0.6;
         }
 
-        return finalPower;
+        return flyWheelPower;
     }
 
     public void manuallyResetPose(){
@@ -848,7 +850,7 @@ public class ArtifactControl {
 
     public void updateShooter() {
         double servoPos = getTurretPosition();
-        current_angleturret_position = 0.75 - getTurretAngle();
+        current_angleturret_position = getTurretAngle();
         if(rotateToLeft){
             if(((leftTurret_initPosition+servoPos) <= max_leftturret_position) && ((rightTurret_initPosition+servoPos) <= max_rightturret_position)) {
                 current_leftturret_position = leftTurret_initPosition + servoPos + leftDirectionAutoTurretOffset;
