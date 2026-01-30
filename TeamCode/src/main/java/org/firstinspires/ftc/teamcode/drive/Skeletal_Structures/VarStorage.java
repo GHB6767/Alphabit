@@ -46,10 +46,10 @@ public class VarStorage {
     public static double timeoutTime = 2000.0;
     public static double intakeRunTimeManual = 350.0;
 
-    public static double angleTurretSafePosition = 0.4;
+    public static double angleTurretSafePosition = 0.45;
     public static double leftTurretSafePosition = 0.5;
     public static double rightTurretSafePosition = 0.5;
-    public static double defaultFlyWheelSafePower = 0.65;
+    public static double defaultFlyWheelSafePower = 0.7;
     public static double defaultFlyWheelPowerAuto = 0.85;
     public static double rightDirectionAutoTurretOffset = 0.035;
     public static double rightDirectionManualTurretOffset = 0.015;
