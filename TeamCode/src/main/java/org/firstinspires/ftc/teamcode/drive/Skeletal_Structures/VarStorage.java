@@ -54,9 +54,7 @@ public class VarStorage {
     public static double rightDirectionAutoTurretOffset = 0.035;
     public static double rightDirectionManualTurretOffset = 0.015;
     public static double leftDirectionAutoTurretOffset = 0.000;
-    public static double reductionPercentage = 0.92;
     public static double pushBackTime = 70.0;
-    public static double turretServoThreshold = 0.5;
     public static double robotVelocityThreshold = 2.5;
     public static double robotAngularVelocityThreshold = 0.15;
     public static double minimumBasketDistance = 0.0;

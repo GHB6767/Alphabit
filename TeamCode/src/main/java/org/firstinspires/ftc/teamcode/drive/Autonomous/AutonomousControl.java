@@ -4,8 +4,6 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStora
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Audience_firstAngleTurret;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Audience_secondAngle;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Audience_secondAngleTurret;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_cyclePath_X;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_cyclePath_Y;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getArtifact_X;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getArtifact_Y;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BA_getFirstAngleCornerArtifact_X;
@@ -28,8 +26,6 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStora
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.BB_startPickupMiddlePattern_Y;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_firstAngle;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_secondAngle;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_cyclePath_X;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_cyclePath_Y;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getArtifact_X;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getArtifact_Y;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.RA_getFirstAngleCornerArtifact_X;
@@ -57,13 +53,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 
