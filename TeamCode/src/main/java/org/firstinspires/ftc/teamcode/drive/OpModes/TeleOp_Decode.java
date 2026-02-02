@@ -92,7 +92,6 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] AprilTag Robot Pose Y ", artifactControl.calculatedRobotPose_Y);
             telemetrys.addData("[Artifact] AprilTag Robot Angle ", artifactControl.robotAngleAprilTag);
             telemetrys.addData("[Artifact] Robot Velocity ", artifactControl.robotVelocity);
-            telemetrys.addData("[Artifact] Robot Angular Velocity ", artifactControl.robotAngularVelocity);
             telemetrys.addData("[Artifact] Robot Stationary ", artifactControl.isRobotStationary);
             telemetrys.addData("[Artifact] Automated Pose Reset ", artifactControl.automatedRobotPoseReset);
             telemetrys.addData("[Artifact] Current Target FlyWheel Velocity ", artifactControl.currentTargetFlyWheelVelocity);
