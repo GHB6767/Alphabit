@@ -202,7 +202,7 @@ public class ArtifactControl {
         LeftTurret.setPosition(leftTurret_initPosition+rightDirectionManualTurretOffset);
         RightTurret.setPosition(rightTurret_initPosition+rightDirectionManualTurretOffset);
         PushArtifactServo.setPosition(pushArtifact_retract_position);
-        BlockArtifact.setPosition(artifact_unblock_position);
+        BlockArtifact.setPosition(artifact_block_position);
 
         pushArtifact = false;
     }
@@ -247,6 +247,7 @@ public class ArtifactControl {
         RightTurret.setPosition(rightTurretSafePosition+rightDirectionManualTurretOffset);
         AngleTurret.setPosition(angleTurretSafePosition);
         PushArtifactServo.setPosition(pushArtifact_retract_position);
+        BlockArtifact.setPosition(artifact_block_position);
 
         defaultFlyWheelPower = defaultFlyWheelSafePower;
         pushArtifact = false;
@@ -655,7 +656,6 @@ public class ArtifactControl {
             }else if(timer.milliseconds() > intakeRunTime && intakeRunning && burstCounter < 2){
                 Intake_LeftMotor.setPower(0);
                 Intake_RightMotor.setPower(0);
-                BlockArtifact.setPosition(artifact_block_position);
                 artifact_status_blocked = true;
                 if(intakeRunning) {
                     burstCounter = burstCounter + 1;
@@ -942,7 +942,7 @@ public class ArtifactControl {
         PushArtifactServo.setPosition(pushArtifact_retract_position);
 
         artifact_status_blocked = true;
-        BlockArtifact.setPosition(artifact_block_position);
+        BlockArtifact.setPosition(artifact_unblock_position);
 
         timer.reset();
     }
@@ -957,9 +957,6 @@ public class ArtifactControl {
 
         pushArtifact = false;
         PushArtifactServo.setPosition(pushArtifact_retract_position);
-
-        artifact_status_blocked = true;
-        BlockArtifact.setPosition(artifact_block_position);
 
         stopIntakeOuttake();
     }
