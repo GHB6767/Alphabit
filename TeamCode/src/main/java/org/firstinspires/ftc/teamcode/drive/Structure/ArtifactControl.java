@@ -40,7 +40,8 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_blue_basket_angleTurret;
 
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -49,17 +50,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class ArtifactControl {
     Gamepad gamepad2;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
     GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
-    SampleMecanumDrive drive;
+    Follower drive;
     public ElapsedTime timer = new ElapsedTime();
 
     DcMotorEx Intake_LeftMotor;
@@ -73,10 +74,10 @@ public class ArtifactControl {
     Servo BlockArtifact;
     Servo PushArtifactServo;
 
-    Pose2d endPose_RedBasket = new Pose2d(-20, 25, Math.toRadians(90));
-    Pose2d endPose_BlueBasket = new Pose2d(-20, -25, Math.toRadians(-90));
-    Pose2d endPose_RedAudience = new Pose2d(59, 20, Math.toRadians(90));
-    Pose2d endPose_BlueAudience = new Pose2d(59, -20, Math.toRadians(-90));
+    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
+    Pose endPose_BlueBasket = new Pose(-20, -25, Math.toRadians(-90));
+    Pose endPose_RedAudience = new Pose(59, 20, Math.toRadians(90));
+    Pose endPose_BlueAudience = new Pose(59, -20, Math.toRadians(-90));
 
     double targetAngle;
     public boolean isRedAlliance = false;
@@ -110,7 +111,7 @@ public class ArtifactControl {
             }
         }
 
-        drive = new SampleMecanumDrive(hwdmap);
+        drive = Constants.createFollower(hwdmap);
 
         Intake_LeftMotor = hwdmap.get(DcMotorEx.class, "Intake_LeftMotor");
         Intake_RightMotor = hwdmap.get(DcMotorEx.class, "Intake_RightMotor");
@@ -171,7 +172,6 @@ public class ArtifactControl {
     double basketDistance = 0.0;
     public double robotVelocity = 0.0;
     public double robotAngleAprilTag = 0.0;
-    public double robotAngularVelocity = 0.0;
     public double currentTargetFlyWheelVelocity = targetFlyWheelSpeed;
 
     boolean flyToggle = false;
@@ -214,22 +214,24 @@ public class ArtifactControl {
     public void initRobotPose(){
         switch(VarStorage.autonomous_case){
             case 0:
-                drive.setPoseEstimate(endPose_RedAudience);
+                drive.setStartingPose(endPose_RedAudience);
                 break;
             case 1:
-                drive.setPoseEstimate(endPose_BlueAudience);
+                drive.setStartingPose(endPose_BlueAudience);
                 break;
             case 2:
-                drive.setPoseEstimate(endPose_RedBasket);
+                drive.setStartingPose(endPose_RedBasket);
                 break;
             case 3:
-                drive.setPoseEstimate(endPose_BlueBasket);
+                drive.setStartingPose(endPose_BlueBasket);
                 break;
         }
 
         if(VarStorage.autonomous_case == 0 || VarStorage.autonomous_case == 2){
             isRedAlliance = true;
         }
+
+        drive.update();
     }
 
     public void updateArtifactPose(){ aprilTagIdentification.getArtifactPose();}
@@ -258,22 +260,14 @@ public class ArtifactControl {
         updateArtifactPose();
         drive.update();
 
-        Pose2d robotPose = drive.getPoseEstimate();
-        Pose2d robotPoseVelocity = drive.getPoseVelocity();
-
         headingAngle = gyroscope.getHeading();
-        x_position = robotPose.getX();
-        y_position = robotPose.getY();
+        x_position = drive.getPose().getX();
+        y_position = drive.getPose().getY();
 
-        if(robotPoseVelocity != null) {
-            robotVelocity = Math.abs(robotPoseVelocity.getX()) + Math.abs(robotPoseVelocity.getY());
-            robotAngularVelocity = Math.abs(robotPoseVelocity.getHeading());
+        robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
-            if(robotVelocity < robotVelocityThreshold && robotAngularVelocity < robotAngularVelocityThreshold){
-                isRobotStationary = true;
-            }else{
-                isRobotStationary = false;
-            }
+        if(robotVelocity < robotVelocityThreshold){
+            isRobotStationary = true;
         }else{
             isRobotStationary = false;
         }
@@ -492,19 +486,19 @@ public class ArtifactControl {
                             gyroscope.resetHeading();
                             if (isRedAlliance) {
                                 gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
-                                drive.setPoseEstimate(new Pose2d(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
+                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
                             } else {
                                 gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
-                                drive.setPoseEstimate(new Pose2d(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
+                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
                             }
                         } else if (robotAngleAprilTag < 0) {
                             gyroscope.resetHeading();
                             if (isRedAlliance) {
                                 gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
-                                drive.setPoseEstimate(new Pose2d(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
+                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
                             } else {
                                 gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
-                                drive.setPoseEstimate(new Pose2d(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
+                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
                             }
                         }
 
@@ -830,11 +824,11 @@ public class ArtifactControl {
 
     public void manuallyResetPose(){
         if(isRedAlliance) {
-            drive.setPoseEstimate(new Pose2d(-55.5, 43.5, Math.toRadians(126.5)));
+            drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5)));
             gyroscope.resetHeading();
             gyroscope.setAngleOffset(36.5);
         }else{
-            drive.setPoseEstimate(new Pose2d(-55.5, -43.5, Math.toRadians(-126.5)));
+            drive.setPose(new Pose(-55.5, -43.5, Math.toRadians(-126.5)));
             gyroscope.resetHeading();
             gyroscope.setAngleOffset(-36.5);
         }
