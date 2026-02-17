@@ -40,16 +40,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
  *
  * See the sensor's product page: https://www.gobilda.com/pinpoint-odometry-computer-imu-sensor-fusion-for-2-wheel-odometry/
  */
-//@TeleOp(name = "Sensor: GoBilda Pinpoint", group = "Sensor")
+@TeleOp(name = "Sensor: GoBilda Pinpoint", group = "Sensor")
 //@Disabled
 public class Pinpoint extends OpMode {
     // Create an instance of the sensor
     public GoBildaPinpointDriver pinpoint;
+    //public double getx;
+    //public double gety;
 
 
     public void setPosition(Pose2D pose2D){
         pinpoint.setPosition(pose2D);
     }
+
     public void gyroInit(HardwareMap hardwareMap){
         // Get a reference to the sensor
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
@@ -60,6 +63,7 @@ public class Pinpoint extends OpMode {
         // Set the location of the robot - this should be the place you are starting the robot from
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
         pinpoint.update();
+
     }
 
     @Override
@@ -86,9 +90,9 @@ public class Pinpoint extends OpMode {
         pinpoint.update();
         Pose2D pose2D = pinpoint.getPosition();
 
-        //telemetry.addData("X coordinate (IN)", pose2D.getX(DistanceUnit.INCH));
-        //telemetry.addData("Y coordinate (IN)", pose2D.getY(DistanceUnit.INCH));
-       // telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("X coordinate (IN)", pose2D.getX(DistanceUnit.MM));
+        telemetry.addData("Y coordinate (IN)", pose2D.getY(DistanceUnit.MM));
+        telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
     }
 
 
@@ -102,7 +106,7 @@ public class Pinpoint extends OpMode {
          *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
          *  Forward of center is a positive number, backwards is a negative number.
          */
-        pinpoint.setOffsets(-75, -156, DistanceUnit.MM);
+        pinpoint.setOffsets(-78, -165, DistanceUnit.MM);
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -113,7 +117,7 @@ public class Pinpoint extends OpMode {
          */
 
         //pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpoint.setEncoderResolution(37.26, DistanceUnit.MM);
+        pinpoint.setEncoderResolution(37.68, DistanceUnit.MM);
 
         /*
          * Set the direction that each of the two odometry pods count. The X (forward) pod should
@@ -150,6 +154,16 @@ public class Pinpoint extends OpMode {
 
     public void resetYaw() {
         pinpoint.setHeading(0, AngleUnit.RADIANS);
+    }
+
+    public double getx(){
+        Pose2D pose = pinpoint.getPosition();
+        return pose.getX(DistanceUnit.MM);
+    }
+
+    public double gety(){
+        Pose2D pose = pinpoint.getPosition();
+        return pose.getY(DistanceUnit.MM);
     }
 
 }

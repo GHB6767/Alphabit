@@ -18,7 +18,7 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
-    Pinpoint pp;
+    Pinpoint pp = new Pinpoint();
     int failSafeCase = 0;
     boolean toggleButton = false;
 
@@ -59,10 +59,13 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl.initServo();
         artifactControl.resetYaw();
         artifactControl.initRobotPose();
+        pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
             chasis_control.Run();
             artifactControl.Run();
+            pp.pinpoint.update();
+
 
             if(artifactControl.manualControl){
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
@@ -75,8 +78,8 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
 
-            telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.pinpoint.getPosX(DistanceUnit.MM));
-            telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.pinpoint.getPosY(DistanceUnit.MM));
+            telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
+            telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
 
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
