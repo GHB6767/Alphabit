@@ -64,8 +64,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -73,7 +75,8 @@ public class ArtifactControl {
     Gamepad gamepad2;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
-    GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
+    //GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
+    Pinpoint pinpoint = new Pinpoint();
     Follower drive;
     public ElapsedTime timer = new ElapsedTime();
 
@@ -114,7 +117,8 @@ public class ArtifactControl {
         gamepad2 = gmpd;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
-        gyroscope.gyroscope_init(hwdmap);
+        //gyroscope.gyroscope_init(hwdmap);
+        pinpoint.gyroInit(hwdmap);
 
         if(VarStorage.artifacts_pattern != 0){
             switch(VarStorage.artifacts_pattern){
@@ -248,7 +252,8 @@ public class ArtifactControl {
     }
 
     public void resetYaw(){
-        gyroscope.resetHeading();
+        //gyroscope.resetHeading();
+        pinpoint.resetYaw();
     }
 
     public void initRobotPose(){
@@ -296,9 +301,12 @@ public class ArtifactControl {
     }
 
     public void Run(){
+
         updateAprilTag();
         updateArtifactPose();
         drive.update();
+        pinpoint.pinpoint.update();
+
 
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
 
@@ -311,7 +319,9 @@ public class ArtifactControl {
         greenNorm = colors.green / colors.alpha;
         blueNorm = colors.blue / colors.alpha;
 
-        headingAngle = gyroscope.getHeading();
+        //headingAngle = gyroscope.getHeading();
+        headingAngle = pinpoint.getHeading();
+
         x_position = drive.getPose().getX();
         y_position = drive.getPose().getY();
 
@@ -540,21 +550,28 @@ public class ArtifactControl {
                         robotAngleAprilTag = aprilTagIdentification.bearingAngle;
 
                         if (robotAngleAprilTag >= 0) {
-                            gyroscope.resetHeading();
+                            //gyroscope.resetHeading();
+                            pinpoint.resetYaw();
                             if (isRedAlliance) {
-                                gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
+                                //gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
+                                pinpoint.setAngleOffset(36.5-robotAngleAprilTag);
                                 drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
                             } else {
-                                gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
+                                //gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
+                                pinpoint.setAngleOffset(-36.5 - robotAngleAprilTag);
                                 drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
                             }
                         } else if (robotAngleAprilTag < 0) {
-                            gyroscope.resetHeading();
+                            //gyroscope.resetHeading();
+                            pinpoint.resetYaw();
                             if (isRedAlliance) {
-                                gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
+                                //gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
+                                pinpoint.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
                                 drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
                             } else {
-                                gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
+                                //gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
+                                pinpoint.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
+
                                 drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
                             }
                         }
@@ -962,35 +979,56 @@ public class ArtifactControl {
     public void manuallyResetPose(){
         if(isRedAlliance) {
             drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5)));
-            gyroscope.resetHeading();
-            gyroscope.setAngleOffset(36.5);
+            //gyroscope.resetHeading();
+            pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5, 115.5, AngleUnit.DEGREES, 126.5));
+            pinpoint.resetYaw();
+            //gyroscope.setAngleOffset(36.5);
+            pinpoint.setAngleOffset(36.5);
         }else{
+            pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5,28.5, AngleUnit.DEGREES, -126.5));
             drive.setPose(new Pose(-55.5, -43.5, Math.toRadians(-126.5)));
-            gyroscope.resetHeading();
-            gyroscope.setAngleOffset(-36.5);
+            //gyroscope.resetHeading();
+            //gyroscope.setAngleOffset(-36.5);
+            pinpoint.resetYaw();
+            pinpoint.setAngleOffset(-36.5);
+
         }
     }
 
     public void manuallyExtraResetPose(boolean leftField){
         if(isRedAlliance) {
             if(leftField){
+                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 132.5,12.0, AngleUnit.DEGREES, 126.5));
                 drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
-                gyroscope.resetHeading();
-                gyroscope.setAngleOffset(-180.0);
+                //gyroscope.resetHeading();
+                //gyroscope.setAngleOffset(-180.0);
+                pinpoint.resetYaw();
+                pinpoint.setAngleOffset(-180.0);
             }else{
                 drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
-                gyroscope.resetHeading();
-                gyroscope.setAngleOffset(0.0);
+                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
+                //gyroscope.resetHeading();
+                //gyroscope.setAngleOffset(0.0);
+                pinpoint.resetYaw();
+                pinpoint.setAngleOffset(0.0);
             }
         }else{
             if(leftField){
                 drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
-                gyroscope.resetHeading();
-                gyroscope.setAngleOffset(0.0);
+                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,12.0,AngleUnit.DEGREES,126.5));
+
+                //gyroscope.resetHeading();
+                //gyroscope.setAngleOffset(0.0);
+                pinpoint.resetYaw();
+                pinpoint.setAngleOffset(0.0);
             }else{
                 drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
-                gyroscope.resetHeading();
-                gyroscope.setAngleOffset(-180.0);
+                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
+
+                //gyroscope.resetHeading();
+                //gyroscope.setAngleOffset(-180.0);
+                pinpoint.resetYaw();
+                pinpoint.setAngleOffset(-180.0);
             }
         }
     }

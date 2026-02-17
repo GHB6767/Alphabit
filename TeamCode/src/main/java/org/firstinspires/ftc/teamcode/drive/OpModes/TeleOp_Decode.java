@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
@@ -16,7 +18,7 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
-
+    Pinpoint pp;
     int failSafeCase = 0;
     boolean toggleButton = false;
 
@@ -72,6 +74,10 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Angle Turret Position ", artifactControl.current_angleturret_position);
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
+
+            telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.pinpoint.getPosX(DistanceUnit.MM));
+            telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.pinpoint.getPosY(DistanceUnit.MM));
+
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
             telemetrys.addData("[Artifact] allowedToShoot ", artifactControl.allowedToShoot);

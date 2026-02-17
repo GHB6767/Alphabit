@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -9,17 +11,27 @@ import com.pedropathing.ftc.localization.Encoder;
 import com.pedropathing.ftc.localization.constants.TwoWheelConstants;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+
 @Config
 public class Constants {
-    public static double forwardMultiplier = -0.00112149;
-    public static double strafeMultiplier = 0.00112149;
+    public static double forwardMultiplier = -0.0010602235610886;
+    public static double strafeMultiplier = 0.0010602235610886;
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(11.5);
+            .mass(11.5)
+            .forwardZeroPowerAcceleration(-57.31167)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.012, 0.009))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.65, 0, 0.2, 0.005))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.035,0.0,0.005,0.6,0.05))
+            .centripetalScaling(0.000515);
+
+
 
     public static MecanumConstants driveConstants = new MecanumConstants()
+
             .maxPower(1)
             .rightFrontMotorName("Front_Right")
             .rightRearMotorName("Back_Right")
@@ -28,7 +40,11 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .xVelocity(72.88502)
+            .yVelocity(66.2029);
+
+
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
             .forwardEncoder_HardwareMapName("Back_Left")
