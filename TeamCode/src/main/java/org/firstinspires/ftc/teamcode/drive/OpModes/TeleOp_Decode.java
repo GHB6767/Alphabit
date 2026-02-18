@@ -6,11 +6,13 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.apache.commons.math3.analysis.function.Constant;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 //FTC Decode 2026 TeleOp_Decode
 @TeleOp
@@ -29,7 +31,7 @@ public class TeleOp_Decode extends LinearOpMode {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
-
+        follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
             if(gamepad1.dpad_left){
                 if(!toggleButton) {
@@ -80,7 +82,7 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
 
-            telemetrys.addData("[Artifact] Robot Pose ",follower.getPose());
+            telemetrys.addData("[Pedropathing] Robot Pose ",follower.getPose());
 
             telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
             telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());

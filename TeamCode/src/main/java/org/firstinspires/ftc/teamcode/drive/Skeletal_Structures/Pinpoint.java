@@ -90,8 +90,8 @@ public class Pinpoint extends OpMode {
         pinpoint.update();
         Pose2D pose2D = pinpoint.getPosition();
 
-        telemetry.addData("X coordinate (IN)", pose2D.getX(DistanceUnit.MM));
-        telemetry.addData("Y coordinate (IN)", pose2D.getY(DistanceUnit.MM));
+        telemetry.addData("X coordinate (MM)", pose2D.getX(DistanceUnit.MM));
+        telemetry.addData("Y coordinate (MM)", pose2D.getY(DistanceUnit.MM));
         telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
     }
 
@@ -117,7 +117,7 @@ public class Pinpoint extends OpMode {
          */
 
         //pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpoint.setEncoderResolution(37.68, DistanceUnit.MM);
+        pinpoint.setEncoderResolution(37.25, DistanceUnit.MM);
 
         /*
          * Set the direction that each of the two odometry pods count. The X (forward) pod should
