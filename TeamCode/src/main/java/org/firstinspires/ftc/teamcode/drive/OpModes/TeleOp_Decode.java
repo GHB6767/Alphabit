@@ -69,7 +69,7 @@ public class TeleOp_Decode extends LinearOpMode {
             chasis_control.Run();
             artifactControl.Run();
             pp.pinpoint.update();
-
+            follower.update();
 
             if(artifactControl.manualControl){
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
@@ -82,7 +82,11 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
 
-            telemetrys.addData("[Pedropathing] Robot Pose ",follower.getPose());
+            telemetrys.addData("[Pedropathing] Robot Pose X", follower.getPose().getX());
+            telemetrys.addData("[Pedropathing] Robot Pose Y",follower.getPose().getY());
+
+            telemetrys.addData("[Camera] camera position X", artifactControl.calculatedRobotPose_X);
+            telemetrys.addData("[Camera] camera position Y", artifactControl.calculatedRobotPose_Y);
 
             telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
             telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
