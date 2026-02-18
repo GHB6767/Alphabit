@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 //FTC Decode 2026 TeleOp_Decode
 @TeleOp
@@ -19,6 +21,7 @@ public class TeleOp_Decode extends LinearOpMode {
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
     Pinpoint pp = new Pinpoint();
+    Follower follower;
     int failSafeCase = 0;
     boolean toggleButton = false;
 
@@ -27,6 +30,7 @@ public class TeleOp_Decode extends LinearOpMode {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
+        follower = Constants.createFollower(hardwareMap);
 
         while(opModeInInit()){
             if(gamepad1.dpad_left){
@@ -61,6 +65,7 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl.initRobotPose();
         pp.gyroInit(hardwareMap);
 
+
         while(opModeIsActive()){
             chasis_control.Run();
             artifactControl.Run();
@@ -77,6 +82,8 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Angle Turret Position ", artifactControl.current_angleturret_position);
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
+
+            telemetrys.addData("Robot pose", follower.getPose());
 
             telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
             telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
