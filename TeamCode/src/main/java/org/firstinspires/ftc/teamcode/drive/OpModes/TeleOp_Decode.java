@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -19,6 +20,7 @@ public class TeleOp_Decode extends LinearOpMode {
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
     Pinpoint pp = new Pinpoint();
+    Follower follower;
     int failSafeCase = 0;
     boolean toggleButton = false;
 
@@ -77,6 +79,8 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Angle Turret Position ", artifactControl.current_angleturret_position);
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
+
+            telemetrys.addData("[Artifact] Robot Pose ",follower.getPose());
 
             telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
             telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
