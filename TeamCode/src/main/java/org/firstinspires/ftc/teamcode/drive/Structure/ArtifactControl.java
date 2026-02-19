@@ -77,7 +77,7 @@ public class ArtifactControl {
     MultipleTelemetry telemetry;
     //GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
     Pinpoint pinpoint = new Pinpoint();
-    Follower drive;
+    public Follower drive;
     public ElapsedTime timer = new ElapsedTime();
 
     DcMotorEx Intake_LeftMotor;
@@ -181,8 +181,8 @@ public class ArtifactControl {
     public double headingAngle = 0.0;
     public double x_position = 0.0;
     public double y_position = 0.0;
-    double rrXPosition = 0.0;
-    double rrYPosition = 0.0;
+    public double rrXPosition = 0.0;
+    public double rrYPosition = 0.0;
     double lastLeftTurretPos = 2.0;
     double lastRightTurretPos = 2.0;
     double lastVerticalPos = 2.0;

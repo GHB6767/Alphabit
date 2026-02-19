@@ -55,7 +55,7 @@ public class Constants {
             .hardwareMapName("pinpoint")
             .customEncoderResolution(946.15)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
 //    public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
 //            .forwardEncoder_HardwareMapName("Back_Left")

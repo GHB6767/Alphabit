@@ -90,8 +90,8 @@ public class Pinpoint extends OpMode {
         pinpoint.update();
         Pose2D pose2D = pinpoint.getPosition();
 
-        telemetry.addData("X coordinate (MM)", pose2D.getX(DistanceUnit.MM));
-        telemetry.addData("Y coordinate (MM)", pose2D.getY(DistanceUnit.MM));
+        telemetry.addData("X coordinate (IN)", pose2D.getX(DistanceUnit.INCH));
+        telemetry.addData("Y coordinate (IN)", pose2D.getY(DistanceUnit.INCH));
         telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
     }
 
@@ -125,7 +125,7 @@ public class Pinpoint extends OpMode {
          * you move the robot to the left.
          */
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
         /*
          * Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
@@ -158,12 +158,12 @@ public class Pinpoint extends OpMode {
 
     public double getx(){
         Pose2D pose = pinpoint.getPosition();
-        return pose.getX(DistanceUnit.MM);
+        return pose.getX(DistanceUnit.INCH);
     }
 
     public double gety(){
         Pose2D pose = pinpoint.getPosition();
-        return pose.getY(DistanceUnit.MM);
+            return pose.getY(DistanceUnit.INCH);
     }
 
 }
