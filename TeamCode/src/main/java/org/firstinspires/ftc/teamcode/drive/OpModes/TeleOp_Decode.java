@@ -6,6 +6,7 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.apache.commons.math3.analysis.function.Constant;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
@@ -31,7 +32,6 @@ public class TeleOp_Decode extends LinearOpMode {
         chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
         follower = Constants.createFollower(hardwareMap);
-
         while(opModeInInit()){
             if(gamepad1.dpad_left){
                 if(!toggleButton) {
@@ -65,12 +65,11 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl.initRobotPose();
         pp.gyroInit(hardwareMap);
 
-
         while(opModeIsActive()){
             chasis_control.Run();
             artifactControl.Run();
             pp.pinpoint.update();
-
+            follower.update();
 
             if(artifactControl.manualControl){
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
@@ -83,7 +82,11 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Block Position ", artifactControl.artifact_status_blocked);
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
 
-            telemetrys.addData("Robot pose", follower.getPose());
+            telemetrys.addData("[Pedropathing] Robot Pose X", follower.getPose().getX());
+            telemetrys.addData("[Pedropathing] Robot Pose Y",follower.getPose().getY());
+
+            telemetrys.addData("[Camera] camera position X", artifactControl.calculatedRobotPose_X);
+            telemetrys.addData("[Camera] camera position Y", artifactControl.calculatedRobotPose_Y);
 
             telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
             telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());

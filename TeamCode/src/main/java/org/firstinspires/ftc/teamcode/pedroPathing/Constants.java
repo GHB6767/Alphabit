@@ -33,15 +33,7 @@ public class Constants {
             .centripetalScaling(0.000515);
 
 
-    public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(3)
-            .strafePodX(6.5)
-            .distanceUnit(DistanceUnit.MM)
-            .hardwareMapName("pinpoint")
-            //.encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-            .customEncoderResolution(37.25)
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+
     public static MecanumConstants driveConstants = new MecanumConstants()
 
             .maxPower(1)
@@ -56,7 +48,14 @@ public class Constants {
             .xVelocity(72.88502)
             .yVelocity(66.2029);
 
-
+    public static PinpointConstants localizerConstants = new PinpointConstants()
+            .forwardPodY(76)
+            .strafePodX(165)
+            .distanceUnit(DistanceUnit.MM)
+            .hardwareMapName("pinpoint")
+            .customEncoderResolution(37.25)//counts per MM not IN may cause trouble if so change pod offsets to MM
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
 //    public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
 //            .forwardEncoder_HardwareMapName("Back_Left")
@@ -82,7 +81,5 @@ public class Constants {
                 .pinpointLocalizer(localizerConstants)
                 //.twoWheelLocalizer(localizerConstants)
                 .build();
-
-        // to go back to 2 wheelLocalizer coment out the pinpoint localizer and licalizer constants and uncoment the TwoWheelConstants and the one in createFollower
     }
 }

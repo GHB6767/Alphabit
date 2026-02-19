@@ -106,7 +106,7 @@ public class Pinpoint extends OpMode {
          *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
          *  Forward of center is a positive number, backwards is a negative number.
          */
-        pinpoint.setOffsets(76, -165, DistanceUnit.MM);
+        pinpoint.setOffsets(76, -156, DistanceUnit.MM);
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
