@@ -49,11 +49,11 @@ public class Constants {
             .yVelocity(66.2029);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(76)
-            .strafePodX(165)
-            .distanceUnit(DistanceUnit.MM)
+            .forwardPodY(3)
+            .strafePodX(6.5)
+            .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
-            .customEncoderResolution(37.25)//counts per MM not IN may cause trouble if so change pod offsets to MM
+            .customEncoderResolution(946.15)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
