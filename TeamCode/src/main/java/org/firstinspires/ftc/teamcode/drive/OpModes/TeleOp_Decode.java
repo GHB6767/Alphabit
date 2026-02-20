@@ -21,7 +21,7 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     ChasisControl chasis_control;
     ArtifactControl artifactControl;
-    Pinpoint pp = new Pinpoint();
+    //Pinpoint pp = new Pinpoint();
     //Follower follower;
     int failSafeCase = 0;
     boolean toggleButton = false;
@@ -63,12 +63,12 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl.initServo();
         artifactControl.resetYaw();
         artifactControl.initRobotPose();
-        pp.gyroInit(hardwareMap);
+        //pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
             chasis_control.Run();
             artifactControl.Run();
-            pp.pinpoint.update();
+            //pp.pinpoint.update();
             //follower.update();
 
             if(artifactControl.manualControl){
@@ -83,14 +83,14 @@ public class TeleOp_Decode extends LinearOpMode {
 
             telemetrys.addData("[Artifact] Current Heading Angle ", artifactControl.headingAngle);
 
-            telemetrys.addData("[Pedropathing] Robot Pose X", artifactControl.drive.getPose().getX());
-            telemetrys.addData("[Pedropathing] Robot Pose Y",artifactControl.drive.getPose().getY());
+            //telemetrys.addData("[Pedropathing] Robot Pose X", artifactControl.drive.getPose().getX());
+            //telemetrys.addData("[Pedropathing] Robot Pose Y",artifactControl.drive.getPose().getY());
 
             telemetrys.addData("[Artifact] [RR Pose X] ",artifactControl.rrXPosition);
             telemetrys.addData("[Artifact] [RR Pose Y] ",artifactControl.rrYPosition);
 
-            telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
-            telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
+            //telemetrys.addData("[Artifact] [Pinpoint] X Position: ", pp.getx());
+            //telemetrys.addData("[Artifact] [Pinpoint] Y Position: ", pp.gety());
 
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
