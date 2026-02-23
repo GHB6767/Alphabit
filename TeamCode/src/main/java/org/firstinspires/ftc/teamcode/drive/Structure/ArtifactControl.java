@@ -73,7 +73,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.opencv.core.Mat;
 
 public class ArtifactControl {
-    Gamepad gamepad2;
+    Gamepad gamepad2, gamepad1;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
     //GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
