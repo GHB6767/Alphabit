@@ -31,7 +31,7 @@ public class TeleOp_Decode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //chasis_control = new ChasisControl(hardwareMap, gamepad1);
-        artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
+        artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
         //follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
             if(gamepad1.dpad_left){

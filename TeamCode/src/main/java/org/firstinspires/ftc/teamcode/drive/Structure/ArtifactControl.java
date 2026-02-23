@@ -73,7 +73,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.opencv.core.Mat;
 
 public class ArtifactControl {
-    Gamepad gamepad2;
+    Gamepad gamepad2, gamepad1;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
     //GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
@@ -118,8 +118,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
     public fieldPattern artifactPattern = fieldPattern.UNKNOWN;
 
-    public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, MultipleTelemetry telemetrys){
+    public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, Gamepad gmpd2, MultipleTelemetry telemetrys){
         gamepad2 = gmpd;
+        gamepad1 = gmpd2;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
 
@@ -243,11 +244,20 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public boolean oneCheckPerArtifact = false;
     public boolean generalIntakeActivaton = false;
     public boolean robotAutoShootToggle = false;
-    public boolean robotAutoIntakeToggle = true;
+    public boolean robotAutoIntakeToggle = false; // pentru auto intake pui true la inceput
 
     public int burstCounter = 0;
     public int forceActivationOfIntake_counter = 0;
     public int artifactCounter = 0;
+
+    public boolean triggerPresed(float trigger){
+        if(trigger > 0.25){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     public void initServo(){
         AngleTurret.setPosition(angleTurretSafePosition);
@@ -315,9 +325,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
 
         drive.setTeleOpDrive(
-                -gamepad2.left_stick_y,
-                -gamepad2.left_stick_x,
-                -gamepad2.right_stick_x,
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
                 true
         );
 
@@ -391,12 +401,12 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             }
         }
 
-        if(gamepad2.a){
+        if(triggerPresed(gamepad2.right_trigger)){
             if(!artifactToggle) {
                 getArtifacts(false);
                 artifactToggle = true;
             }
-        }else if(gamepad2.dpad_up){
+        }else if(triggerPresed(gamepad2.left_trigger)){
             if(!artifactToggle) {
                 if (allowedToShoot && !manualControl) {
                     wantsToThrowArtifacts = true;
@@ -439,7 +449,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             throwArtifacts(getFlyWheelPower(0,0,false,false), true, false);
         }
 
-        if(gamepad2.b){
+        if(gamepad2.left_bumper || gamepad2.right_bumper){
             stopIntakeOuttake();
             wantsToThrowArtifacts = false;
             oneTimeBurst = false;
@@ -513,7 +523,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             flyToggle = false;
         }
 
-        if(gamepad2.left_trigger > 0.75 && gamepad2.right_trigger > 0.75){
+        if(gamepad2.y){
             if(!toggleS) {
                 manualControl = !manualControl;
                 toggleS = true;
@@ -527,17 +537,17 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 manuallyResetPose();
                 manualResetPoseToggle = true;
             }
-        }else if(gamepad2.dpad_left && !manualControl){
+        }else if(gamepad2.dpad_up && !manualControl){
             if(!manualResetPoseToggle) {
-                manuallyExtraResetPose(true);
-                manualResetPoseToggle = true;
+                if(isRedAlliance){
+                    manuallyExtraResetPose(false);
+                    manualResetPoseToggle = true;
+                }else{
+                    manuallyExtraResetPose(true);
+                    manualResetPoseToggle = true;
+                }
             }
-        }else if(gamepad2.dpad_right && !manualControl){
-            if(!manualResetPoseToggle) {
-                manuallyExtraResetPose(false);
-                manualResetPoseToggle = true;
-            }
-        } else{
+        }else{
             manualResetPoseToggle = false;
         }
 
@@ -549,7 +559,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
                 robotAngleAprilTag = aprilTagIdentification.bearingAngle;
 
-                robotAutoIntakeToggle = !robotAutoIntakeToggle;
+                //robotAutoIntakeToggle = !robotAutoIntakeToggle;
 
                 getPoseToggle = true;
             }
