@@ -97,10 +97,14 @@ public class ArtifactControl {
     Servo BlockArtifact;
     Servo PushArtifactServo;
 
-    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
-    Pose endPose_BlueBasket = new Pose(-20, -25, Math.toRadians(-90));
-    Pose endPose_RedAudience = new Pose(59, 20, Math.toRadians(90));
-    Pose endPose_BlueAudience = new Pose(59, -20, Math.toRadians(-90));
+//    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
+//    Pose endPose_BlueBasket = new Pose(-20, -25, Math.toRadians(-90));
+//    Pose endPose_RedAudience = new Pose(59, 20, Math.toRadians(90));
+//    Pose endPose_BlueAudience = new Pose(59, -20, Math.toRadians(-90));
+Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
+    Pose endPose_BlueBasket = new Pose(52, 47, Math.toRadians(-90));
+    Pose endPose_RedAudience = new Pose(131, 92, Math.toRadians(90));
+    Pose endPose_BlueAudience = new Pose(131, 52, Math.toRadians(-90));
 
     double targetAngle;
     public boolean isRedAlliance = false;
@@ -118,6 +122,7 @@ public class ArtifactControl {
         gamepad2 = gmpd;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
+
         //gyroscope.gyroscope_init(hwdmap);
         //pinpoint.gyroInit(hwdmap);
 
@@ -252,6 +257,8 @@ public class ArtifactControl {
         BlockArtifact.setPosition(artifact_block_position);
 
         pushArtifact = false;
+
+        drive.startTeleOpDrive(true);
     }
 
     public void resetYaw(){
@@ -306,10 +313,20 @@ public class ArtifactControl {
 
     public void Run(){
 
+
+        drive.setTeleOpDrive(
+                -gamepad2.left_stick_y,
+                -gamepad2.left_stick_x,
+                -gamepad2.right_stick_x,
+                true
+        );
+
+
         updateAprilTag();
         updateArtifactPose();
         drive.update();
         //pinpoint.pinpoint.update();
+
 
 
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
@@ -331,8 +348,10 @@ public class ArtifactControl {
         x_position = drive.getPose().getX();
         y_position = drive.getPose().getY();
 
-        rrXPosition = x_position - 72;
-        rrYPosition = y_position - 72;
+        //rrXPosition = x_position - 72;
+        //rrYPosition = y_position - 72;
+        rrXPosition = convertPedroToFTCCoordsX(y_position);
+        rrYPosition = convertPedroToFTCCoordsY(x_position);
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -843,6 +862,25 @@ public class ArtifactControl {
         Outtake_RightMotor.setPower(0);
     }
 
+    public double convertPedroToFTCCoordsX(double RRposX){
+        if(RRposX >= 72){
+            RRposX = -(RRposX - 72);
+        }else if(RRposX < 72){
+            RRposX = Math.abs(RRposX - 72);
+
+        }
+        return RRposX;
+    }
+
+    public double convertPedroToFTCCoordsY(double RRposY){
+        if(RRposY >= 72){
+            RRposY = Math.abs(RRposY - 72);
+        }else if(RRposY < 72){
+            RRposY = -(RRposY - 72);
+        }
+        return RRposY;
+    }
+
     public void areaOfThrowing(){
 
 
@@ -998,7 +1036,7 @@ public class ArtifactControl {
             //drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, 43.5, AngleUnit.DEGREES, 126.5));
 
-            drive.setPose(new Pose(16.5, 115.5, Math.toRadians(126.5)));
+            drive.setPose(new Pose(116.92, 132.14, Math.toRadians(36.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5, 115.5, AngleUnit.DEGREES, 126.5));
 
             //gyroscope.resetHeading();
@@ -1011,7 +1049,7 @@ public class ArtifactControl {
             //drive.setPose(new Pose(-55.5, -43.5, Math.toRadians(-126.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, -43.5, AngleUnit.DEGREES, -126.5));
 
-            drive.setPose(new Pose(16.5,28.5, Math.toRadians(-126.5)));
+            drive.setPose(new Pose(28.3,133.65, Math.toRadians(143.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5,28.5, AngleUnit.DEGREES, -126.5));
 
             //gyroscope.resetHeading();
@@ -1031,7 +1069,7 @@ public class ArtifactControl {
                 //drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 60.5, -60.0, AngleUnit.DEGREES, 126.5));
 
-                drive.setPose(new Pose(132.5,12.0, Math.toRadians(-90)));
+                drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 132.5,12.0, AngleUnit.DEGREES, 126.5));
 
                 //gyroscope.resetHeading();
@@ -1044,7 +1082,7 @@ public class ArtifactControl {
                 //drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, 60.0,AngleUnit.DEGREES,126.5));
 
-                drive.setPose(new Pose(132.5,132.0, Math.toRadians(90)));
+                drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
 
                 //gyroscope.resetHeading();
@@ -1060,7 +1098,7 @@ public class ArtifactControl {
                 //drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, -60.0,AngleUnit.DEGREES,126.5));
 
-                drive.setPose(new Pose(132.5,12.0, Math.toRadians(-90)));
+                drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,12.0,AngleUnit.DEGREES,126.5));
 
                 //gyroscope.resetHeading();
@@ -1073,7 +1111,7 @@ public class ArtifactControl {
                 //drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, 60.0,AngleUnit.DEGREES,126.5));
 
-                drive.setPose(new Pose(132.5,132.0, Math.toRadians(90)));
+                drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
                 //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
 
                 //gyroscope.resetHeading();

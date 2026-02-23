@@ -45,16 +45,16 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .useBrakeModeInTeleOp(true)
+            //.useBrakeModeInTeleOp(true)
             .xVelocity(72.88502)
             .yVelocity(66.2029);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(3)
-            .strafePodX(6.5)
-            .distanceUnit(DistanceUnit.INCH)
+            .forwardPodY(76/2.54)
+            .strafePodX(-165/2.54)
+            .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
-            .customEncoderResolution(946.15)
+            .customEncoderResolution(4096/(2 * Math.PI * 17.5))
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 

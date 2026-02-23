@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.OpModes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class TeleOp_Decode extends LinearOpMode {
 
     MultipleTelemetry telemetrys;
-    ChasisControl chasis_control;
+    //ChasisControl chasis_control;
     ArtifactControl artifactControl;
     //Pinpoint pp = new Pinpoint();
     //Follower follower;
@@ -29,7 +30,7 @@ public class TeleOp_Decode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        chasis_control = new ChasisControl(hardwareMap, gamepad1);
+        //chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
         //follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
@@ -66,7 +67,7 @@ public class TeleOp_Decode extends LinearOpMode {
         //pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
-            chasis_control.Run();
+            //chasis_control.Run();
             artifactControl.Run();
             //pp.pinpoint.update();
             //follower.update();
