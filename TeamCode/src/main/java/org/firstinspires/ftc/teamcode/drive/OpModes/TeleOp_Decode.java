@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.apache.commons.math3.analysis.function.Constant;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limeight3A;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
@@ -22,6 +23,8 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     //ChasisControl chasis_control;
     ArtifactControl artifactControl;
+    Limeight3A limelight3A;
+
     //Pinpoint pp = new Pinpoint();
     //Follower follower;
     int failSafeCase = 0;
@@ -32,6 +35,7 @@ public class TeleOp_Decode extends LinearOpMode {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
+
         //follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
             if(gamepad1.dpad_left){
@@ -61,6 +65,7 @@ public class TeleOp_Decode extends LinearOpMode {
 
         waitForStart();
 
+        limelight3A.Init();
         artifactControl.initServo();
         artifactControl.resetYaw();
         artifactControl.initRobotPose();
@@ -76,6 +81,12 @@ public class TeleOp_Decode extends LinearOpMode {
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
                 telemetrys.addData(" ", " ");
             }
+
+            telemetrys.addLine("[Limelight]");
+            telemetrys.addData("X", limelight3A.getLimelightX());
+            telemetrys.addData("Y", limelight3A.getLimelightY());
+            telemetrys.addData("Yaw/heading", limelight3A.getLimelightYaw());
+            telemetrys.addLine();
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
             telemetrys.addData("[Artifact] Current Right Turret Position ", artifactControl.current_rightturret_position);
@@ -134,5 +145,7 @@ public class TeleOp_Decode extends LinearOpMode {
 
             telemetrys.update();
         }
+
+        limelight3A.limelight.stop();
     }
 }
