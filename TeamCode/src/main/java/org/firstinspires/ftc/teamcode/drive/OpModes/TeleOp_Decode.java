@@ -83,7 +83,12 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("Tx", result.getTx());
             telemetrys.addData("Ty", result.getTy());
             telemetrys.addData("Ta", result.getTa());
-            telemetrys.addData("BotPose ", result.getBotpose());
+            telemetrys.addLine();
+            telemetrys.addData("Bot pose X ", result.getBotpose().getPosition().x);
+            telemetrys.addData("Bot pose Y ", result.getBotpose().getPosition().y);
+            telemetrys.addData("Bot pose Z ", result.getBotpose().getPosition().z);
+            telemetrys.addData("Bot heading", result.getBotpose().getOrientation().getYaw());
+            telemetrys.addData("Bot Heading normalized", limelightToPedro(result.getBotpose().getOrientation().getYaw()));
             telemetrys.addLine("----------------------");
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
@@ -104,12 +109,6 @@ public class TeleOp_Decode extends LinearOpMode {
 
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
-
-            telemetrys.addData("-----Servo pozitie redus mintal", artifactControl.BlockArtifact.getPosition());
-            telemetrys.addLine();
-
-
-
             telemetrys.addData("[Artifact] allowedToShoot ", artifactControl.allowedToShoot);
             telemetrys.addData("[Artifact] Basket angle ", artifactControl.getBasketDirection());
             telemetrys.addData("[Artifact] Basket distance ", artifactControl.getBasketDistance(0,0,false,false));
@@ -149,5 +148,23 @@ public class TeleOp_Decode extends LinearOpMode {
         }
 
         limelight3A.limelight.stop();
+    }
+
+    public double headingNormalizer(double heading){
+        if(heading < 0){
+            heading = 360-Math.abs(heading);
+        }
+        return  heading;
+    }
+
+    public double normalizeTo360(double angle) {
+        angle %= 360;
+        if (angle < 0) angle += 360;
+        return angle;
+    }
+
+    public double limelightToPedro(double limelightHeading) {
+        double normalized = normalizeTo360(limelightHeading);
+        return normalizeTo360(normalized - 90);
     }
 }
