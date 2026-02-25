@@ -2,18 +2,13 @@ package org.firstinspires.ftc.teamcode.drive.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.Localizer;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.apache.commons.math3.analysis.function.Constant;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limelight3A;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
-import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 //FTC Decode 2026 TeleOp_Decode
 @TeleOp
@@ -22,6 +17,8 @@ public class TeleOp_Decode extends LinearOpMode {
     MultipleTelemetry telemetrys;
     //ChasisControl chasis_control;
     ArtifactControl artifactControl;
+    Limelight3A limelight3A;
+
     //Pinpoint pp = new Pinpoint();
     //Follower follower;
     int failSafeCase = 0;
@@ -31,7 +28,9 @@ public class TeleOp_Decode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //chasis_control = new ChasisControl(hardwareMap, gamepad1);
-        artifactControl = new ArtifactControl(hardwareMap, gamepad1, telemetrys);
+        artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
+        limelight3A = new Limelight3A();
+
         //follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
             if(gamepad1.dpad_left){
@@ -61,12 +60,15 @@ public class TeleOp_Decode extends LinearOpMode {
 
         waitForStart();
 
+        limelight3A.Init(hardwareMap);
+
         artifactControl.initServo();
         artifactControl.resetYaw();
         artifactControl.initRobotPose();
         //pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
+            LLResult result = limelight3A.limelight.getLatestResult();
             //chasis_control.Run();
             artifactControl.Run();
             //pp.pinpoint.update();
@@ -76,6 +78,13 @@ public class TeleOp_Decode extends LinearOpMode {
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
                 telemetrys.addData(" ", " ");
             }
+
+            telemetrys.addLine("-----------[Limelight]-----------");
+            telemetrys.addData("Tx", result.getTx());
+            telemetrys.addData("Ty", result.getTy());
+            telemetrys.addData("Ta", result.getTa());
+            telemetrys.addData("BotPose ", result.getBotpose());
+            telemetrys.addLine("----------------------");
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
             telemetrys.addData("[Artifact] Current Right Turret Position ", artifactControl.current_rightturret_position);
@@ -95,6 +104,10 @@ public class TeleOp_Decode extends LinearOpMode {
 
             telemetrys.addData("[Artifact] X Position: ", artifactControl.x_position);
             telemetrys.addData("[Artifact] Y Position: ", artifactControl.y_position);
+
+            telemetrys.addData("-----Servo pozitie redus mintal", artifactControl.BlockArtifact.getPosition());
+            telemetrys.addLine();
+
 
 
             telemetrys.addData("[Artifact] allowedToShoot ", artifactControl.allowedToShoot);
@@ -134,5 +147,7 @@ public class TeleOp_Decode extends LinearOpMode {
 
             telemetrys.update();
         }
+
+        limelight3A.limelight.stop();
     }
 }

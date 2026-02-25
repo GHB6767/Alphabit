@@ -94,7 +94,7 @@ public class ArtifactControl {
     Servo LeftTurret;
     Servo RightTurret;
     Servo AngleTurret;
-    Servo BlockArtifact;
+    public Servo BlockArtifact;
     Servo PushArtifactServo;
 
 //    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
@@ -118,8 +118,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
     public fieldPattern artifactPattern = fieldPattern.UNKNOWN;
 
-    public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, MultipleTelemetry telemetrys){
+    public ArtifactControl(HardwareMap hwdmap, Gamepad gmpd, Gamepad gmpd2, MultipleTelemetry telemetrys){
         gamepad2 = gmpd;
+        gamepad1 = gmpd2;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
 
@@ -243,11 +244,20 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public boolean oneCheckPerArtifact = false;
     public boolean generalIntakeActivaton = false;
     public boolean robotAutoShootToggle = false;
-    public boolean robotAutoIntakeToggle = true;
+    public boolean robotAutoIntakeToggle = false; // pentru auto intake pui true la inceput
 
     public int burstCounter = 0;
     public int forceActivationOfIntake_counter = 0;
     public int artifactCounter = 0;
+
+    public boolean triggerPresed(float trigger){
+        if(trigger > 0.25){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     public void initServo(){
         AngleTurret.setPosition(angleTurretSafePosition);
@@ -315,9 +325,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
 
         drive.setTeleOpDrive(
-                -gamepad2.left_stick_y,
-                -gamepad2.left_stick_x,
-                -gamepad2.right_stick_x,
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
                 true
         );
 
@@ -391,12 +401,12 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             }
         }
 
-        if(gamepad2.a){
+        if(triggerPresed(gamepad2.right_trigger)){
             if(!artifactToggle) {
                 getArtifacts(false);
                 artifactToggle = true;
             }
-        }else if(gamepad2.dpad_up){
+        }else if(triggerPresed(gamepad2.left_trigger)){
             if(!artifactToggle) {
                 if (allowedToShoot && !manualControl) {
                     wantsToThrowArtifacts = true;
@@ -439,7 +449,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             throwArtifacts(getFlyWheelPower(0,0,false,false), true, false);
         }
 
-        if(gamepad2.b){
+        if(gamepad2.left_bumper || gamepad2.right_bumper){
             stopIntakeOuttake();
             wantsToThrowArtifacts = false;
             oneTimeBurst = false;
@@ -454,7 +464,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             generalIntakeActivaton = false;
         }
 
-        if(gamepad2.x){
+        if(gamepad2.left_stick_button){
             if(!pushArtifactToggle){
                 robotAutoShootToggle = !robotAutoShootToggle;
                 pushArtifactToggle = true;
@@ -463,7 +473,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             pushArtifactToggle = false;
         }
 
-        if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && manualControl) {
+        if (gamepad2.dpad_right && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position + 0.01;
                 current_rightturret_position = current_rightturret_position + 0.01;
@@ -471,7 +481,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 RightTurret.setPosition(current_rightturret_position);
                 toggleButton = true;
             }
-        }else if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && manualControl) {
+        }else if (gamepad2.dpad_left && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position - 0.01;
                 current_rightturret_position = current_rightturret_position - 0.01;
@@ -483,13 +493,13 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             toggleButton = false;
         }
 
-        if (gamepad2.dpad_right && current_angleturret_position-0.05 >= max_angleturret_position && manualControl) {
+        if (gamepad2.b && current_angleturret_position-0.05 >= max_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
-        } else if (gamepad2.dpad_down && current_angleturret_position+0.05 <= min_angleturret_position && manualControl) {
+        } else if (gamepad2.x && current_angleturret_position+0.05 <= min_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position + 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
@@ -513,7 +523,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             flyToggle = false;
         }
 
-        if(gamepad2.left_trigger > 0.75 && gamepad2.right_trigger > 0.75){
+        if(gamepad2.y){
             if(!toggleS) {
                 manualControl = !manualControl;
                 toggleS = true;
@@ -525,23 +535,26 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         if(gamepad2.dpad_down){
             if(!manualResetPoseToggle) {
                 manuallyResetPose();
+                manualControl = false;
                 manualResetPoseToggle = true;
             }
-        }else if(gamepad2.dpad_left && !manualControl){
+        }else if(gamepad2.dpad_up){
             if(!manualResetPoseToggle) {
-                manuallyExtraResetPose(true);
-                manualResetPoseToggle = true;
+                if(isRedAlliance){
+                    manuallyExtraResetPose(false);
+                    manualControl = false;
+                    manualResetPoseToggle = true;
+                }else{
+                    manuallyExtraResetPose(true);
+                    manualControl = false;
+                    manualResetPoseToggle = true;
+                }
             }
-        }else if(gamepad2.dpad_right && !manualControl){
-            if(!manualResetPoseToggle) {
-                manuallyExtraResetPose(false);
-                manualResetPoseToggle = true;
-            }
-        } else{
+        }else{
             manualResetPoseToggle = false;
         }
 
-        if(gamepad2.left_stick_button){
+        if(gamepad2.left_stick_button && !manualControl){
             if(!getPoseToggle){
                 aprilTagIdentification.getRobotPose();
 
@@ -549,7 +562,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
                 robotAngleAprilTag = aprilTagIdentification.bearingAngle;
 
-                robotAutoIntakeToggle = !robotAutoIntakeToggle;
+                //robotAutoIntakeToggle = !robotAutoIntakeToggle;
 
                 getPoseToggle = true;
             }
@@ -557,7 +570,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             getPoseToggle = false;
         }
 
-        if(gamepad2.right_stick_button){
+        if(gamepad2.right_stick_button && !manualControl){
             if(!autoPoseResetToggle){
                 automatedRobotPoseReset = !automatedRobotPoseReset;
                 autoPoseResetToggle = true;
