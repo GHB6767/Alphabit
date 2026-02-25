@@ -94,7 +94,7 @@ public class ArtifactControl {
     Servo LeftTurret;
     Servo RightTurret;
     Servo AngleTurret;
-    Servo BlockArtifact;
+    public Servo BlockArtifact;
     Servo PushArtifactServo;
 
 //    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
@@ -464,7 +464,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             generalIntakeActivaton = false;
         }
 
-        if(gamepad2.x){
+        if(gamepad2.left_stick_button){
             if(!pushArtifactToggle){
                 robotAutoShootToggle = !robotAutoShootToggle;
                 pushArtifactToggle = true;
@@ -473,7 +473,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             pushArtifactToggle = false;
         }
 
-        if (gamepad2.right_bumper && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && manualControl) {
+        if (gamepad2.dpad_right && current_leftturret_position < max_leftturret_position && current_rightturret_position < max_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position + 0.01;
                 current_rightturret_position = current_rightturret_position + 0.01;
@@ -481,7 +481,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 RightTurret.setPosition(current_rightturret_position);
                 toggleButton = true;
             }
-        }else if (gamepad2.left_bumper && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && manualControl) {
+        }else if (gamepad2.dpad_left && current_leftturret_position > min_leftturret_position && current_rightturret_position > min_rightturret_position && manualControl) {
             if(!toggleButton) {
                 current_leftturret_position = current_leftturret_position - 0.01;
                 current_rightturret_position = current_rightturret_position - 0.01;
@@ -493,13 +493,13 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             toggleButton = false;
         }
 
-        if (gamepad2.dpad_right && current_angleturret_position-0.05 >= max_angleturret_position && manualControl) {
+        if (gamepad2.b && current_angleturret_position-0.05 >= max_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position - 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
                 stoggleButton = true;
             }
-        } else if (gamepad2.dpad_down && current_angleturret_position+0.05 <= min_angleturret_position && manualControl) {
+        } else if (gamepad2.x && current_angleturret_position+0.05 <= min_angleturret_position && manualControl) {
             if(!stoggleButton) {
                 current_angleturret_position = current_angleturret_position + 0.05;
                 AngleTurret.setPosition(current_angleturret_position);
@@ -535,15 +535,18 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         if(gamepad2.dpad_down){
             if(!manualResetPoseToggle) {
                 manuallyResetPose();
+                manualControl = false;
                 manualResetPoseToggle = true;
             }
-        }else if(gamepad2.dpad_up && !manualControl){
+        }else if(gamepad2.dpad_up){
             if(!manualResetPoseToggle) {
                 if(isRedAlliance){
                     manuallyExtraResetPose(false);
+                    manualControl = false;
                     manualResetPoseToggle = true;
                 }else{
                     manuallyExtraResetPose(true);
+                    manualControl = false;
                     manualResetPoseToggle = true;
                 }
             }
@@ -551,7 +554,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             manualResetPoseToggle = false;
         }
 
-        if(gamepad2.left_stick_button){
+        if(gamepad2.left_stick_button && !manualControl){
             if(!getPoseToggle){
                 aprilTagIdentification.getRobotPose();
 
@@ -567,7 +570,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             getPoseToggle = false;
         }
 
-        if(gamepad2.right_stick_button){
+        if(gamepad2.right_stick_button && !manualControl){
             if(!autoPoseResetToggle){
                 automatedRobotPoseReset = !automatedRobotPoseReset;
                 autoPoseResetToggle = true;
