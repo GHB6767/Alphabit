@@ -94,7 +94,7 @@ public class ArtifactControl {
     Servo LeftTurret;
     Servo RightTurret;
     Servo AngleTurret;
-    public Servo BlockArtifact;
+    Servo BlockArtifact;
     Servo PushArtifactServo;
 
 //    Pose endPose_RedBasket = new Pose(-20, 25, Math.toRadians(90));
@@ -388,6 +388,10 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             areaOfThrowing();
             if(allowedToShoot) {
                 updateShooter();
+            }
+
+            if(gamepad2.aWasPressed()){
+                robotAutoIntakeToggle = !robotAutoIntakeToggle;
             }
 
             if(robotAutoIntakeToggle && !wantsToThrowArtifacts) {
