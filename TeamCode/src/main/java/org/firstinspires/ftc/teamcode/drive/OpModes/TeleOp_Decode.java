@@ -9,15 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limelight3A;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
+import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
 
 //FTC Decode 2026 TeleOp_Decode
 @TeleOp
 public class TeleOp_Decode extends LinearOpMode {
 
     MultipleTelemetry telemetrys;
-    //ChasisControl chasis_control;
+    ChasisControl chasis_control;
     ArtifactControl artifactControl;
-    Limelight3A limelight3A;
 
     //Pinpoint pp = new Pinpoint();
     //Follower follower;
@@ -27,9 +27,8 @@ public class TeleOp_Decode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        //chasis_control = new ChasisControl(hardwareMap, gamepad1);
+        chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
-        limelight3A = new Limelight3A();
 
         //follower = Constants.createFollower(hardwareMap);
         while(opModeInInit()){
@@ -60,7 +59,6 @@ public class TeleOp_Decode extends LinearOpMode {
 
         waitForStart();
 
-        limelight3A.Init(hardwareMap);
 
         artifactControl.initServo();
         artifactControl.resetYaw();
@@ -68,8 +66,8 @@ public class TeleOp_Decode extends LinearOpMode {
         //pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
-            LLResult result = limelight3A.limelight.getLatestResult();
-            //chasis_control.Run();
+
+            chasis_control.Run();
             artifactControl.Run();
             //pp.pinpoint.update();
             //follower.update();
@@ -80,15 +78,17 @@ public class TeleOp_Decode extends LinearOpMode {
             }
 
             telemetrys.addLine("-----------[Limelight]-----------");
-            telemetrys.addData("Tx", result.getTx());
-            telemetrys.addData("Ty", result.getTy());
-            telemetrys.addData("Ta", result.getTa());
+            telemetrys.addData("Tx", artifactControl.resultLL.getTx());
+            telemetrys.addData("Ty", artifactControl.resultLL.getTy());
+            telemetrys.addData("Ta", artifactControl.resultLL.getTa());
             telemetrys.addLine();
-            telemetrys.addData("Bot pose X ", result.getBotpose().getPosition().x);
-            telemetrys.addData("Bot pose Y ", result.getBotpose().getPosition().y);
-            telemetrys.addData("Bot pose Z ", result.getBotpose().getPosition().z);
-            telemetrys.addData("Bot heading", result.getBotpose().getOrientation().getYaw());
-            telemetrys.addData("Bot Heading normalized", limelightToPedro(result.getBotpose().getOrientation().getYaw()));
+            telemetrys.addData("Bot pose X artifact ",artifactControl.LLXPosition);
+            telemetrys.addData("Bot pose Y artifact ",artifactControl.LLYPosition);
+            telemetrys.addData("Bot pose Z artifact ",artifactControl.resultLL.getBotpose().getPosition().z);
+            //telemetrys.addData("Bot heading artifact ",artifactControl.resultLL.getBotpose().getOrientation().getYaw());
+            telemetrys.addData("Bot Heading normalized", artifactControl.LLHeadingAngle);
+            telemetrys.addData("Bot Heading before transformation", artifactControl.LLHeadingAngleBefore);
+
             telemetrys.addLine("----------------------");
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);
@@ -147,24 +147,6 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.update();
         }
 
-        limelight3A.limelight.stop();
-    }
-
-    public double headingNormalizer(double heading){
-        if(heading < 0){
-            heading = 360-Math.abs(heading);
-        }
-        return  heading;
-    }
-
-    public double normalizeTo360(double angle) {
-        angle %= 360;
-        if (angle < 0) angle += 360;
-        return angle;
-    }
-
-    public double limelightToPedro(double limelightHeading) {
-        double normalized = normalizeTo360(limelightHeading);
-        return normalizeTo360(normalized - 90);
+        artifactControl.limelight.limelight.stop();
     }
 }

@@ -49,6 +49,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -67,6 +68,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limelight3A;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -76,6 +78,8 @@ public class ArtifactControl {
     Gamepad gamepad2, gamepad1;
     AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
     MultipleTelemetry telemetry;
+    public Limelight3A limelight = new Limelight3A();
+
     //GyroscopeBHIMU gyroscope = new GyroscopeBHIMU();
     //Pinpoint pinpoint = new Pinpoint();
     public Follower drive;
@@ -123,6 +127,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         gamepad1 = gmpd2;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
+        limelight.Init(hwdmap);
 
         //gyroscope.gyroscope_init(hwdmap);
         //pinpoint.gyroInit(hwdmap);
@@ -186,10 +191,14 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public double current_angleturret_position = angleTurretSafePosition;
 
     public double headingAngle = 0.0;
+    public double LLHeadingAngle = 0.0;
+    public double LLHeadingAngleBefore = 0.0;
     public double x_position = 0.0;
     public double y_position = 0.0;
     public double rrXPosition = 0.0;
     public double rrYPosition = 0.0;
+    public double LLXPosition = 0.0;
+    public double LLYPosition = 0.0;
     double lastLeftTurretPos = 2.0;
     double lastRightTurretPos = 2.0;
     double lastVerticalPos = 2.0;
@@ -249,6 +258,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public int burstCounter = 0;
     public int forceActivationOfIntake_counter = 0;
     public int artifactCounter = 0;
+    public LLResult resultLL;
 
     public boolean triggerPresed(float trigger){
         if(trigger > 0.25){
@@ -268,7 +278,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
         pushArtifact = false;
 
-        drive.startTeleOpDrive(true);
+        //drive.startTeleOpDrive(true);
     }
 
     public void resetYaw(){
@@ -324,17 +334,20 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public void Run(){
 
 
-        drive.setTeleOpDrive(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x,
-                true
-        );
+        //drive.setTeleOpDrive(
+          //      -gamepad1.left_stick_y,
+            //    -gamepad1.left_stick_x,
+              //  -gamepad1.right_stick_x,
+                //true
+        //);
 
 
         updateAprilTag();
         updateArtifactPose();
         drive.update();
+        resultLL = limelight.limelight.getLatestResult();
+
+
         //pinpoint.pinpoint.update();
 
 
@@ -354,6 +367,10 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         //headingAngle = pinpoint.getHeading();
         headingAngle = Math.toDegrees(drive.getPose().getHeading());
         headingAngle = (headingAngle % 360 + 360) % 360;
+        LLHeadingAngleBefore = resultLL.getBotpose().getOrientation().getYaw();
+        LLHeadingAngle = limelightheadingToPedro(resultLL.getBotpose().getOrientation().getYaw());
+        //limelight.limelight.updateRobotOrientation(headingAngle);
+
 
         x_position = drive.getPose().getX();
         y_position = drive.getPose().getY();
@@ -362,6 +379,11 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         //rrYPosition = y_position - 72;
         rrXPosition = convertPedroToFTCCoordsX(y_position);
         rrYPosition = convertPedroToFTCCoordsY(x_position);
+
+//fa functie sa trsansforimi din ftc coords in pedropathing
+
+        LLXPosition = convertPedroToFTCCoordsX(resultLL.getBotpose().getPosition().x * 10);
+        LLYPosition = convertPedroToFTCCoordsY(resultLL.getBotpose().getPosition().y * 10);
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -581,6 +603,11 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             }
         }else{
             autoPoseResetToggle = false;
+        }
+
+        if(gamepad1.xWasPressed()){
+            manualControl = !manualControl;
+            resetUsingLimelight();
         }
 
         if(automatedRobotPoseReset){
@@ -898,6 +925,16 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         return RRposY;
     }
 
+    public double normalizeHeadingTo360(double angle) {
+        angle %= 360;
+        if (angle < 0) angle += 360;
+        return angle;
+    }
+
+    public double limelightheadingToPedro(double limelightHeading) {
+        double normalized = normalizeHeadingTo360(limelightHeading);
+        return normalizeHeadingTo360(normalized - 90);
+    }
     public void areaOfThrowing(){
 
 
@@ -1043,6 +1080,10 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         }
 
         return flyWheelPower;
+    }
+
+    public void resetUsingLimelight(){
+        drive.setPose(new Pose(LLXPosition,LLYPosition,Math.toRadians(LLHeadingAngle)));
     }
 
     public void manuallyResetPose(){
