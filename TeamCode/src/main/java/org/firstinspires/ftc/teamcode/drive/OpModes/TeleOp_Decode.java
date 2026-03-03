@@ -19,8 +19,6 @@ public class TeleOp_Decode extends LinearOpMode {
     //ChasisControl chasis_control;
     ArtifactControl artifactControl;
 
-    //Pinpoint pp = new Pinpoint();
-    //Follower follower;
     int failSafeCase = 0;
     boolean toggleButton = false;
 
@@ -63,7 +61,6 @@ public class TeleOp_Decode extends LinearOpMode {
         artifactControl.initServo();
         artifactControl.resetYaw();
         artifactControl.initRobotPose();
-        //pp.gyroInit(hardwareMap);
 
         while(opModeIsActive()){
 
@@ -84,8 +81,6 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addLine();
             telemetrys.addData("Bot pose X artifact ",artifactControl.LLXPosition);
             telemetrys.addData("Bot pose Y artifact ",artifactControl.LLYPosition);
-            telemetrys.addData("Bot pose Z artifact ",artifactControl.resultLL.getBotpose().getPosition().z);
-            //telemetrys.addData("Bot heading artifact ",artifactControl.resultLL.getBotpose().getOrientation().getYaw());
             telemetrys.addData("Bot Heading normalized", artifactControl.LLHeadingAngle);
             telemetrys.addLine("----------------------");
 

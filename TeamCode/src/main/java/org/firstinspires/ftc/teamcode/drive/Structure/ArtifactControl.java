@@ -44,8 +44,12 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_red_basket_angleTurret;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.y_blue_basket_angleTurret;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.ftc.FTCCoordinates;
+import com.pedropathing.ftc.PoseConverter;
+import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -60,6 +64,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limelight3A;
@@ -605,7 +610,8 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
             if(allowedToShoot && !manualControl && isRobotStationary){
                 if(!firstPoseReset){
                     if(resultLL.isValid()){
-                        drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
+                        //drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
+                        drive.setPose(new Pose(resultLL.getBotpose().getPosition().x,resultLL.getBotpose().getPosition().y,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS), FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE));
                     }
                 }
                 firstPoseReset = true;
@@ -662,6 +668,17 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 //                firstPoseReset = false;
 //            }
 //        }
+
+
+
+
+    }
+
+    Pose getRobotPoseFromCamera() {
+        //Fill this out to get the robot Pose from the camera's output (apply any filters if you need to using follower.getPose() for fusion)
+        //Pedro Pathing has built-in KalmanFilter and LowPassFilter classes you can use for this
+        //Use this to convert standard FTC coordinates to standard Pedro Pathing coordinates
+        return new Pose(resultLL.getBotpose().getPosition().x,resultLL.getBotpose().getPosition().y , LLHeadingAngle, FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE);
     }
 
     public void getArtifacts(boolean inAutoMode){
