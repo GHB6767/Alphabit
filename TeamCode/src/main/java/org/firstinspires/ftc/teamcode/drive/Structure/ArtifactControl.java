@@ -382,8 +382,8 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
 //fa functie sa trsansforimi din ftc coords in pedropathing
 
-        LLXPosition = convertPedroToFTCCoordsX(resultLL.getBotpose().getPosition().x * 10);
-        LLYPosition = convertPedroToFTCCoordsY(resultLL.getBotpose().getPosition().y * 10);
+        LLXPosition = resultLL.getBotpose().getPosition().x;
+        LLYPosition = (resultLL.getBotpose().getPosition().y+72) * 39.3701;
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -904,6 +904,10 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         Intake_RightMotor.setPower(0);
         Outtake_LeftMotor.setPower(0);
         Outtake_RightMotor.setPower(0);
+    }
+
+    public double convertFTCCoordsToPedro(double pos){
+        return pos + 72;
     }
 
     public double convertPedroToFTCCoordsX(double RRposX){
