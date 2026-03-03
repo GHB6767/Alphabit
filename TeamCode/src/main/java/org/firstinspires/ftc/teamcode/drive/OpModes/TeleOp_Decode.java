@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.Structure.ChasisControl;
 public class TeleOp_Decode extends LinearOpMode {
 
     MultipleTelemetry telemetrys;
-    ChasisControl chasis_control;
+    //ChasisControl chasis_control;
     ArtifactControl artifactControl;
 
     //Pinpoint pp = new Pinpoint();
@@ -27,7 +27,7 @@ public class TeleOp_Decode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        chasis_control = new ChasisControl(hardwareMap, gamepad1);
+        //chasis_control = new ChasisControl(hardwareMap, gamepad1);
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
 
         //follower = Constants.createFollower(hardwareMap);
@@ -67,7 +67,7 @@ public class TeleOp_Decode extends LinearOpMode {
 
         while(opModeIsActive()){
 
-            chasis_control.Run();
+            //chasis_control.Run();
             artifactControl.Run();
             //pp.pinpoint.update();
             //follower.update();
@@ -87,8 +87,6 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("Bot pose Z artifact ",artifactControl.resultLL.getBotpose().getPosition().z);
             //telemetrys.addData("Bot heading artifact ",artifactControl.resultLL.getBotpose().getOrientation().getYaw());
             telemetrys.addData("Bot Heading normalized", artifactControl.LLHeadingAngle);
-            telemetrys.addData("Bot Heading before transformation", artifactControl.LLHeadingAngleBefore);
-
             telemetrys.addLine("----------------------");
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);

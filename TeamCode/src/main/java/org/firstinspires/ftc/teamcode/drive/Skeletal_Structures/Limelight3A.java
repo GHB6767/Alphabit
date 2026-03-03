@@ -1,25 +1,36 @@
 package org.firstinspires.ftc.teamcode.drive.Skeletal_Structures;
 
 
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 
 public class Limelight3A {
 
     public com.qualcomm.hardware.limelightvision.Limelight3A limelight;
     Pose3D botPose;
-
+    ArtifactControl AC;
     public void Init(HardwareMap hardwareMap){
         limelight = hardwareMap.get(com.qualcomm.hardware.limelightvision.Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         limelight.start();
 
+        limelight.updateRobotOrientation(Math.toDegrees(AC.drive.getHeading()));
+
         LLResult result = limelight.getLatestResult();
         if(result.isValid()){
             botPose = result.getBotpose();
         }
+    }
+    public LLResult getLLResult(){
+         return limelight.getLatestResult();
+    }
+
+    public void updateRobotOrientationCustom(Follower f){
+        limelight.updateRobotOrientation(Math.toDegrees(f.getHeading()));
     }
 
     public double getLimelightX(){

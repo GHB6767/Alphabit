@@ -34,7 +34,6 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.max_angleturret_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_block_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.artifact_unblock_position;
-import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.robotAngularVelocityThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.robotVelocityThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.targetFlyWheelSpeed;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.timeoutTime;
@@ -48,9 +47,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -63,16 +60,11 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.GyroscopeBHIMU;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Limelight3A;
-import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.Pinpoint;
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.opencv.core.Mat;
 
 public class ArtifactControl {
     Gamepad gamepad2, gamepad1;
@@ -192,7 +184,6 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
     public double headingAngle = 0.0;
     public double LLHeadingAngle = 0.0;
-    public double LLHeadingAngleBefore = 0.0;
     public double x_position = 0.0;
     public double y_position = 0.0;
     public double rrXPosition = 0.0;
@@ -334,18 +325,18 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     public void Run(){
 
 
-        //drive.setTeleOpDrive(
-          //      -gamepad1.left_stick_y,
-            //    -gamepad1.left_stick_x,
-              //  -gamepad1.right_stick_x,
-                //true
-        //);
+        drive.setTeleOpDrive(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
+                true
+        );
 
 
         updateAprilTag();
         updateArtifactPose();
         drive.update();
-        resultLL = limelight.limelight.getLatestResult();
+        resultLL = limelight.getLLResult();
 
 
         //pinpoint.pinpoint.update();
@@ -367,7 +358,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         //headingAngle = pinpoint.getHeading();
         headingAngle = Math.toDegrees(drive.getPose().getHeading());
         headingAngle = (headingAngle % 360 + 360) % 360;
-        LLHeadingAngleBefore = resultLL.getBotpose().getOrientation().getYaw();
+        limelight.updateRobotOrientationCustom(drive);
         LLHeadingAngle = limelightheadingToPedro(resultLL.getBotpose().getOrientation().getYaw());
         //limelight.limelight.updateRobotOrientation(headingAngle);
 
@@ -380,10 +371,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         rrXPosition = convertPedroToFTCCoordsX(y_position);
         rrYPosition = convertPedroToFTCCoordsY(x_position);
 
-//fa functie sa trsansforimi din ftc coords in pedropathing
 
-        LLXPosition = resultLL.getBotpose().getPosition().x;
-        LLYPosition = (resultLL.getBotpose().getPosition().y+72) * 39.3701;
+        LLXPosition = resultLL.getBotpose().getPosition().x;//in case of errors try changing to another system of measurement
+        LLYPosition = resultLL.getBotpose().getPosition().y;//limelight default is in meters try changing to inches
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -606,59 +596,72 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         }
 
         if(gamepad1.xWasPressed()){
-            manualControl = !manualControl;
-            resetUsingLimelight();
+            //manualControl = !manualControl;
+            //resetUsingLimelight();
+            automatedRobotPoseReset = !automatedRobotPoseReset;
         }
 
         if(automatedRobotPoseReset){
             if(allowedToShoot && !manualControl && isRobotStationary){
-                if(!firstPoseReset) {
-                    aprilTagIdentification.getRobotPose();
-
-                    if(aprilTagIdentification.locTagFound) {
-
-                        calculatedRobotPose_X = aprilTagIdentification.robotPose_x;
-                        calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
-                        robotAngleAprilTag = aprilTagIdentification.bearingAngle;
-
-                        if (robotAngleAprilTag >= 0) {
-                            //gyroscope.resetHeading();
-                            //pinpoint.resetYaw();
-                            if (isRedAlliance) {
-                                //gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
-                                //pinpoint.setAngleOffset(36.5-robotAngleAprilTag);
-                                //drive.setHeading(Math.toRadians(36.5-robotAngleAprilTag));
-                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
-                            } else {
-                                //gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
-                                //pinpoint.setAngleOffset(-36.5 - robotAngleAprilTag);
-                                //drive.setHeading(Math.toRadians(-36.5-robotAngleAprilTag));
-                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
-                            }
-                        } else if (robotAngleAprilTag < 0) {
-                            //gyroscope.resetHeading();
-                            //pinpoint.resetYaw();
-                            if (isRedAlliance) {
-                                //gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
-                                //pinpoint.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
-                                //drive.setHeading(Math.toRadians(36.5 + Math.abs(robotAngleAprilTag)));
-                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
-                            } else {
-                                //gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
-                                //pinpoint.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
-                                //drive.setHeading(Math.toRadians(-36.5 + Math.abs(robotAngleAprilTag)));
-                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
-                            }
-                        }
-
-                        gamepad2.rumble(1000);
-                        firstPoseReset = true;
+                if(!firstPoseReset){
+                    if(resultLL.isValid()){
+                        drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
                     }
                 }
+                firstPoseReset = true;
             }else{
                 firstPoseReset = false;
             }
         }
+//        if(automatedRobotPoseReset){
+//            if(allowedToShoot && !manualControl && isRobotStationary){
+//                if(!firstPoseReset) {
+//                    aprilTagIdentification.getRobotPose();
+//
+//                    if(aprilTagIdentification.locTagFound) {
+//
+//                        calculatedRobotPose_X = aprilTagIdentification.robotPose_x;
+//                        calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
+//                        robotAngleAprilTag = aprilTagIdentification.bearingAngle;
+//
+//                        if (robotAngleAprilTag >= 0) {
+//                            //gyroscope.resetHeading();
+//                            //pinpoint.resetYaw();
+//                            if (isRedAlliance) {
+//                                //gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
+//                                //pinpoint.setAngleOffset(36.5-robotAngleAprilTag);
+//                                //drive.setHeading(Math.toRadians(36.5-robotAngleAprilTag));
+//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
+//                            } else {
+//                                //gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
+//                                //pinpoint.setAngleOffset(-36.5 - robotAngleAprilTag);
+//                                //drive.setHeading(Math.toRadians(-36.5-robotAngleAprilTag));
+//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
+//                            }
+//                        } else if (robotAngleAprilTag < 0) {
+//                            //gyroscope.resetHeading();
+//                            //pinpoint.resetYaw();
+//                            if (isRedAlliance) {
+//                                //gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
+//                                //pinpoint.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
+//                                //drive.setHeading(Math.toRadians(36.5 + Math.abs(robotAngleAprilTag)));
+//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
+//                            } else {
+//                                //gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
+//                                //pinpoint.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
+//                                //drive.setHeading(Math.toRadians(-36.5 + Math.abs(robotAngleAprilTag)));
+//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
+//                            }
+//                        }
+//
+//                        gamepad2.rumble(1000);
+//                        firstPoseReset = true;
+//                    }
+//                }
+//            }else{
+//                firstPoseReset = false;
+//            }
+//        }
     }
 
     public void getArtifacts(boolean inAutoMode){
