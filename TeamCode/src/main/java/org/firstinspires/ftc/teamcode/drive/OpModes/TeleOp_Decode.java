@@ -66,6 +66,7 @@ public class TeleOp_Decode extends LinearOpMode {
 
             //chasis_control.Run();
             artifactControl.Run();
+            Limelight3A.Update();
             //pp.pinpoint.update();
             //follower.update();
 
@@ -82,6 +83,10 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("Bot pose X artifact ",artifactControl.LLXPosition);
             telemetrys.addData("Bot pose Y artifact ",artifactControl.LLYPosition);
             telemetrys.addData("Bot Heading normalized", artifactControl.LLHeadingAngle);
+
+            telemetrys.addData("[Limelight3A] PedroX ",Limelight3A.pedroX);
+            telemetrys.addData("[Limelight3A] PedroY ",Limelight3A.pedroY);
+            telemetrys.addData("[Limelight3A] PedroHeading", Limelight3A.heading);
             telemetrys.addLine("----------------------");
 
             telemetrys.addData("[Artifact] Current Left Turret Position ", artifactControl.current_leftturret_position);

@@ -50,14 +50,14 @@ public class Constants {
             .yVelocity(66.2029);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(76/2.54)
-            .strafePodX(-165/2.54)
+            .forwardPodY(-75/2.54)
+            .strafePodX(-155/2.54)
             .distanceUnit(DistanceUnit.MM)
             .hardwareMapName("pinpoint")
-            //.encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-            .customEncoderResolution(4096/(2 * Math.PI * 17.5))
+            .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            //.customEncoderResolution(4096/(2 * Math.PI * 17.5))
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
 //    public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
 //            .forwardEncoder_HardwareMapName("Back_Left")

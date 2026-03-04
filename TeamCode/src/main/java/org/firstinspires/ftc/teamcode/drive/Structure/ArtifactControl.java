@@ -102,7 +102,7 @@ public class ArtifactControl {
 //    Pose endPose_BlueBasket = new Pose(-20, -25, Math.toRadians(-90));
 //    Pose endPose_RedAudience = new Pose(59, 20, Math.toRadians(90));
 //    Pose endPose_BlueAudience = new Pose(59, -20, Math.toRadians(-90));
-Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
+    Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
     Pose endPose_BlueBasket = new Pose(52, 47, Math.toRadians(-90));
     Pose endPose_RedAudience = new Pose(131, 92, Math.toRadians(90));
     Pose endPose_BlueAudience = new Pose(131, 52, Math.toRadians(-90));
@@ -124,7 +124,6 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         gamepad1 = gmpd2;
         telemetry = telemetrys;
         aprilTagIdentification.init(hwdmap, telemetrys);
-        limelight.Init(hwdmap);
 
         //gyroscope.gyroscope_init(hwdmap);
         //pinpoint.gyroInit(hwdmap);
@@ -144,6 +143,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         }
 
         drive = Constants.createFollower(hwdmap);
+        limelight.Init(hwdmap);
 
         Intake_LeftMotor = hwdmap.get(DcMotorEx.class, "Intake_LeftMotor");
         Intake_RightMotor = hwdmap.get(DcMotorEx.class, "Intake_RightMotor");
@@ -274,7 +274,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
         pushArtifact = false;
 
-        //drive.startTeleOpDrive(true);
+        drive.startTeleOpDrive(true);
     }
 
     public void resetYaw(){
@@ -363,9 +363,9 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         //headingAngle = pinpoint.getHeading();
         headingAngle = Math.toDegrees(drive.getPose().getHeading());
         headingAngle = (headingAngle % 360 + 360) % 360;
-        limelight.updateRobotOrientationCustom(drive);
+        //limelight.updateRobotOrientationCustom(drive);
         LLHeadingAngle = limelightheadingToPedro(resultLL.getBotpose().getOrientation().getYaw());
-        //limelight.limelight.updateRobotOrientation(headingAngle);
+        //limelight.limelight.updateRobotOrientation(Math.toDegrees(drive.getHeading()));
 
 
         x_position = drive.getPose().getX();
@@ -377,8 +377,8 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
         rrYPosition = convertPedroToFTCCoordsY(x_position);
 
 
-        LLXPosition = resultLL.getBotpose().getPosition().x;//in case of errors try changing to another system of measurement
-        LLYPosition = resultLL.getBotpose().getPosition().y;//limelight default is in meters try changing to inches
+        LLXPosition = resultLL.getBotpose().getPosition().x * 39.37 + 72;
+        LLYPosition = resultLL.getBotpose().getPosition().y * 39.37 + 72;
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -611,7 +611,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
                 if(!firstPoseReset){
                     if(resultLL.isValid()){
                         //drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
-                        drive.setPose(new Pose(resultLL.getBotpose().getPosition().x,resultLL.getBotpose().getPosition().y,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS), FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE));
+                        drive.setPose(new Pose(LLXPosition,LLYPosition,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS), FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE));
                     }
                 }
                 firstPoseReset = true;
@@ -674,12 +674,7 @@ Pose endPose_RedBasket = new Pose(52, 97, Math.toRadians(90));
 
     }
 
-    Pose getRobotPoseFromCamera() {
-        //Fill this out to get the robot Pose from the camera's output (apply any filters if you need to using follower.getPose() for fusion)
-        //Pedro Pathing has built-in KalmanFilter and LowPassFilter classes you can use for this
-        //Use this to convert standard FTC coordinates to standard Pedro Pathing coordinates
-        return new Pose(resultLL.getBotpose().getPosition().x,resultLL.getBotpose().getPosition().y , LLHeadingAngle, FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE);
-    }
+
 
     public void getArtifacts(boolean inAutoMode){
         if(inAutoMode){
