@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive.Autonomous;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
@@ -149,9 +150,56 @@ public class PedroAutonomous extends OpMode {
     }
 
     public int autonomousPathUpdate() {
-        // Add your state machine Here
-        // Access paths with paths.pathName
-        // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
-        return 0;
+        switch(pathState) {
+            case 0:
+                follower.followPath(paths.Path1);
+                if(!follower.isBusy()) {
+                    pathState = 1;
+                }
+                break;
+            case 1:
+                follower.followPath(paths.Path2);
+                if(!follower.isBusy()) {
+                    pathState = 2;
+                }
+                break;
+            case 2:
+                follower.followPath(paths.Path3);
+                if(!follower.isBusy()) {
+                    pathState = 3;
+                }
+                break;
+            case 3:
+                follower.followPath(paths.Path4);
+                if(!follower.isBusy()) {
+                    pathState = 4;
+                }
+                break;
+            case 4:
+                follower.followPath(paths.Path5);
+                if(!follower.isBusy()) {
+                    pathState = 5;
+                }
+                break;
+            case 5:
+                follower.followPath(paths.Path6);
+                if(!follower.isBusy()) {
+                    pathState = 6;
+                }
+                break;
+            case 6:
+                follower.followPath(paths.Path7);
+                if(!follower.isBusy()) {
+                    pathState = 7;
+                }
+                break;
+            case 7:
+                follower.followPath(paths.Path8);
+                if(!follower.isBusy()) {
+                    pathState = 8;
+                }
+                break;
+        }
+        return pathState;
     }
 }
