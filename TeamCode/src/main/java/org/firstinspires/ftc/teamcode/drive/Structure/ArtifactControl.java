@@ -377,8 +377,8 @@ public class ArtifactControl {
         rrYPosition = convertPedroToFTCCoordsY(x_position);
 
 
-        LLXPosition = resultLL.getBotpose().getPosition().x * 39.37 + 72;
-        LLYPosition = resultLL.getBotpose().getPosition().y * 39.37 + 72;
+        LLXPosition = convertFTCCoordsToPedroX(resultLL.getBotpose().getPosition().y * 39.37008);
+        LLYPosition = convertFTCCoordsToPedroY(resultLL.getBotpose().getPosition().x * 39.37008);
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
 
@@ -921,8 +921,24 @@ public class ArtifactControl {
         Outtake_RightMotor.setPower(0);
     }
 
-    public double convertFTCCoordsToPedro(double pos){
-        return pos + 72;
+    public double convertFTCCoordsToPedroX(double x){
+        double pedroX;
+        if(x>=0){
+            pedroX = 72 + x;
+        }else{
+            pedroX = 72 - Math.abs(x);
+        }
+        return pedroX;
+    }
+
+    public double convertFTCCoordsToPedroY(double y){
+        double pedroY;
+        if(y>=0){
+            pedroY = 72 - y;
+        }else{
+            pedroY = 72 + Math.abs(y);
+        }
+        return pedroY;
     }
 
     public double convertPedroToFTCCoordsX(double RRposX){
@@ -1113,7 +1129,7 @@ public class ArtifactControl {
             //drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, 43.5, AngleUnit.DEGREES, 126.5));
 
-            drive.setPose(new Pose(116.92, 132.14, Math.toRadians(36.5)));
+            drive.setPose(new Pose(116.92, 132.14, Math.toRadians(43.5)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5, 115.5, AngleUnit.DEGREES, 126.5));
 
             //gyroscope.resetHeading();
