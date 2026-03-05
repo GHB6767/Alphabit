@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.drive.Autonomous;
-import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
@@ -31,7 +30,7 @@ public class PedroAutonomous extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         VarStorage.autonomous_case = 0;
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(116.920, 132.140, Math.toRadians(36.5)));
 
         paths = new Paths(follower); // Build paths
 
@@ -150,56 +149,61 @@ public class PedroAutonomous extends OpMode {
     }
 
     public int autonomousPathUpdate() {
-        switch(pathState) {
+        // State machine to run all paths in order
+        switch (pathState) {
             case 0:
                 follower.followPath(paths.Path1);
-                if(!follower.isBusy()) {
-                    pathState = 1;
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 1:
                 follower.followPath(paths.Path2);
-                if(!follower.isBusy()) {
-                    pathState = 2;
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 2:
-                follower.followPath(paths.Path3);
-                if(!follower.isBusy()) {
-                    pathState = 3;
+                follower.followPath(paths.Path7);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 3:
-                follower.followPath(paths.Path4);
-                if(!follower.isBusy()) {
-                    pathState = 4;
+                follower.followPath(paths.Path8);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 4:
-                follower.followPath(paths.Path5);
-                if(!follower.isBusy()) {
-                    pathState = 5;
+                follower.followPath(paths.Path3);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 5:
-                follower.followPath(paths.Path6);
-                if(!follower.isBusy()) {
-                    pathState = 6;
+                follower.followPath(paths.Path4);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 6:
-                follower.followPath(paths.Path7);
-                if(!follower.isBusy()) {
-                    pathState = 7;
+                follower.followPath(paths.Path6);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
                 break;
             case 7:
-                follower.followPath(paths.Path8);
-                if(!follower.isBusy()) {
-                    pathState = 8;
+                follower.followPath(paths.Path5);
+                if (follower.getFollowingPathChain()) {
+                    pathState++;
                 }
+                break;
+            default:
+                // All paths finished, stop robot
+
                 break;
         }
         return pathState;
     }
-}//sex
+}
