@@ -51,7 +51,7 @@ public class PedroAutonomous extends OpMode {
                 .setLinearHeadingInterpolation(shootPose.getHeading(),firstArtifactLine.getHeading())
                 .build();
 
-    }
+    }//
 
     public void statePathUpdate(){
         switch(pathState){
