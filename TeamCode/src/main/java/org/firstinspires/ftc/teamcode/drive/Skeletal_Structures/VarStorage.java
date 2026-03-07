@@ -9,7 +9,7 @@ public class VarStorage {
 
     public static int colorSensor_gain = 4;
 
-    public static double leftTurret_initPosition = 0.68;
+    public static double leftTurret_initPosition = 0.68;//daca vr sa resetezi pozitie de la angle turret dai init vezi ce pozitie e si o pui
     public static double rightTurret_initPosition = 0.68;
     public static double angleTurret_initPosition = 0.45;
 

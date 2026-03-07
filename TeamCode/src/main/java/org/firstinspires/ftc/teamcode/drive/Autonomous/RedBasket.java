@@ -3,8 +3,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.TelemetryManager;
-import com.bylazar.telemetry.PanelsTelemetry;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import com.pedropathing.geometry.BezierCurve;
@@ -13,9 +12,9 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.geometry.Pose;
 
-@Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+@Autonomous(name = "RedBasket", group = "Autonomous")
 @Configurable // Panels
-public class PedroAutonomous extends OpMode {
+public class RedBasket extends OpMode {
     private Timer pathTimer, opModeTimer;
     //private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -145,12 +144,17 @@ public class PedroAutonomous extends OpMode {
             case SHOOT_PRELOAD:
                 //TODO add shooting logic
                 if(!follower.isBusy()){
+
+                    //pui setAutonomousThrowFlags  cand vr sa trag
+                    //setAutonomousShooter dai pozitie robotului
+
                     telemetry.addLine("Done Path 1: Shot Preload");
                     setPathState(PathState.DRIVE_FIRST_ARTEFACT_LINE);
                 }
                 break;
             case DRIVE_FIRST_ARTEFACT_LINE:
                 if(!follower.isBusy()){
+                    //getartifacts()
                     follower.followPath(shootPoseToFirstArtefactLine,true);
                     telemetry.addLine("Done Path 2: Driving to First Artifact");
                     setPathState(PathState.OPEN_GATE);
@@ -158,6 +162,7 @@ public class PedroAutonomous extends OpMode {
                 break;
             case OPEN_GATE:
                 if(!follower.isBusy()){
+                    //stopintakeouttake()
                     follower.followPath(openGate,true);
                     telemetry.addLine("Opening Gate");
                     setPathState(PathState.ROTATE_AFTER_OPEN_TO_SHOOT);
@@ -180,6 +185,11 @@ public class PedroAutonomous extends OpMode {
             case SHOOT_SECOND_ARTIFACT:
                 //TODO add shooting logic
                 if(!follower.isBusy()){
+
+                    //daca ai tras inainte bagi setAutonomousResetFlags ca sa resetezi
+                    //dupa bagi setAutonomousThrowFlags
+                    //dupa setAutonomousShooter
+
                     telemetry.addLine("Shot Second Artifact");
                     setPathState(PathState.SHOOT_TO_SECOND_ARTIFACT_LINE);
                 }
