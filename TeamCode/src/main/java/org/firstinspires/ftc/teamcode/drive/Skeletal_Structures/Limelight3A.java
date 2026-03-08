@@ -18,6 +18,7 @@ public class Limelight3A {
     public void Init(HardwareMap hardwareMap){
         limelight = hardwareMap.get(com.qualcomm.hardware.limelightvision.Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
+        limelight.setPollRateHz(100);
         limelight.start();
 
         //limelight.updateRobotOrientation(Math.toDegrees(AC.drive.getHeading()));

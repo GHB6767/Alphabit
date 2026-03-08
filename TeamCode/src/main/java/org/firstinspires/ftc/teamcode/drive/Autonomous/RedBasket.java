@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive.Autonomous;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_firstAngle;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.AutoStorage.Basket_secondAngle;
+
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 
+import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
+import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import com.pedropathing.geometry.BezierCurve;
@@ -15,7 +21,10 @@ import com.pedropathing.geometry.Pose;
 @Autonomous(name = "RedBasket", group = "Autonomous")
 @Configurable // Panels
 public class RedBasket extends OpMode {
+    int failSafeCase = 0;
     private Timer pathTimer, opModeTimer;
+    ArtifactControl artifactControl;
+
     //private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     public enum PathState{
@@ -144,16 +153,19 @@ public class RedBasket extends OpMode {
             case SHOOT_PRELOAD:
                 //TODO add shooting logic
                 if(!follower.isBusy()){
-
+                    artifactControl.setAutonomousThrowFlags();
+                    artifactControl.setAutonomousShooter(Basket_firstAngle,true,follower.getPose().getX(),follower.getPose().getY(),true,false);
+                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                        telemetry.addLine("Done Path 1: Shot Preload");
+                        setPathState(PathState.DRIVE_FIRST_ARTEFACT_LINE);
+                    }
                     //pui setAutonomousThrowFlags  cand vr sa trag
                     //setAutonomousShooter dai pozitie robotului
-
-                    telemetry.addLine("Done Path 1: Shot Preload");
-                    setPathState(PathState.DRIVE_FIRST_ARTEFACT_LINE);
                 }
                 break;
             case DRIVE_FIRST_ARTEFACT_LINE:
                 if(!follower.isBusy()){
+                    artifactControl.getArtifacts(false);
                     //getartifacts()
                     follower.followPath(shootPoseToFirstArtefactLine,true);
                     telemetry.addLine("Done Path 2: Driving to First Artifact");
@@ -162,6 +174,7 @@ public class RedBasket extends OpMode {
                 break;
             case OPEN_GATE:
                 if(!follower.isBusy()){
+                    artifactControl.stopIntakeOuttake();
                     //stopintakeouttake()
                     follower.followPath(openGate,true);
                     telemetry.addLine("Opening Gate");
@@ -185,7 +198,10 @@ public class RedBasket extends OpMode {
             case SHOOT_SECOND_ARTIFACT:
                 //TODO add shooting logic
                 if(!follower.isBusy()){
+                    artifactControl.setAutonomousResetFlags();
+                    artifactControl.setAutonomousThrowFlags();
 
+                    //artifactControl.setAutonomousShooter(Basket_secondAngle,true,follower.getPose().getX(),follower.getPose().getY(),);
                     //daca ai tras inainte bagi setAutonomousResetFlags ca sa resetezi
                     //dupa bagi setAutonomousThrowFlags
                     //dupa setAutonomousShooter
@@ -228,11 +244,14 @@ public class RedBasket extends OpMode {
 
     @Override
     public void init() {
+        VarStorage.autonomous_case = 0;
         pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
         pathTimer = new Timer();
         opModeTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);
         //TODO add in any other init mechanisms
+
+        artifactControl = new ArtifactControl(hardwareMap, gamepad2,gamepad1, (MultipleTelemetry) telemetry);
 
         buildPaths();
         follower.setPose(startPose);

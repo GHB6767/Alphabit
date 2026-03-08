@@ -153,7 +153,7 @@ public class ArtifactControl {
 
         Intake_LeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Intake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        Outtake_LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        Outtake_LeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Outtake_RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         Outtake_LeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1126,7 +1126,7 @@ public class ArtifactControl {
 
             //The first dive and pinpoint setPose are in RR coordonates and the second pair are in PP coordonates
 
-            //drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5)));
+            //drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5g)));
             //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, 43.5, AngleUnit.DEGREES, 126.5));
 
             drive.setPose(new Pose(116.92, 132.14, Math.toRadians(37)));
