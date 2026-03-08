@@ -232,7 +232,7 @@ public class ArtifactControl {
     boolean firstTimeManual = false;
     boolean switchFromManualMode = false;
     boolean artifactToggle = false;
-    boolean oneTimeBurst = false;
+    public boolean oneTimeBurst = false;
     boolean intakeRunning = false;
     boolean pushArtifactToggle = false;
     public boolean pushArtifact = false;
@@ -604,6 +604,7 @@ public class ArtifactControl {
             //manualControl = !manualControl;
             //resetUsingLimelight();
             automatedRobotPoseReset = !automatedRobotPoseReset;
+            gamepad1.rumble(100);
         }
 
         if(automatedRobotPoseReset){
@@ -611,7 +612,7 @@ public class ArtifactControl {
                 if(!firstPoseReset){
                     if(resultLL.isValid()){
                         //drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
-                        drive.setPose(new Pose(LLXPosition,LLYPosition,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS), FTCCoordinates.INSTANCE).getAsCoordinateSystem(PedroCoordinates.INSTANCE));
+                        drive.setPose(new Pose(LLXPosition,LLYPosition,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS)));
                     }
                 }
                 firstPoseReset = true;
@@ -619,59 +620,6 @@ public class ArtifactControl {
                 firstPoseReset = false;
             }
         }
-//        if(automatedRobotPoseReset){
-//            if(allowedToShoot && !manualControl && isRobotStationary){
-//                if(!firstPoseReset) {
-//                    aprilTagIdentification.getRobotPose();
-//
-//                    if(aprilTagIdentification.locTagFound) {
-//
-//                        calculatedRobotPose_X = aprilTagIdentification.robotPose_x;
-//                        calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
-//                        robotAngleAprilTag = aprilTagIdentification.bearingAngle;
-//
-//                        if (robotAngleAprilTag >= 0) {
-//                            //gyroscope.resetHeading();
-//                            //pinpoint.resetYaw();
-//                            if (isRedAlliance) {
-//                                //gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
-//                                //pinpoint.setAngleOffset(36.5-robotAngleAprilTag);
-//                                //drive.setHeading(Math.toRadians(36.5-robotAngleAprilTag));
-//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 - robotAngleAprilTag)));
-//                            } else {
-//                                //gyroscope.setAngleOffset(-36.5 - robotAngleAprilTag);
-//                                //pinpoint.setAngleOffset(-36.5 - robotAngleAprilTag);
-//                                //drive.setHeading(Math.toRadians(-36.5-robotAngleAprilTag));
-//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 - robotAngleAprilTag)));
-//                            }
-//                        } else if (robotAngleAprilTag < 0) {
-//                            //gyroscope.resetHeading();
-//                            //pinpoint.resetYaw();
-//                            if (isRedAlliance) {
-//                                //gyroscope.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
-//                                //pinpoint.setAngleOffset(36.5 + Math.abs(robotAngleAprilTag));
-//                                //drive.setHeading(Math.toRadians(36.5 + Math.abs(robotAngleAprilTag)));
-//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(126.5 + Math.abs(robotAngleAprilTag))));
-//                            } else {
-//                                //gyroscope.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
-//                                //pinpoint.setAngleOffset(-36.5 + Math.abs(robotAngleAprilTag));
-//                                //drive.setHeading(Math.toRadians(-36.5 + Math.abs(robotAngleAprilTag)));
-//                                drive.setPose(new Pose(calculatedRobotPose_X, calculatedRobotPose_Y, Math.toRadians(-126.5 + Math.abs(robotAngleAprilTag))));
-//                            }
-//                        }
-//
-//                        gamepad2.rumble(1000);
-//                        firstPoseReset = true;
-//                    }
-//                }
-//            }else{
-//                firstPoseReset = false;
-//            }
-//        }
-
-
-
-
     }
 
 
@@ -1022,20 +970,60 @@ public class ArtifactControl {
         }
     }
 
-    public double getBasketDirection(){
+    public void dynamicTargetAngle(double xpos,double ypos, boolean redAlliance, boolean useCustomPos){
+        double currentXPosition;
+        double currentYPosition;
+        boolean currentRedAlliance;
+
+        if(!useCustomPos){
+            currentXPosition = rrXPosition; //morosanu a pus x_position dar inainte x_position era RR acum e PP asa ca am inlocuit
+            currentYPosition = rrYPosition;
+            currentRedAlliance = isRedAlliance;
+        }else{
+            currentXPosition = xpos;
+            currentYPosition = ypos;
+            currentRedAlliance = redAlliance;
+        }
+
+        double positive_x_position = Math.abs(currentXPosition + 61);
+        double positive_y_position;
+        if(currentRedAlliance){
+            positive_y_position = Math.abs((currentYPosition - 61));
+        }else{
+            positive_y_position = Math.abs((currentYPosition + 61));
+        }
+
+        double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));
+
+        if(currentRedAlliance){
+            targetAngle = calculatedAngle;
+        }else{
+            targetAngle = 360 - calculatedAngle;
+        }
+    }
+
+
+    public double getBasketDirection(double xpos, double ypos, double customHeadingAngle, boolean redAlliance, boolean useCustomPos){
         double basketAngle;
+        double currentHeading;
 
-        dynamicTargetAngle();
+        if(!useCustomPos) {
+            dynamicTargetAngle(0, 0, false, false);
+            currentHeading = headingAngle;
+        }else{
+            dynamicTargetAngle(xpos, ypos, redAlliance, true);
+            currentHeading = customHeadingAngle;
+        }
 
-        if(targetAngle - headingAngle > 0){
-            basketAngle = targetAngle - headingAngle;
+        if(targetAngle - currentHeading > 0){
+            basketAngle = targetAngle - currentHeading;
             if(basketAngle >= 180){
                 rotateToLeft = false;
             }else{
                 rotateToLeft = true;
             }
         }else{
-            basketAngle = 360 - Math.abs((headingAngle - targetAngle));
+            basketAngle = 360 - Math.abs((currentHeading - targetAngle));
             if(basketAngle >= 180){
                 rotateToLeft = false;
             }else{
@@ -1080,10 +1068,11 @@ public class ArtifactControl {
 
     public double getTurretPosition(){
         double servoAngleToPosition;
-        servoAngleToPosition = getBasketDirection() * turretServoPosToDegree;
+        servoAngleToPosition = getBasketDirection(0,0,0,false,false) * turretServoPosToDegree;
 
         return servoAngleToPosition;
     }
+
 
     public double getTurretAngle(){
         double angleTurretPosition;
@@ -1097,6 +1086,7 @@ public class ArtifactControl {
         }
         return angleTurretPosition;
     }
+
 
     public double getFlyWheelPower(double custom_x_pos, double custom_y_pos, boolean redAlliance, boolean useCustomPos){
         double distance;
@@ -1123,35 +1113,9 @@ public class ArtifactControl {
 
     public void manuallyResetPose(){
         if(isRedAlliance) {
-
-            //The first dive and pinpoint setPose are in RR coordonates and the second pair are in PP coordonates
-
-            //drive.setPose(new Pose(-55.5, 43.5, Math.toRadians(126.5g)));
-            //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, 43.5, AngleUnit.DEGREES, 126.5));
-
             drive.setPose(new Pose(116.92, 132.14, Math.toRadians(37)));
-            //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5, 115.5, AngleUnit.DEGREES, 126.5));
-
-            //gyroscope.resetHeading();
-            //gyroscope.setAngleOffset(36.5);
-
-            //pinpoint.resetYaw();
-            //pinpoint.setAngleOffset(36.5);
-
         }else{
-            //drive.setPose(new Pose(-55.5, -43.5, Math.toRadians(-126.5)));
-            //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, -55.5, -43.5, AngleUnit.DEGREES, -126.5));
-
             drive.setPose(new Pose(28.3,133.65, Math.toRadians(143.5)));
-            //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 16.5,28.5, AngleUnit.DEGREES, -126.5));
-
-            //gyroscope.resetHeading();
-            //gyroscope.setAngleOffset(-36.5);
-
-            //pinpoint.resetYaw();
-            //pinpoint.setAngleOffset(-36.5);
-
-
 
         }
     }
@@ -1159,60 +1123,16 @@ public class ArtifactControl {
     public void manuallyExtraResetPose(boolean leftField){
         if(isRedAlliance) {
             if(leftField){
-                //drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 60.5, -60.0, AngleUnit.DEGREES, 126.5));
-
                 drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 132.5,12.0, AngleUnit.DEGREES, 126.5));
-
-                //gyroscope.resetHeading();
-                //gyroscope.setAngleOffset(-180.0);
-
-                //pinpoint.resetYaw();
-                //pinpoint.setAngleOffset(-180.0);
-
             }else{
-                //drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, 60.0,AngleUnit.DEGREES,126.5));
-
                 drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
-
-                //gyroscope.resetHeading();
-                //gyroscope.setAngleOffset(0.0);
-
-                //pinpoint.resetYaw();
-                //pinpoint.setAngleOffset(0.0);
-
             }
 
         }else{
             if(leftField){
-                //drive.setPose(new Pose(60.5, -60.0, Math.toRadians(-90)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, -60.0,AngleUnit.DEGREES,126.5));
-
                 drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,12.0,AngleUnit.DEGREES,126.5));
-
-                //gyroscope.resetHeading();
-                //gyroscope.setAngleOffset(0.0);
-
-                //pinpoint.resetYaw();
-                //pinpoint.setAngleOffset(0.0);
-
             }else{
-                //drive.setPose(new Pose(60.5, 60.0, Math.toRadians(90)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,60.5, 60.0,AngleUnit.DEGREES,126.5));
-
                 drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
-                //pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,132.5,132.0,AngleUnit.DEGREES,126.5));
-
-                //gyroscope.resetHeading();
-                //gyroscope.setAngleOffset(-180.0);
-
-                //pinpoint.resetYaw();
-                //pinpoint.setAngleOffset(-180.0);
-
             }
         }
     }
@@ -1263,18 +1183,22 @@ public class ArtifactControl {
         }
     }
 
-    void setTurretAngle(double angle, boolean rotateLeft){
-        double servoPosition = angle * turretServoPosToDegree;
-        if(!rotateLeft){
-            current_leftturret_position = leftTurret_initPosition + servoPosition;
-            current_rightturret_position = rightTurret_initPosition + servoPosition;
+
+    void setTurretAngle(double x_position, double y_position, double customHeadingAngle, boolean redAlliance){
+        double servoAngleToPosition;
+        servoAngleToPosition = getBasketDirection(x_position,y_position,customHeadingAngle,redAlliance,true) * turretServoPosToDegree;
+
+        if(!rotateToLeft){
+            current_leftturret_position = leftTurret_initPosition + servoAngleToPosition;
+            current_rightturret_position = rightTurret_initPosition + servoAngleToPosition;
         }else{
-            current_leftturret_position = leftTurret_initPosition - servoPosition + rightDirectionAutoTurretOffset;
-            current_rightturret_position = rightTurret_initPosition - servoPosition + rightDirectionAutoTurretOffset;
+            current_leftturret_position = leftTurret_initPosition - servoAngleToPosition + rightDirectionAutoTurretOffset;
+            current_rightturret_position = rightTurret_initPosition - servoAngleToPosition + rightDirectionAutoTurretOffset;
         }
         LeftTurret.setPosition(current_leftturret_position);
         RightTurret.setPosition(current_rightturret_position);
     }
+
 
     void setAngleTurretAngle(double x_pos, double y_pos, boolean redAlliance){
         double distanceToBasket;
@@ -1298,8 +1222,8 @@ public class ArtifactControl {
         AngleTurret.setPosition(position);
     }
 
-    public void setAutonomousShooter(double angle, boolean rotateLeft, double x_pos, double y_pos, boolean redAlliance, boolean audience){
-        setTurretAngle(angle, rotateLeft);
+    public void setAutonomousShooter(double customHeadingAngle, double x_pos, double y_pos, boolean redAlliance, boolean audience){
+        setTurretAngle(x_pos,y_pos,customHeadingAngle, redAlliance);
         if(!audience) {
             setAngleTurretAngle(x_pos, y_pos, redAlliance);
         }else{

@@ -154,8 +154,10 @@ public class RedBasket extends OpMode {
                 //TODO add shooting logic
                 if(!follower.isBusy()){
                     artifactControl.setAutonomousThrowFlags();
-                    artifactControl.setAutonomousShooter(Basket_firstAngle,true,follower.getPose().getX(),follower.getPose().getY(),true,false);
-                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                    artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), RRPosX,RRPosY,true,false);
+
+
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 2){
                         telemetry.addLine("Done Path 1: Shot Preload");
                         setPathState(PathState.DRIVE_FIRST_ARTEFACT_LINE);
                     }
@@ -176,15 +178,8 @@ public class RedBasket extends OpMode {
                 if(!follower.isBusy()){
                     artifactControl.stopIntakeOuttake();
                     //stopintakeouttake()
-                    follower.followPath(openGate,true);
+                    follower.followPath(openGate,false);
                     telemetry.addLine("Opening Gate");
-                    setPathState(PathState.ROTATE_AFTER_OPEN_TO_SHOOT);
-                }
-                break;
-            case ROTATE_AFTER_OPEN_GATE:
-                if(!follower.isBusy()){
-                    follower.followPath(rotateAfterOpenGate,true);
-                    telemetry.addLine("Rotating after opening gate");
                     setPathState(PathState.ROTATE_AFTER_OPEN_TO_SHOOT);
                 }
                 break;
@@ -197,37 +192,44 @@ public class RedBasket extends OpMode {
                 break;
             case SHOOT_SECOND_ARTIFACT:
                 //TODO add shooting logic
+
                 if(!follower.isBusy()){
                     artifactControl.setAutonomousResetFlags();
                     artifactControl.setAutonomousThrowFlags();
+                    artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()),RRPosX,RRPosY,true,false);
 
                     //artifactControl.setAutonomousShooter(Basket_secondAngle,true,follower.getPose().getX(),follower.getPose().getY(),);
                     //daca ai tras inainte bagi setAutonomousResetFlags ca sa resetezi
                     //dupa bagi setAutonomousThrowFlags
                     //dupa setAutonomousShooter
-
-                    telemetry.addLine("Shot Second Artifact");
-                    setPathState(PathState.SHOOT_TO_SECOND_ARTIFACT_LINE);
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 2){
+                        telemetry.addLine("Shot Second Artifact");
+                        setPathState(PathState.SHOOT_TO_SECOND_ARTIFACT_LINE);
+                    }
                 }
                 break;
             case SHOOT_TO_SECOND_ARTIFACT_LINE:
                 if(!follower.isBusy()){
+                    artifactControl.getArtifacts(false);
+
                     follower.followPath(shootToSecondArtifacLine,true);
                     telemetry.addLine("Driving to Second Artifact Line");
                     setPathState(PathState.ROTATE_AFTER_SECOND_LINE_TO_SHOOT);
                 }
                 break;
-            case ROTATE_AFTER_SECOND_LINE:
-                if(!follower.isBusy()){
-                    follower.followPath(rotateAfterSecondLine,true);
-                    telemetry.addLine("Rotating after second artifact line");
-                    setPathState(PathState.ROTATE_AFTER_SECOND_LINE_TO_SHOOT);
-                }
-                break;
             case ROTATE_AFTER_SECOND_LINE_TO_SHOOT:
                 if(!follower.isBusy()){
-                    follower.followPath(rotateAfterSecondLineToShoot,true);
-                    telemetry.addLine("Rotating to final shoot position");
+                    artifactControl.stopIntakeOuttake();
+                    artifactControl.setAutonomousResetFlags();
+                    artifactControl.setAutonomousThrowFlags();
+                    artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()),RRPosX,RRPosY,true,false);
+
+
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 2){
+                        follower.followPath(rotateAfterSecondLineToShoot,true);
+                        telemetry.addLine("Rotating to final shoot position");
+                    }
+
                     //TODO transition to next cycle or end
                 }
                 break;
@@ -241,7 +243,7 @@ public class RedBasket extends OpMode {
         pathState = newState;
         pathTimer.resetTimer();
     }
-
+    double autoCase  = 0;
     @Override
     public void init() {
         VarStorage.autonomous_case = 0;
@@ -263,10 +265,21 @@ public class RedBasket extends OpMode {
         setPathState(pathState);
     }
 
+
+    double RRPosX = 0.0;
+    double RRPosY = 0.0;
+
     @Override
     public void loop() {
         follower.update();
         statePathUpdate();
+
+        RRPosX = convertPedroToFTCCoordsX(follower.getPose().getY());
+        RRPosY = convertPedroToFTCCoordsY(follower.getPose().getX());
+
+        if(artifactControl.wantsToThrowArtifacts) {
+            artifactControl.throwArtifacts(artifactControl.getFlyWheelPower(RRPosX,RRPosY,true,true), true, true);
+        }
 
         telemetry.addData("Path State", pathState);
         telemetry.addData("X", follower.getPose().getX());
@@ -274,5 +287,24 @@ public class RedBasket extends OpMode {
         telemetry.addData("Heading", follower.getPose().getHeading());
         telemetry.update();
 
+    }
+
+    public double convertPedroToFTCCoordsX(double RRposX){
+        if(RRposX >= 72){
+            RRposX = -(RRposX - 72);
+        }else if(RRposX < 72){
+            RRposX = Math.abs(RRposX - 72);
+
+        }
+        return RRposX;
+    }
+
+    public double convertPedroToFTCCoordsY(double RRposY){
+        if(RRposY >= 72){
+            RRposY = Math.abs(RRposY - 72);
+        }else if(RRposY < 72){
+            RRposY = -(RRposY - 72);
+        }
+        return RRposY;
     }
 }
