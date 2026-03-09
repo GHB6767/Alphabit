@@ -15,10 +15,10 @@ public class VarStorage {
 
     public static double min_leftturret_position = 0.0;
     public static double min_rightturret_position = 0.0;
-    public static double min_angleturret_position = 0.8;
+    public static double min_angleturret_position = 0.9;
 
-    public static double max_leftturret_position = 0.65;
-    public static double max_rightturret_position = 0.65;
+    public static double max_leftturret_position = 0.60;
+    public static double max_rightturret_position = 0.60;
     public static double max_angleturret_position = 0.15;
 
     public static double artifact_block_position = 0.15;
@@ -43,7 +43,7 @@ public class VarStorage {
     public static double horizontalTurretDeadzone = 0.0015;
     public static double verticalTurretDeadzone = 0.0015;
     public static double targetFlyWheelSpeed = 2400.0;
-    public static double intakeRunTime = 300.0;
+    public static double intakeRunTime = 275.0;
     public static double intakeFirstRunTime = 550.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;

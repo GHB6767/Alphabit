@@ -530,12 +530,12 @@ public class ArtifactControl {
             stoggleButton = false;
         }
 
-        if(gamepad2.left_trigger > 0.75 && gamepad2.right_trigger < 0.75 && manualControl){
+        if(gamepad2.touchpad_finger_1 && manualControl){
             if(!flyToggle && defaultFlyWheelPower > 0.0) {
                 defaultFlyWheelPower = defaultFlyWheelPower - 0.05;
                 flyToggle = true;
             }
-        }else if(gamepad2.left_trigger < 0.75 && gamepad2.right_trigger > 0.75 && manualControl){
+        }else if(gamepad2.backWasPressed() || gamepad2.guideWasPressed()){
             if(!flyToggle && defaultFlyWheelPower < 1.0){
                 defaultFlyWheelPower = defaultFlyWheelPower + 0.05;
                 flyToggle = true;
@@ -603,16 +603,21 @@ public class ArtifactControl {
         if(gamepad1.xWasPressed()){
             //manualControl = !manualControl;
             //resetUsingLimelight();
-            automatedRobotPoseReset = !automatedRobotPoseReset;
-            gamepad1.rumble(100);
+            if(LLXPosition !=72 && LLYPosition !=72 && LLHeadingAngle!=0){
+                drive.setPose(new Pose(LLXPosition,LLYPosition,Math.toRadians(LLHeadingAngle)));
+                gamepad1.rumble(100);
+
+            }
+
+           // automatedRobotPoseReset = !automatedRobotPoseReset;
         }
 
         if(automatedRobotPoseReset){
-            if(allowedToShoot && !manualControl && isRobotStationary){
+            if(allowedToShoot){
                 if(!firstPoseReset){
                     if(resultLL.isValid()){
                         //drive.setPose(new Pose(LLXPosition,LLYPosition, Math.toRadians(LLHeadingAngle)));
-                        drive.setPose(new Pose(LLXPosition,LLYPosition,resultLL.getBotpose().getOrientation().getYaw(AngleUnit.RADIANS)));
+                        drive.setPose(new Pose(LLXPosition,LLYPosition,Math.toRadians(LLHeadingAngle)));
                     }
                 }
                 firstPoseReset = true;
@@ -952,23 +957,6 @@ public class ArtifactControl {
         }
     }
 
-    public void dynamicTargetAngle(){
-        double positive_x_position = Math.abs(rrXPosition + 61);
-        double positive_y_position;
-        if(isRedAlliance){
-            positive_y_position = Math.abs((rrYPosition - 61));
-        }else{
-            positive_y_position = Math.abs((rrYPosition + 61));
-        }
-
-        double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));
-
-        if(isRedAlliance){
-            targetAngle = calculatedAngle;
-        }else{
-            targetAngle = 360 - calculatedAngle;
-        }
-    }
 
     public void dynamicTargetAngle(double xpos,double ypos, boolean redAlliance, boolean useCustomPos){
         double currentXPosition;
@@ -1072,12 +1060,31 @@ public class ArtifactControl {
 
         return servoAngleToPosition;
     }
+    public double getTurretPositionAuto(double basketDistance){
+        double servoAngleToPosition;
+        servoAngleToPosition = basketDistance * turretServoPosToDegree;
+
+        return servoAngleToPosition;
+    }
 
 
     public double getTurretAngle(){
         double angleTurretPosition;
 
         angleTurretPosition = (0.0000207725 * (basketDistance*basketDistance)) - (0.00755001*basketDistance) + 0.865169;
+
+        if(angleTurretPosition > 0.75){
+            angleTurretPosition = 0.75;
+        }else if(angleTurretPosition < 0.25){
+            angleTurretPosition = 0.25;
+        }
+        return angleTurretPosition;
+    }
+
+    public double getTurretAngleAuto(double BasketDistance){
+        double angleTurretPosition;
+
+        angleTurretPosition = (0.0000207725 * (BasketDistance*BasketDistance)) - (0.00755001*BasketDistance) + 0.865169;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
@@ -1098,7 +1105,7 @@ public class ArtifactControl {
 
         double flyWheelPower = ((-3.15936e-7) * distance * distance * distance) + (0.000074273 * distance * distance) - (0.00230794 * distance) + 0.606381;
 
-        if(flyWheelPower > 0.87){
+        if(flyWheelPower > 0.87){//era 0.87
             flyWheelPower = 0.87;
         }else if(flyWheelPower < 0.6){
             flyWheelPower = 0.6;
@@ -1137,8 +1144,19 @@ public class ArtifactControl {
         }
     }
 
+    public double updateBasketDistance(Follower follower, boolean isRedAlliance){
+        return basketDistance = getBasketDistance(convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()), isRedAlliance,true);
+    }
+
     public void updateShooter() {
-        double servoPos = getTurretPosition();
+//        double servoPos = 0.0;
+//        if(useCustomPos) {
+//            servoPos = getTurretPositionAuto(updateBasketDistance(follower,isRedAlliance));
+//        }else{
+//            servoPos = getTurretPosition();
+//        }
+
+         double servoPos = getTurretPosition();
         current_angleturret_position = getTurretAngle();
         if(!rotateToLeft){
             if(((leftTurret_initPosition+servoPos) <= max_leftturret_position) && ((rightTurret_initPosition+servoPos) <= max_rightturret_position)) {
