@@ -1108,7 +1108,7 @@ public class ArtifactControl {
         if(flyWheelPower > 0.87){//era 0.87
             flyWheelPower = 0.87;
         }else if(flyWheelPower < 0.6){
-            flyWheelPower = 0.6;
+            flyWheelPower = 0.6;//ieufbeufsbf
         }
 
         return flyWheelPower;
