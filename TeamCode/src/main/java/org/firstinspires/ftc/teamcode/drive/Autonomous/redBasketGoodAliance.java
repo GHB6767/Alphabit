@@ -108,16 +108,17 @@ public class redBasketGoodAliance extends OpMode {
                 .addPath(
                         new BezierLine(
                                 new Pose(87.280, 86.778),
-                                new Pose(127.882, 64.027)
+                                new Pose(128.383, 66.697)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();
 
+
         Path6 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(127.882, 64.027),
+                                new Pose(128.383, 66.697),
                                 new Pose(111.335, 61.172),
                                 new Pose(132.702, 51.618)
                         )
@@ -129,7 +130,7 @@ public class redBasketGoodAliance extends OpMode {
                 .addPath(
                         new BezierLine(
                                 new Pose(132.702, 51.618),
-                                new Pose(133.011, 55.885)
+                                new Pose(134.562, 55.220)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(70))
@@ -138,7 +139,7 @@ public class redBasketGoodAliance extends OpMode {
         Path8 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(133.011, 55.885),
+                                new Pose(134.562, 55.220),
                                 new Pose(88.631, 85.148)
                         )
                 )
@@ -216,12 +217,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT4:
                 if(!follower.isBusy()){
-                    if(!runOnce){
-                        artifactControl.setAutonomousResetFlags();
-                        artifactControl.setAutonomousThrowFlags();
-                        artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-                        runOnce = true;
-                    }
+                    shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH5);
                         runOnce = false;
@@ -242,7 +238,7 @@ public class redBasketGoodAliance extends OpMode {
                 }
                 break;
             case PATH7:
-                if(follower.isBusy()){
+                if(!follower.isBusy()){
                     follower.followPath(Path7,false);
                     setPathState(PathState.PATH8);
                 }
@@ -256,12 +252,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT8:
                 if(!follower.isBusy()){
-                    if(!runOnce){
-                        artifactControl.setAutonomousResetFlags();
-                        artifactControl.setAutonomousThrowFlags();
-                        artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-                        runOnce = true;
-                    }
+                    shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH9);
                         runOnce = false;
@@ -286,14 +277,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT10:
                 if(!follower.isBusy()){
-                    if(!runOnce){
-                        artifactControl.stopIntakeOuttake();
-                        artifactControl.setAutonomousResetFlags();
-                        artifactControl.setAutonomousThrowFlags();
-                        artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-                        runOnce = true;
-                    }
-
+                    shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH11);
                         runOnce = false;
