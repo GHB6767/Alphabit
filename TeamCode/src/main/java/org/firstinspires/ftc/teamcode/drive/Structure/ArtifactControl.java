@@ -1122,7 +1122,7 @@ public class ArtifactControl {
         if(isRedAlliance) {
             drive.setPose(new Pose(116.92, 132.14, Math.toRadians(37)));
         }else{
-            drive.setPose(new Pose(28.3,133.65, Math.toRadians(143.5)));
+            drive.setPose(new Pose(28,133.6, Math.toRadians(144)));
 
         }
     }
@@ -1130,16 +1130,16 @@ public class ArtifactControl {
     public void manuallyExtraResetPose(boolean leftField){
         if(isRedAlliance) {
             if(leftField){
-                drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
+                drive.setPose(new Pose(133.0,10.0, Math.toRadians(0)));
             }else{
-                drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
+                drive.setPose(new Pose(8.8,13.3, Math.toRadians(0)));
             }
 
         }else{
             if(leftField){
-                drive.setPose(new Pose(132.5,12.0, Math.toRadians(0)));
+                drive.setPose(new Pose(133.0,10.0, Math.toRadians(0)));
             }else{
-                drive.setPose(new Pose(135.5,8.8, Math.toRadians(0)));
+                drive.setPose(new Pose(8.8,13.3, Math.toRadians(0)));
             }
         }
     }

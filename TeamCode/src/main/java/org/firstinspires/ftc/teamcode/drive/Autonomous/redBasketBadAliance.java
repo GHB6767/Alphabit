@@ -1,26 +1,20 @@
 package org.firstinspires.ftc.teamcode.drive.Autonomous;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
-@Configurable
-public class redBasketGoodAliance extends OpMode {
+public class redBasketBadAliance extends OpMode {
     private Timer pathTimer, opModeTimer;
     ArtifactControl artifactControl;
     MultipleTelemetry telemetrys;
@@ -35,12 +29,11 @@ public class redBasketGoodAliance extends OpMode {
         PATH5,
         PATH6,
         PATH7,
+        SHOOT7,
         PATH8,
-        SHOOT8,
         PATH9,
-        PATH10,
-        SHOOT10,
-        PATH11
+        SHOOT9,
+        PATH10
     }
 
     PathState pathState;
@@ -57,7 +50,6 @@ public class redBasketGoodAliance extends OpMode {
     public PathChain Path8;
     public PathChain Path9;
     public PathChain Path10;
-    public PathChain Path11;
 
     public void buildPaths(){
         Path1 = follower.pathBuilder()
@@ -118,44 +110,34 @@ public class redBasketGoodAliance extends OpMode {
                 .addPath(
                         new BezierCurve(
                                 new Pose(127.882, 64.027),
-                                new Pose(111.335, 61.172),
-                                new Pose(132.702, 51.618)
+                                new Pose(131.525, 45.821),
+                                new Pose(133.655, 56.232)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(50))
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(60))
                 .build();
 
         Path7 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(132.702, 51.618),
-                                new Pose(133.011, 55.885)
+                                new Pose(133.655, 56.232),
+                                new Pose(88.509, 86.423)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(70))
+                .setLinearHeadingInterpolation(Math.toRadians(60), Math.toRadians(0))
                 .build();
 
         Path8 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(133.011, 55.885),
-                                new Pose(88.631, 85.148)
-                        )
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(70), Math.toRadians(0))
-                .build();
-
-        Path9 = follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                new Pose(88.631, 85.148),
+                                new Pose(88.509, 86.423),
                                 new Pose(128.314, 84.717)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();
 
-        Path10 = follower.pathBuilder()
+        Path9 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
                                 new Pose(128.314, 84.717),
@@ -165,14 +147,14 @@ public class redBasketGoodAliance extends OpMode {
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();
 
-        Path11 = follower.pathBuilder()
+        Path10 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
                                 new Pose(87.957, 85.455),
-                                new Pose(107.305, 85.265)
+                                new Pose(113.563, 85.065)
                         )
                 )
-                .setTangentHeadingInterpolation()
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(67))
                 .build();
     }
     boolean runOnce = false;
@@ -184,7 +166,12 @@ public class redBasketGoodAliance extends OpMode {
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
-                shootArtifact();
+                if(!runOnce){
+                    artifactControl.setAutonomousResetFlags();
+                    artifactControl.setAutonomousThrowFlags();
+                    artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
+                    runOnce = true;
+                }
                 if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                     setPathState(PathState.PATH2);
                     runOnce = false;
@@ -237,24 +224,19 @@ public class redBasketGoodAliance extends OpMode {
             case PATH6:
                 if(!follower.isBusy()){
                     artifactControl.getArtifacts(false);
-                    follower.followPath(Path6,true);
-                    setPathState(PathState.PATH7);
+                    if(pathTimer.getElapsedTimeSeconds() > 3){
+                        follower.followPath(Path6,true);
+                        setPathState(PathState.PATH7);
+                    }
                 }
                 break;
             case PATH7:
                 if(follower.isBusy()){
                     follower.followPath(Path7,false);
-                    setPathState(PathState.PATH8);
+                    setPathState(PathState.SHOOT7);
                 }
                 break;
-            case PATH8:
-                if(!follower.isBusy()){
-                    artifactControl.stopIntakeOuttake();
-                    follower.followPath(Path8,true);
-                    setPathState(PathState.SHOOT8);
-                }
-                break;
-            case SHOOT8:
+            case SHOOT7:
                 if(!follower.isBusy()){
                     if(!runOnce){
                         artifactControl.setAutonomousResetFlags();
@@ -263,28 +245,29 @@ public class redBasketGoodAliance extends OpMode {
                         runOnce = true;
                     }
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
-                        setPathState(PathState.PATH9);
+                        setPathState(PathState.PATH8);
                         runOnce = false;
                     }
                 }
                 break;
-            case PATH9:
+
+            case PATH8:
                 if(!follower.isBusy()){
                     artifactControl.getArtifacts(false);
-                    follower.followPath(Path9,false);
-                    setPathState(PathState.PATH10);
+                    follower.followPath(Path8,false);
+                    setPathState(PathState.PATH9);
                 }
                 break;
-            case PATH10:
+            case PATH9:
                 if(!follower.isBusy()){
                     artifactControl.stopIntakeOuttake();
                     follower.followPath(Path10,false);
-                    setPathState(PathState.SHOOT10);
+                    setPathState(PathState.SHOOT9);
                     runOnce = false;
 
                 }
                 break;
-            case SHOOT10:
+            case SHOOT9:
                 if(!follower.isBusy()){
                     if(!runOnce){
                         artifactControl.stopIntakeOuttake();
@@ -295,13 +278,13 @@ public class redBasketGoodAliance extends OpMode {
                     }
 
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
-                        setPathState(PathState.PATH11);
+                        setPathState(PathState.PATH10);
                         runOnce = false;
                     }
                 }
-            case PATH11:
+            case PATH10:
                 if(!follower.isBusy()){
-                    follower.followPath(Path11);
+                    follower.followPath(Path10);
                 }
                 break;
 
@@ -328,15 +311,6 @@ public class redBasketGoodAliance extends OpMode {
         artifactControl.initServo();
         buildPaths();
         follower.setPose(startPose);
-    }
-
-    public void shootArtifact(){
-        if(!runOnce){
-            artifactControl.setAutonomousResetFlags();
-            artifactControl.setAutonomousThrowFlags();
-            artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-            runOnce = true;
-        }
     }
 
     public void start(){

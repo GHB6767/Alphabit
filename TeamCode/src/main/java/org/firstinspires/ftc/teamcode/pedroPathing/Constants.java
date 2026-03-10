@@ -25,12 +25,15 @@ public class Constants {
     public static double forwardMultiplier = -0.0010602235610886;
     public static double strafeMultiplier = 0.0010602235610886;
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(11.5)
-            .forwardZeroPowerAcceleration(-57.31167)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.012, 0.009))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.65, 0, 0.2, 0.005))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.035,0.0,0.005,0.6,0.05))
-            .centripetalScaling(0.000515);
+            .mass(11.65)
+            .forwardZeroPowerAcceleration(-52.05393)
+            .lateralZeroPowerAcceleration(-65.1432)
+
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.03, 0, 0.005, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.55, 0, 0.2, 0.02))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.75,0.0,0.00005,0.6,0.02))
+
+            .centripetalScaling(0.00052);
 
 
 
@@ -45,9 +48,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            //.useBrakeModeInTeleOp(true)
-            .xVelocity(82.8333)//72.88502
-            .yVelocity(66.4651);//66.2029
+            .xVelocity(80.1536)//72.88502
+            .yVelocity(61.5379);//66.2029
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-2.953) //2.54 era la impartire
@@ -74,7 +76,10 @@ public class Constants {
 //                    )
 //            );
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99,
+            100,
+            1,
+            1.5);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

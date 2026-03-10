@@ -158,10 +158,8 @@ public class RedBasket extends OpMode {
 
                 ;
                // artifactControl.updateBasketDistance(follower,true);
-                if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                     setPathState(PathState.DRIVE_FIRST_ARTEFACT_LINE);
                     runOnece = false;
-                }
 
                 break;
             case SHOOT_PRELOAD:
