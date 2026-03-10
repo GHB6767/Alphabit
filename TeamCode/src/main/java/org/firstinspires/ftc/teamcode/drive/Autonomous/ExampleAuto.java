@@ -176,9 +176,8 @@ public class ExampleAuto extends OpMode {
         if(RRposY >= 72){
             RRposY = Math.abs(RRposY - 72);
         }else if(RRposY < 72){
-            RRposY = -(RRposY - 72);
+            RRposY = RRposY - 72;
         }
         return RRposY;
     }
-
 }
