@@ -1071,7 +1071,7 @@ public class ArtifactControl {
     public double getTurretAngle(){
         double angleTurretPosition;
 
-        angleTurretPosition = (0.0000207725 * (basketDistance*basketDistance)) - (0.00755001*basketDistance) + 0.865169;
+        angleTurretPosition = -1.77365 * Math.pow(basketDistance, 4) + 3.76032 * Math.pow(basketDistance, 3) - 2.62229 * Math.pow(basketDistance, 2) + 0.535479 * basketDistance + 0.41066;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
@@ -1084,7 +1084,7 @@ public class ArtifactControl {
     public double getTurretAngleAuto(double BasketDistance){
         double angleTurretPosition;
 
-        angleTurretPosition = (0.0000207725 * (BasketDistance*BasketDistance)) - (0.00755001*BasketDistance) + 0.865169;
+        angleTurretPosition = -1.77365 * (basketDistance * basketDistance * basketDistance * basketDistance) + 3.76032 * (basketDistance * basketDistance * basketDistance) - 2.62229 * (basketDistance * basketDistance) + 0.535479 * basketDistance + 0.41066;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
@@ -1103,7 +1103,7 @@ public class ArtifactControl {
             distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-minimumBasketDistance;
         }
 
-        double flyWheelPower = ((-3.15936e-7) * distance * distance * distance) + (0.000074273 * distance * distance) - (0.00230794 * distance) + 0.606381;
+        double flyWheelPower = 4.39456 * (distance * distance * distance * distance) - 14.46252 * (distance * distance * distance) + 17.37716 * (distance * distance) - 8.72805 * distance + 2.35651;
 
         if(flyWheelPower > 0.87){//era 0.87
             flyWheelPower = 0.87;
