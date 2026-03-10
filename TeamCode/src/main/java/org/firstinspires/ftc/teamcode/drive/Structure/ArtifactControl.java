@@ -363,8 +363,14 @@ public class ArtifactControl {
         //headingAngle = pinpoint.getHeading();
         headingAngle = Math.toDegrees(drive.getPose().getHeading());
         headingAngle = (headingAngle % 360 + 360) % 360;
-        //limelight.updateRobotOrientationCustom(drive);
         LLHeadingAngle = limelightheadingToPedro(resultLL.getBotpose().getOrientation().getYaw());
+
+        if(!isRedAlliance){
+            headingAngle = convertHeadingToBlueBasket(headingAngle);
+            LLHeadingAngle = convertHeadingToBlueBasket(LLHeadingAngle);
+        }
+
+        //limelight.updateRobotOrientationCustom(drive);
         //limelight.limelight.updateRobotOrientation(Math.toDegrees(drive.getHeading()));
 
 
@@ -381,6 +387,7 @@ public class ArtifactControl {
         LLYPosition = convertFTCCoordsToPedroY(resultLL.getBotpose().getPosition().x * 39.37008);
 
         robotVelocity = Math.abs(drive.getVelocity().getXComponent()) + Math.abs(drive.getVelocity().getYComponent());
+
 
         if(robotVelocity < robotVelocityThreshold){
             isRobotStationary = true;
@@ -1126,6 +1133,16 @@ public class ArtifactControl {
 
         }
     }
+
+
+    public double convertHeadingToBlueBasket(double currentHeading){
+        currentHeading = headingAngle + 180;
+        if(currentHeading >360){
+            currentHeading= currentHeading - 360;
+        }
+        return  currentHeading;
+    }
+
 
     public void manuallyExtraResetPose(boolean leftField){
         if(isRedAlliance) {
