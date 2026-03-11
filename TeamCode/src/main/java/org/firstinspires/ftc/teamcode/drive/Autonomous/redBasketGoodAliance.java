@@ -185,11 +185,15 @@ public class redBasketGoodAliance extends OpMode {
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
-                shootArtifact();
-                if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
-                    setPathState(PathState.PATH2);
-                    runOnce = false;
+                if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
+                    shootArtifact();
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
+                        setPathState(PathState.PATH2);
+                        runOnce = false;
+                    }
                 }
+
                 break;
             case PATH2:
                 if(!follower.isBusy()){
@@ -217,6 +221,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT4:
                 if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
                     shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH5);
@@ -252,6 +257,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT8:
                 if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
                     shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH9);
@@ -277,6 +283,7 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case SHOOT10:
                 if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
                     shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH11);

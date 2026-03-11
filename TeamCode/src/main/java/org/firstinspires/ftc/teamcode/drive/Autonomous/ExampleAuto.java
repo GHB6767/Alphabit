@@ -85,12 +85,15 @@ public class ExampleAuto extends OpMode {
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
-                shootArtifact();//shoot artifact if shoot state
+                if(!follower.isBusy()){
+                    shootArtifact();//shoot artifact if shoot state
 
-                if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
-                    setPathState(PathState.PATH2); //set pathstate to next pathstate
-                    runOnce = false;
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
+                        setPathState(PathState.PATH2); //set pathstate to next pathstate
+                        runOnce = false;
+                    }
                 }
+
                 break;
             case PATH2:
                 artifactControl.getArtifacts(false); //if path need to intake artifacts

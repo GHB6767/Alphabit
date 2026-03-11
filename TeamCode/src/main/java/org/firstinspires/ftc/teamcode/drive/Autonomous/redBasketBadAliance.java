@@ -8,12 +8,13 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
+@Autonomous
 public class redBasketBadAliance extends OpMode {
     private Timer pathTimer, opModeTimer;
     ArtifactControl artifactControl;
@@ -166,6 +167,7 @@ public class redBasketBadAliance extends OpMode {
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
+                artifactControl.wantsToThrowArtifacts = true;
                 shootArtifact();
                 if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                     setPathState(PathState.PATH2);
@@ -198,12 +200,8 @@ public class redBasketBadAliance extends OpMode {
                 break;
             case SHOOT4:
                 if(!follower.isBusy()){
-                    if(!runOnce){
-                        artifactControl.setAutonomousResetFlags();
-                        artifactControl.setAutonomousThrowFlags();
-                        artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-                        runOnce = true;
-                    }
+                    artifactControl.wantsToThrowArtifacts = true;
+                    shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH5);
                         runOnce = false;
@@ -233,6 +231,7 @@ public class redBasketBadAliance extends OpMode {
                 break;
             case SHOOT7:
                 if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
                     shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH8);
@@ -259,6 +258,7 @@ public class redBasketBadAliance extends OpMode {
                 break;
             case SHOOT9:
                 if(!follower.isBusy()){
+                    artifactControl.wantsToThrowArtifacts = true;
                     shootArtifact();
 
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){

@@ -9,8 +9,8 @@ public class VarStorage {
 
     public static int colorSensor_gain = 4;
 
-    public static double leftTurret_initPosition = 0.73;
-    public static double rightTurret_initPosition = 0.73;// daca vr sa resetezi pozitia de la angle turret dai init pui la pozitia de centru dupa pui pozitia de centru aici inapoi
+    public static double leftTurret_initPosition = 0.745;
+    public static double rightTurret_initPosition = 0.745;// daca vr sa resetezi pozitia de la angle turret dai init pui la pozitia de centru dupa pui pozitia de centru aici inapoi
     public static double angleTurret_initPosition = 0.45;
 
     public static double min_leftturret_position = 0.15;
@@ -42,17 +42,17 @@ public class VarStorage {
     public static double max_FlyWheelDistance = 124.0;
     public static double horizontalTurretDeadzone = 0.0015;
     public static double verticalTurretDeadzone = 0.0015;
-    public static double targetFlyWheelSpeed = 2400.0;
-    public static double intakeRunTime = 250;
-    public static double intakeFirstRunTime = 550.0;
+    public static double targetFlyWheelSpeed = 2300.0;
+    public static double intakeRunTime = 225;
+    public static double intakeFirstRunTime = 500.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;
     public static double intakeRunTimeManual = 300.0;
-    public static double intakeFirstRunTimeManual = 550.0;
+    public static double intakeFirstRunTimeManual = 450.0;
 
     public static double angleTurretSafePosition = 0.45;
-    public static double leftTurretSafePosition = 0.73;
-    public static double rightTurretSafePosition = 0.73;
+    public static double leftTurretSafePosition = 0.745;
+    public static double rightTurretSafePosition = 0.745;
     public static double defaultFlyWheelSafePower = 0.80;
     public static double defaultFlyWheelPowerAuto = 0.86;
     public static double rightDirectionAutoTurretOffset = 0.0;

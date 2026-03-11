@@ -422,11 +422,11 @@ public class ArtifactControl {
                 autoArtifactsIntake();
             }
 
-            if(robotAutoShootToggle) {
+            /*if(robotAutoShootToggle) {
                 autoArtifactsShooting();
 
                 autoArtifactCounter();
-            }
+            }*/
         }
 
         if(triggerPresed(gamepad2.right_trigger)){
@@ -719,14 +719,14 @@ public class ArtifactControl {
     }
 
     public void setCustomTargetFlyWheelVelocity(double flyWheelPower){
-        currentTargetFlyWheelVelocity = (targetFlyWheelSpeed * flyWheelPower) - 100.0;
+        currentTargetFlyWheelVelocity = (-1.17236 * flyWheelPower * flyWheelPower * flyWheelPower + 1.9961 * flyWheelPower * flyWheelPower + 1.6375 * flyWheelPower - 0.160397)*1000;
     }
 
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower, boolean autonomousMode){
         if(useCustomPower) {
             setCustomTargetFlyWheelVelocity(customFlyWheelPower);
 
-            if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0 || Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0) {
+            if(Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity - 50.0) {
                 Outtake_LeftMotor.setPower(customFlyWheelPower);
                 Outtake_RightMotor.setPower(customFlyWheelPower);
             }else{
@@ -742,12 +742,12 @@ public class ArtifactControl {
             if(autonomousMode){
                 setCustomTargetFlyWheelVelocity(defaultFlyWheelPowerAuto);
 
-                if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0 || Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0) {
+                if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) {
                     Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto);
                     Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto);
                 }else{
-                    Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto + 0.13);
-                    Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto + 0.13);
+                    Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto + flyWheelAggressiveAcceleration);
+                    Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto + flyWheelAggressiveAcceleration);
                 }
             }else{
                 Outtake_LeftMotor.setPower(defaultFlyWheelPower);
@@ -809,7 +809,7 @@ public class ArtifactControl {
 
     public void burstShootingArtifacts(){
         if(burstCounter < 3) {
-            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity) || timer.milliseconds() > timeoutTime) ){
+            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) || timer.milliseconds() > timeoutTime) ){
                 timer.reset();
                 oneTimeBurst = true;
                 intakeRunning = true;
@@ -980,12 +980,12 @@ public class ArtifactControl {
             currentRedAlliance = redAlliance;
         }
 
-        double positive_x_position = Math.abs(currentXPosition + 61);
+        double positive_x_position = Math.abs(currentXPosition + 60);
         double positive_y_position;
         if(currentRedAlliance){
-            positive_y_position = Math.abs((currentYPosition - 61));
+            positive_y_position = Math.abs((currentYPosition - 62));
         }else{
-            positive_y_position = Math.abs((currentYPosition + 61));
+            positive_y_position = Math.abs((currentYPosition + 62));
         }
 
         double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));
@@ -1078,20 +1078,31 @@ public class ArtifactControl {
     public double getTurretAngle(){
         double angleTurretPosition;
 
-        angleTurretPosition = -1.77365 * Math.pow(basketDistance, 4) + 3.76032 * Math.pow(basketDistance, 3) - 2.62229 * Math.pow(basketDistance, 2) + 0.535479 * basketDistance + 0.41066;
+        double customDistance = basketDistance / 100.0;
+
+        angleTurretPosition = -0.949383 * customDistance * customDistance * customDistance
+                + 2.76576   * customDistance * customDistance
+                - 2.68289   * customDistance
+                + 1.1287;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
         }else if(angleTurretPosition < 0.25){
             angleTurretPosition = 0.25;
         }
+
         return angleTurretPosition;
     }
 
     public double getTurretAngleAuto(double BasketDistance){
         double angleTurretPosition;
 
-        angleTurretPosition = -1.77365 * (basketDistance * basketDistance * basketDistance * basketDistance) + 3.76032 * (basketDistance * basketDistance * basketDistance) - 2.62229 * (basketDistance * basketDistance) + 0.535479 * basketDistance + 0.41066;
+        double customDistance = basketDistance / 100.0;
+
+        angleTurretPosition = -0.949383 * customDistance * customDistance * customDistance
+                + 2.76576   * customDistance * customDistance
+                - 2.68289   * customDistance
+                + 1.1287;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
@@ -1110,12 +1121,16 @@ public class ArtifactControl {
             distance = getBasketDistance(custom_x_pos, custom_y_pos, redAlliance, true)-minimumBasketDistance;
         }
 
-        double flyWheelPower = 4.39456 * (distance * distance * distance * distance) - 14.46252 * (distance * distance * distance) + 17.37716 * (distance * distance) - 8.72805 * distance + 2.35651;
+        distance = distance / 100.0;
 
-        if(flyWheelPower > 0.87){//era 0.87
-            flyWheelPower = 0.87;
-        }else if(flyWheelPower < 0.6){
-            flyWheelPower = 0.6;//ieufbeufsbf
+        double flyWheelPower = 0.0240295 * distance * distance
+                + 0.296605  * distance
+                + 0.598358;
+
+        if(flyWheelPower > 1){//era 0.87
+            flyWheelPower = 1.0;
+        }else if(flyWheelPower < 0.65){
+            flyWheelPower = 0.65;//ieufbeufsbf
         }
 
         return flyWheelPower;
@@ -1242,7 +1257,12 @@ public class ArtifactControl {
 
         double angleTurretPosition;
 
-        angleTurretPosition = (0.0000207725 * (distanceToBasket*distanceToBasket)) - (0.00755001*distanceToBasket) + 0.865169;
+        double customDistance = distanceToBasket / 100.0;
+
+        angleTurretPosition = -0.949383 * customDistance * customDistance * customDistance
+                + 2.76576   * customDistance * customDistance
+                - 2.68289   * customDistance
+                + 1.1287;
 
         if(angleTurretPosition > 0.75){
             angleTurretPosition = 0.75;
