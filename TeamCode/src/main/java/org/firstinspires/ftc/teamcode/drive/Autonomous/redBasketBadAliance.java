@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class redBasketBadAliance extends OpMode {
-    private Timer pathTimer, opModeTimer;
+    private Timer pathTimer, opModeTimer,stayTimer;
     ArtifactControl artifactControl;
     MultipleTelemetry telemetrys;
     public Follower follower;
@@ -166,16 +166,24 @@ public class redBasketBadAliance extends OpMode {
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
-                shootArtifact();
-                if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
-                    setPathState(PathState.PATH2);
-                    runOnce = false;
+                if(!follower.isBusy()){
+                    shootArtifact();
+                    if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
+                        setPathState(PathState.PATH2);
+                        runOnce = false;
+                    }
                 }
+
                 break;
             case PATH2:
                 if(!follower.isBusy()){
-                    follower.followPath(Path2,false);
-                    setPathState(PathState.PATH3);
+                    stayTimer.resetTimer();
+
+                    follower.followPath(Path2,true);
+                    if(stayTimer.getElapsedTimeSeconds() > 0.5){
+                        setPathState(PathState.PATH3);
+
+                    }
                 }
                 break;
             case PATH3:
@@ -198,12 +206,7 @@ public class redBasketBadAliance extends OpMode {
                 break;
             case SHOOT4:
                 if(!follower.isBusy()){
-                    if(!runOnce){
-                        artifactControl.setAutonomousResetFlags();
-                        artifactControl.setAutonomousThrowFlags();
-                        artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,false);
-                        runOnce = true;
-                    }
+                    shootArtifact();
                     if(!artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
                         setPathState(PathState.PATH5);
                         runOnce = false;
@@ -212,21 +215,27 @@ public class redBasketBadAliance extends OpMode {
                 break;
             case PATH5:
                 if(!follower.isBusy()){
-                    follower.followPath(Path5,false);
-                    setPathState(PathState.PATH6);
+                    stayTimer.resetTimer();
+                    follower.followPath(Path5,true);
+                    if(stayTimer.getElapsedTimeSeconds() > 0.5){
+                        setPathState(PathState.PATH6);
+                    }
                 }
                 break;
             case PATH6:
                 if(!follower.isBusy()){
+                    stayTimer.resetTimer();
                     artifactControl.getArtifacts(false);
-                    if(pathTimer.getElapsedTimeSeconds() > 3){
-                        follower.followPath(Path6,true);
+                    follower.followPath(Path6,true);
+                    if(stayTimer.getElapsedTimeSeconds() > 1){
                         setPathState(PathState.PATH7);
+
                     }
+
                 }
                 break;
             case PATH7:
-                if(follower.isBusy()){
+                if(!follower.isBusy()){
                     follower.followPath(Path7,false);
                     setPathState(PathState.SHOOT7);
                 }

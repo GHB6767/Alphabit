@@ -26,6 +26,8 @@ public class FarRedBasket extends OpMode {
     public Follower follower;
 
     public enum PathState {
+        PATH0,
+        SHOOT0,
         PATH1,
         PATH2,
         SHOOT1,
@@ -45,6 +47,7 @@ public class FarRedBasket extends OpMode {
 
     public Pose startPose = new Pose(82.531, 8.667, Math.toRadians(0));
 
+    public  PathChain Path0;
     public PathChain Path1;
     public PathChain Path2;
     public PathChain Path3;
@@ -58,6 +61,17 @@ public class FarRedBasket extends OpMode {
     boolean runOnce = false;
 
     public void buildPaths() {
+
+        Path0 = follower.pathBuilder()
+                .addPath(
+                        new BezierLine(
+                                new Pose(80.695, 6.665),
+                                new Pose(86.767, 10.846)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .build();
+
         Path1 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
@@ -153,10 +167,22 @@ public class FarRedBasket extends OpMode {
 
     public void statePathUpdate() {
         switch (pathState) {
+            case PATH0:
+                follower.followPath(Path0,true);
+                setPathState(PathState.SHOOT0);
+            case SHOOT0:
+                if(!follower.isBusy()){
+                    shootArtifact();
+                    if( !artifactControl.wantsToThrowArtifacts || pathTimer.getElapsedTimeSeconds() > 5){
+                        setPathState(PathState.PATH1);
+                    }
+                }
             case PATH1:
-                artifactControl.getArtifacts(false);
-                follower.followPath(Path1, true);
-                setPathState(PathState.PATH2);
+                if(!follower.isBusy()){
+                    artifactControl.getArtifacts(false);
+                    follower.followPath(Path1, true);
+                    setPathState(PathState.PATH2);
+                }
                 break;
 
             case PATH2:
