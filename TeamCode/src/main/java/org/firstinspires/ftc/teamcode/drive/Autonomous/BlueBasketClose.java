@@ -47,7 +47,7 @@ public class BlueBasketClose extends OpMode {
 
     PathState pathState;
 
-    public Pose startPose = new Pose(116.920,132.140,Math.toRadians(36.5));
+    public Pose startPose = new Pose(27.08,132.14,Math.toRadians(143.5));
 
     public PathChain Path1;
     public PathChain Path2;
