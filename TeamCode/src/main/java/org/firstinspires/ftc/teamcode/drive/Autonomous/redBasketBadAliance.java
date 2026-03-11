@@ -297,6 +297,7 @@ public class redBasketBadAliance extends OpMode {
         VarStorage.autonomous_case = 2;
         artifactControl = new ArtifactControl(hardwareMap, gamepad2,gamepad1,telemetrys);
         pathState = PathState.PATH1;
+        stayTimer = new Timer();
         pathTimer = new Timer();
         opModeTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);

@@ -19,6 +19,7 @@ import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorag
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.lightIntensityThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.marginThreshold;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.minimumBasketDistance;
+import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.powerBoost;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_push_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.pushArtifact_retract_position;
 import static org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage.rightDirectionAutoTurretOffset;
@@ -726,9 +727,9 @@ public class ArtifactControl {
         if(useCustomPower) {
             setCustomTargetFlyWheelVelocity(customFlyWheelPower);
 
-            if(Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity - 50.0) {
-                Outtake_LeftMotor.setPower(customFlyWheelPower);
-                Outtake_RightMotor.setPower(customFlyWheelPower);
+            if(Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity - 100.0) {
+                Outtake_LeftMotor.setPower(customFlyWheelPower + powerBoost);
+                Outtake_RightMotor.setPower(customFlyWheelPower + powerBoost);
             }else{
                 if (customFlyWheelPower + flyWheelAggressiveAcceleration <= 1.0) {
                     Outtake_LeftMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
@@ -742,7 +743,7 @@ public class ArtifactControl {
             if(autonomousMode){
                 setCustomTargetFlyWheelVelocity(defaultFlyWheelPowerAuto);
 
-                if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) {
+                if(Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-75.0) {
                     Outtake_LeftMotor.setPower(defaultFlyWheelPowerAuto);
                     Outtake_RightMotor.setPower(defaultFlyWheelPowerAuto);
                 }else{
@@ -980,12 +981,12 @@ public class ArtifactControl {
             currentRedAlliance = redAlliance;
         }
 
-        double positive_x_position = Math.abs(currentXPosition + 60);
+        double positive_x_position = Math.abs(currentXPosition + 60.5);
         double positive_y_position;
         if(currentRedAlliance){
-            positive_y_position = Math.abs((currentYPosition - 62));
+            positive_y_position = Math.abs((currentYPosition - 60.5));
         }else{
-            positive_y_position = Math.abs((currentYPosition + 62));
+            positive_y_position = Math.abs((currentYPosition + 60.5));
         }
 
         double calculatedAngle = Math.abs(Math.toDegrees(Math.atan2(positive_x_position, positive_y_position)));

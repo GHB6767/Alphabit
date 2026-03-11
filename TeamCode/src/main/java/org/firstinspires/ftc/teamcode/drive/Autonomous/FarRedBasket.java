@@ -320,6 +320,7 @@ public class FarRedBasket extends OpMode {
         pathState = PathState.PATH1;
         pathTimer = new Timer();
         opModeTimer = new Timer();
+
         follower = Constants.createFollower(hardwareMap);
         telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         artifactControl.initServo();

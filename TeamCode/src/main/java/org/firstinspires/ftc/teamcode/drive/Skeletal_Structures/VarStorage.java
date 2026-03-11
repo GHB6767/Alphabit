@@ -9,8 +9,8 @@ public class VarStorage {
 
     public static int colorSensor_gain = 4;
 
-    public static double leftTurret_initPosition = 0.745;
-    public static double rightTurret_initPosition = 0.745;// daca vr sa resetezi pozitia de la angle turret dai init pui la pozitia de centru dupa pui pozitia de centru aici inapoi
+    public static double leftTurret_initPosition = 0.74;
+    public static double rightTurret_initPosition = 0.74;// daca vr sa resetezi pozitia de la angle turret dai init pui la pozitia de centru dupa pui pozitia de centru aici inapoi
     public static double angleTurret_initPosition = 0.45;
 
     public static double min_leftturret_position = 0.15;
@@ -33,7 +33,7 @@ public class VarStorage {
     public static double y_blue_basket_angleTurret = -48.0;
 
     public static double marginThreshold = 10.5;
-    public static double turretServoPosToDegree = 0.85/333.33;
+    public static double turretServoPosToDegree = 0.24/90.0;
     public static double max_TurretAngleAuto = 0.75;
     public static double min_TurretAngleAuto = 0.25;
     public static double max_TurretAngleDistance = 124.0;
@@ -44,26 +44,27 @@ public class VarStorage {
     public static double verticalTurretDeadzone = 0.0015;
     public static double targetFlyWheelSpeed = 2300.0;
     public static double intakeRunTime = 225;
-    public static double intakeFirstRunTime = 500.0;
+    public static double intakeFirstRunTime = 435.0;
     public static double intakeMaxIdleRunTime = 1000.0;
     public static double timeoutTime = 2000.0;
     public static double intakeRunTimeManual = 300.0;
-    public static double intakeFirstRunTimeManual = 450.0;
+    public static double intakeFirstRunTimeManual = 435.0;
 
     public static double angleTurretSafePosition = 0.45;
-    public static double leftTurretSafePosition = 0.745;
-    public static double rightTurretSafePosition = 0.745;
+    public static double leftTurretSafePosition = 0.74;
+    public static double rightTurretSafePosition = 0.74;
     public static double defaultFlyWheelSafePower = 0.80;
     public static double defaultFlyWheelPowerAuto = 0.86;
     public static double rightDirectionAutoTurretOffset = 0.0;
     public static double rightDirectionManualTurretOffset = 0.0;
-    public static double leftDirectionAutoTurretOffset = 0.000;
+    public static double leftDirectionAutoTurretOffset = -0.01;
     public static double robotVelocityThreshold = 2.5;
     public static double robotAngularVelocityThreshold = 0.15;
     public static double minimumBasketDistance = 0.0;
-    public static double flyWheelAggressiveAcceleration = 0.15;
+    public static double flyWheelAggressiveAcceleration = 0.20;
     public static double leftDistanceThreshold = 20.0;
     public static double rightDistanceThreshold = 20.0;
     public static double autoStartIntakeTempTimer = 1000.0;
     public static double lightIntensityThreshold = 0.7;
+    public static double powerBoost = 0.025;
 }
