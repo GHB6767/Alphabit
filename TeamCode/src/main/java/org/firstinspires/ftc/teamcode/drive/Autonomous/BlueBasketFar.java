@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
 @Configurable
-public class RedBasketFar extends OpMode {
+public class BlueBasketFar extends OpMode {
     private Timer pathTimer, opModeTimer, stayTimer;
     ArtifactControl artifactControl;
     MultipleTelemetry telemetrys;
@@ -44,7 +44,7 @@ public class RedBasketFar extends OpMode {
 
     PathState pathState;
 
-    public Pose startPose = new Pose(81.033, 6.892, Math.toRadians(0));
+    public Pose startPose = new Pose(62.966, 6.892, Math.toRadians(180));
 
     public PathChain Path1;
     public PathChain Path2;
@@ -62,84 +62,84 @@ public class RedBasketFar extends OpMode {
         Path1 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(81.034, 6.892),
-                                new Pose(85.071, 15.951)
+                                new Pose(62.966, 6.892),
+                                new Pose(58.929, 15.951)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();
 
         Path2 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(85.071, 15.951),
-                                new Pose(125.692, 19.126)
+                                new Pose(58.929, 15.951),
+                                new Pose(18.308, 19.126)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(325))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-145))
                 .build();
 
         Path3 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(125.692, 19.126),
-                                new Pose(136.277, 24.086),
-                                new Pose(133.588, 11.520)
+                                new Pose(18.308, 19.126),
+                                new Pose(7.723, 24.086),
+                                new Pose(10.412, 11.520)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(325), Math.toRadians(330))
+                .setLinearHeadingInterpolation(Math.toRadians(-145), Math.toRadians(-150))
                 .build();
 
         Path4 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(133.588, 11.520),
-                                new Pose(133.938, 8.225)
+                                new Pose(10.412, 11.520),
+                                new Pose(10.062, 8.225)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(330), Math.toRadians(350))
+                .setLinearHeadingInterpolation(Math.toRadians(-150), Math.toRadians(-170))
                 .build();
 
         Path5 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(133.938, 8.225),
-                                new Pose(130.492, 22.178),
-                                new Pose(87.545, 11.575)
+                                new Pose(10.062, 8.225),
+                                new Pose(13.508, 22.178),
+                                new Pose(56.455, 11.575)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(350), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(-170), Math.toRadians(180))
                 .build();
 
         Path6 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(87.545, 11.575),
-                                new Pose(71.098, 37.334),
-                                new Pose(133.495, 36.089)
+                                new Pose(56.455, 11.575),
+                                new Pose(72.902, 37.334),
+                                new Pose(10.505, 36.089)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();
 
         Path7 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(133.495, 36.089),
-                                new Pose(86.111, 11.775)
+                                new Pose(10.505, 36.089),
+                                new Pose(57.889, 11.775)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();
 
         Path8 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(86.111, 11.775),
-                                new Pose(132.145, 14.705)
+                                new Pose(57.889, 11.775),
+                                new Pose(11.855, 14.705)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(110))
                 .build();
     }
 
@@ -280,7 +280,7 @@ public class RedBasketFar extends OpMode {
 
     @Override
     public void init() {
-        VarStorage.autonomous_case = 2;
+        VarStorage.autonomous_case = 1;
         artifactControl = new ArtifactControl(hardwareMap, gamepad2, gamepad1, telemetrys);
         pathState = PathState.PATH1;
         pathTimer = new Timer();
@@ -298,7 +298,7 @@ public class RedBasketFar extends OpMode {
         if (!runOnce) {
             artifactControl.setAutonomousResetFlags();
             artifactControl.setAutonomousThrowFlags();
-            artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()), convertPedroToFTCCoordsY(follower.getPose().getX()), true, false);
+            artifactControl.setAutonomousShooter(Math.toDegrees(follower.getHeading()), convertPedroToFTCCoordsX(follower.getPose().getY()), convertPedroToFTCCoordsY(follower.getPose().getX()), false, false);
             runOnce = true;
         }
     }
@@ -314,7 +314,7 @@ public class RedBasketFar extends OpMode {
         statePathUpdate();
 
         if (artifactControl.wantsToThrowArtifacts) {
-            artifactControl.throwArtifacts(artifactControl.getFlyWheelPower(convertPedroToFTCCoordsX(follower.getPose().getY()), convertPedroToFTCCoordsY(follower.getPose().getX()), true, true), true, true);
+            artifactControl.throwArtifacts(artifactControl.getFlyWheelPower(convertPedroToFTCCoordsX(follower.getPose().getY()), convertPedroToFTCCoordsY(follower.getPose().getX()), false, true), true, true);
         }
         //artifactControl.throwArtifacts(artifactControl.getFlyWheelPower(convertPedroToFTCCoordsX(follower.getPose().getY()),convertPedroToFTCCoordsY(follower.getPose().getX()),true,true), true, true);
 

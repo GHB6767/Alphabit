@@ -1307,7 +1307,12 @@ public class ArtifactControl {
     }
 
     public void setAutonomousShooter(double customHeadingAngle, double x_pos, double y_pos, boolean redAlliance, boolean audience){
-        setTurretAngle(x_pos,y_pos,customHeadingAngle, redAlliance);
+        if(redAlliance){
+            setTurretAngle(x_pos,y_pos,customHeadingAngle, redAlliance);
+        }else{
+            setTurretAngle(x_pos,y_pos,convertHeadingToBlueBasket(customHeadingAngle), redAlliance);
+
+        }
         if(!audience) {
             setAngleTurretAngle(x_pos, y_pos, redAlliance);
         }else{
