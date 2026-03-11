@@ -720,7 +720,7 @@ public class ArtifactControl {
     }
 
     public void setCustomTargetFlyWheelVelocity(double flyWheelPower){
-        currentTargetFlyWheelVelocity = (-1.17236 * flyWheelPower * flyWheelPower * flyWheelPower + 1.9961 * flyWheelPower * flyWheelPower + 1.6375 * flyWheelPower - 0.160397)*1000;
+        currentTargetFlyWheelVelocity = ((-1.17236 * flyWheelPower * flyWheelPower * flyWheelPower + 1.9961 * flyWheelPower * flyWheelPower + 1.6375 * flyWheelPower - 0.160397)*1000);
     }
 
     public void throwArtifacts(double customFlyWheelPower, boolean useCustomPower, boolean autonomousMode){

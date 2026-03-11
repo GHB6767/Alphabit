@@ -40,7 +40,8 @@ public class redBasketGoodAliance extends OpMode {
         PATH9,
         PATH10,
         SHOOT10,
-        PATH11
+        PATH11,
+        Finish
     }
 
     PathState pathState;
@@ -181,7 +182,7 @@ public class redBasketGoodAliance extends OpMode {
     public void statePathUpdate(){
         switch (pathState){
             case PATH1:
-                follower.followPath(Path1,0.5, true);
+                follower.followPath(Path1,1, true);
                 setPathState(PathState.SHOOT1);
                 break;
             case SHOOT1:
@@ -197,10 +198,10 @@ public class redBasketGoodAliance extends OpMode {
             case PATH2:
                 if(!follower.isBusy()){
                     //stayTimer.resetTimer();
-                    follower.followPath(Path2,0.5,false);
-                    //if(stayTimer.getElapsedTimeSeconds() > 0.5){
+                    follower.followPath(Path2,1,false);
+                    if(pathTimer.getElapsedTimeSeconds() > 3.75){
                         setPathState(PathState.PATH3);
-                    //}
+                    }
                 }
                 break;
             case PATH3:
@@ -209,7 +210,7 @@ public class redBasketGoodAliance extends OpMode {
                         artifactControl.getArtifacts(false);
                         runOnce = true;
                     }
-                    follower.followPath(Path3,0.5,true);
+                    follower.followPath(Path3,1,true);
                     setPathState(PathState.PATH4);
                     runOnce = false;
                 }
@@ -217,7 +218,7 @@ public class redBasketGoodAliance extends OpMode {
             case PATH4:
                 if(!follower.isBusy()){
                     artifactControl.stopIntakeOuttake();
-                    follower.followPath(Path4,0.5,true);
+                    follower.followPath(Path4,1,true);
                     setPathState(PathState.SHOOT4);
                 }
                 break;
@@ -232,14 +233,17 @@ public class redBasketGoodAliance extends OpMode {
                 break;
             case PATH5:
                 if(!follower.isBusy()){
-                    follower.followPath(Path5,0.5,true);
-                    setPathState(PathState.PATH6);
+                    follower.followPath(Path5,1,true);
+                    if(pathTimer.getElapsedTimeSeconds() > 2.75){
+                        setPathState(PathState.PATH6);
+                    }
+
                 }
                 break;
             case PATH6:
                 if(!follower.isBusy()){
                     artifactControl.getArtifacts(false);
-                    follower.followPath(Path6,0.5,true);
+                    follower.followPath(Path6,1,true);
                     setPathState(PathState.PATH7);
                 }
                 break;
@@ -248,7 +252,7 @@ public class redBasketGoodAliance extends OpMode {
                     stayTimer.resetTimer();
 
                     //if(pathTimer.getElapsedTimeSeconds()>1){
-                        follower.followPath(Path7,0.5,false);
+                        follower.followPath(Path7,1,false);
                         setPathState(PathState.PATH8);
                     //}
 
@@ -257,7 +261,7 @@ public class redBasketGoodAliance extends OpMode {
             case PATH8:
                 if(!follower.isBusy()){
                     artifactControl.stopIntakeOuttake();
-                    follower.followPath(Path8,0.5,true);
+                    follower.followPath(Path8,1,true);
                     setPathState(PathState.SHOOT8);
                 }
                 break;
@@ -273,14 +277,14 @@ public class redBasketGoodAliance extends OpMode {
             case PATH9:
                 if(!follower.isBusy()){
                     artifactControl.getArtifacts(false);
-                    follower.followPath(Path9,0.5,false);
+                    follower.followPath(Path9,1,false);
                     setPathState(PathState.PATH10);
                 }
                 break;
             case PATH10:
                 if(!follower.isBusy()){
                     artifactControl.stopIntakeOuttake();
-                    follower.followPath(Path10,0.5,false);
+                    follower.followPath(Path10,1,false);
                     setPathState(PathState.SHOOT10);
                     runOnce = false;
 
@@ -296,12 +300,18 @@ public class redBasketGoodAliance extends OpMode {
                 }
             case PATH11:
                 if(!follower.isBusy()){
-                    follower.followPath(Path11, 0.5,true);
+                    follower.followPath(Path11, 1,true);
+                    setPathState(PathState.Finish);
                 }
                 break;
+            case Finish:
+                if(!follower.isBusy()){
+                    follower.breakFollowing();
+                }
 
             default:
                 telemetrys.addLine("no state commanded");
+
                 break;
         }
     }
