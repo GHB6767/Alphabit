@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Disabled
 @Configurable
 public class ExampleAuto extends OpMode {
-    private Timer pathTimer, opModeTimer;
+    private Timer pathTimer, opModeTimer, stayTimer;
     ArtifactControl artifactControl;
     MultipleTelemetry telemetrys;
     public Follower follower;
