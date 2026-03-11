@@ -74,6 +74,8 @@ public class TeleOp_Decode extends LinearOpMode {
                 telemetrys.addData("[->] MANUAL CONTROL ", " ACTIVE [<-]");
                 telemetrys.addData(" ", " ");
             }
+            telemetrys.addData("firstIf ", artifactControl.firstIf);
+            telemetrys.addData("SecondIf ", artifactControl.secondIf);
 
             telemetrys.addLine("-----------[Limelight]-----------");
             telemetrys.addData("Tx", artifactControl.resultLL.getTx());

@@ -251,11 +251,14 @@ public class ArtifactControl {
     public boolean generalIntakeActivaton = false;
     public boolean robotAutoShootToggle = false;
     public boolean robotAutoIntakeToggle = false; // pentru auto intake pui true la inceput
+    boolean oneTimeAutoIntake = false;
 
     public int burstCounter = 0;
     public int forceActivationOfIntake_counter = 0;
     public int artifactCounter = 0;
     public LLResult resultLL;
+    public boolean firstIf = false;
+    public boolean secondIf = false;
 
     public boolean triggerPresed(float trigger){
         if(trigger > 0.25){
@@ -413,6 +416,7 @@ public class ArtifactControl {
             areaOfThrowing();
             if(allowedToShoot) {
                 updateShooter();
+                throwArtifacts(getFlyWheelPower(0, 0, false, false), true, false);
             }
 
             if(gamepad2.aWasPressed()){
@@ -421,6 +425,13 @@ public class ArtifactControl {
 
             if(robotAutoIntakeToggle && !wantsToThrowArtifacts) {
                 autoArtifactsIntake();
+                oneTimeAutoIntake = false;
+            }else if(robotAutoIntakeToggle && wantsToThrowArtifacts){
+                if(!oneTimeAutoIntake){
+                    oneTimeAutoIntake = true;
+                    Intake_LeftMotor.setPower(0);
+                    Intake_RightMotor.setPower(0);
+                }
             }
 
             /*if(robotAutoShootToggle) {
@@ -658,7 +669,9 @@ public class ArtifactControl {
         }else{
             robotWantsToStartIntake = false;
             if(distanceTimeSnapshot+autoStartIntakeTempTimer < timer.milliseconds()) {
-                stopIntakeOuttake();
+                //stopIntakeOuttake();
+                Intake_LeftMotor.setPower(0);
+                Intake_RightMotor.setPower(0);
             }
         }
     }
@@ -727,9 +740,17 @@ public class ArtifactControl {
         if(useCustomPower) {
             setCustomTargetFlyWheelVelocity(customFlyWheelPower);
 
-            if(Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity - 100.0) {
-                Outtake_LeftMotor.setPower(customFlyWheelPower + powerBoost);
-                Outtake_RightMotor.setPower(customFlyWheelPower + powerBoost);
+            if(Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity - 25.0) {
+
+                if(customFlyWheelPower + powerBoost <= 1) {
+                    Outtake_LeftMotor.setPower(customFlyWheelPower + powerBoost);
+                    Outtake_RightMotor.setPower(customFlyWheelPower + powerBoost);
+                }else{
+                    Outtake_LeftMotor.setPower(1.0);
+                    Outtake_RightMotor.setPower(1.0);
+                }
+                firstIf = true;
+                secondIf = false;
             }else{
                 if (customFlyWheelPower + flyWheelAggressiveAcceleration <= 1.0) {
                     Outtake_LeftMotor.setPower(customFlyWheelPower + flyWheelAggressiveAcceleration);
@@ -738,6 +759,8 @@ public class ArtifactControl {
                     Outtake_LeftMotor.setPower(1.0);
                     Outtake_RightMotor.setPower(1.0);
                 }
+                secondIf = true;
+                firstIf = false;
             }
         }else{
             if(autonomousMode){
@@ -810,7 +833,7 @@ public class ArtifactControl {
 
     public void burstShootingArtifacts(){
         if(burstCounter < 3) {
-            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-50.0) || timer.milliseconds() > timeoutTime) ){
+            if(!oneTimeBurst && ((Outtake_LeftMotor.getVelocity() > currentTargetFlyWheelVelocity-60.0 || Outtake_RightMotor.getVelocity() > currentTargetFlyWheelVelocity-60.0) || timer.milliseconds() > timeoutTime) ){
                 timer.reset();
                 oneTimeBurst = true;
                 intakeRunning = true;
@@ -871,7 +894,7 @@ public class ArtifactControl {
             burstCounter = 0;
             wantsToThrowArtifacts = false;
             forceActivationOfIntake_counter = 0;
-            stopIntakeOuttake();
+            //stopIntakeOuttake();
         }
     }
 
@@ -880,6 +903,11 @@ public class ArtifactControl {
         Intake_RightMotor.setPower(0);
         Outtake_LeftMotor.setPower(0);
         Outtake_RightMotor.setPower(0);
+    }
+
+    public void stopIntake(){
+        Intake_LeftMotor.setPower(0);
+        Intake_RightMotor.setPower(0);
     }
 
     public double convertFTCCoordsToPedroX(double x){
@@ -1315,6 +1343,6 @@ public class ArtifactControl {
         pushArtifact = false;
         PushArtifactServo.setPosition(pushArtifact_retract_position);
 
-        stopIntakeOuttake();
+        stopIntake();
     }
 }
