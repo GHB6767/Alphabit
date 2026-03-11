@@ -46,7 +46,7 @@ public class VarStorage {
     public static double intakeRunTime = 315.0;
     public static double intakeFirstRunTime = 435.0;
     public static double intakeMaxIdleRunTime = 1000.0;
-    public static double timeoutTime = 2000.0;
+    public static double timeoutTime = 1000.0;
     public static double intakeRunTimeManual = 315.0;
     public static double intakeFirstRunTimeManual = 435.0;
 
