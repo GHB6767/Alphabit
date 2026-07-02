@@ -88,10 +88,10 @@ public class ArtifactControl {
     DcMotorEx Outtake_LeftMotor;
     DcMotorEx Outtake_RightMotor;
 
-    DistanceSensor leftDistanceSensor;
-    DistanceSensor rightDistanceSensor;
+    //DistanceSensor leftDistanceSensor;
+    //DistanceSensor rightDistanceSensor;
 
-    NormalizedColorSensor colorSensor;
+    //NormalizedColorSensor colorSensor;
 
     Servo LeftTurret;
     Servo RightTurret;
@@ -176,12 +176,12 @@ public class ArtifactControl {
 
         PushArtifactServo = hwdmap.get(Servo.class, "PushLastArtifact");
 
-        leftDistanceSensor = hwdmap.get(DistanceSensor.class, "leftDistanceSensor");
-        rightDistanceSensor = hwdmap.get(DistanceSensor.class, "rightDistanceSensor");
+        //leftDistanceSensor = hwdmap.get(DistanceSensor.class, "leftDistanceSensor");
+        //rightDistanceSensor = hwdmap.get(DistanceSensor.class, "rightDistanceSensor");
 
-        colorSensor = hwdmap.get(NormalizedColorSensor.class, "colorSensor");
+        //colorSensor = hwdmap.get(NormalizedColorSensor.class, "colorSensor");
 
-        colorSensor.setGain(colorSensor_gain);
+        //colorSensor.setGain(colorSensor_gain);
     }
 
     public double current_rightturret_position= rightTurret_initPosition + rightDirectionManualTurretOffset;
@@ -219,8 +219,8 @@ public class ArtifactControl {
     public double robotAngularVelocity = 0.0;
     public double robotAngleAprilTag = 0.0;
     public double currentTargetFlyWheelVelocity = targetFlyWheelSpeed;
-    public double leftDistanceSensor_distance = 0.0;
-    public double rightDistanceSensor_distance = 0.0;
+    //public double leftDistanceSensor_distance = 0.0;
+    //public double rightDistanceSensor_distance = 0.0;
     public double redNorm = 0.0;
     public double greenNorm = 0.0;
     public double blueNorm = 0.0;
@@ -352,16 +352,16 @@ public class ArtifactControl {
 
 
 
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        //NormalizedRGBA colors = colorSensor.getNormalizedColors();
 
-        lightIntensity = ((OpticalDistanceSensor) colorSensor).getLightDetected();
+        //lightIntensity = ((OpticalDistanceSensor) colorSensor).getLightDetected();
 
-        leftDistanceSensor_distance = leftDistanceSensor.getDistance(DistanceUnit.CM);
-        rightDistanceSensor_distance = rightDistanceSensor.getDistance(DistanceUnit.CM);
+        //leftDistanceSensor_distance = leftDistanceSensor.getDistance(DistanceUnit.CM);
+        //rightDistanceSensor_distance = rightDistanceSensor.getDistance(DistanceUnit.CM);
 
-        redNorm = colors.red / colors.alpha;
-        greenNorm = colors.green / colors.alpha;
-        blueNorm = colors.blue / colors.alpha;
+       // redNorm = colors.red / colors.alpha;
+        //greenNorm = colors.green / colors.alpha;
+        //blueNorm = colors.blue / colors.alpha;
 
         //headingAngle = gyroscope.getHeading();
         //headingAngle = pinpoint.getHeading();
@@ -370,8 +370,9 @@ public class ArtifactControl {
         LLHeadingAngle = limelightheadingToPedro(resultLL.getBotpose().getOrientation().getYaw());
 
         if(!isRedAlliance){
-            headingAngle = convertHeadingToBlueBasket(headingAngle);
+            //headingAngle = convertHeadingToBlueBasket(headingAngle);
             LLHeadingAngle = convertHeadingToBlueBasket(LLHeadingAngle);
+
         }
 
         //limelight.updateRobotOrientationCustom(drive);
@@ -424,7 +425,7 @@ public class ArtifactControl {
             }
 
             if(robotAutoIntakeToggle && !wantsToThrowArtifacts) {
-                autoArtifactsIntake();
+                //autoArtifactsIntake();
                 oneTimeAutoIntake = false;
             }else if(robotAutoIntakeToggle && wantsToThrowArtifacts){
                 if(!oneTimeAutoIntake){
@@ -661,7 +662,7 @@ public class ArtifactControl {
         }
     }
 
-    public void autoArtifactsIntake(){
+    /*public void autoArtifactsIntake(){
         if((leftDistanceSensor_distance < leftDistanceThreshold || rightDistanceSensor_distance < rightDistanceThreshold) && artifactCounter < 3){
             robotWantsToStartIntake = true;
             getArtifacts(false);
@@ -675,6 +676,8 @@ public class ArtifactControl {
             }
         }
     }
+    */
+
 
     public void autoArtifactsShooting(){
         if(isRobotStationary && allowedToShoot){
@@ -1174,17 +1177,18 @@ public class ArtifactControl {
             drive.setPose(new Pose(116.92, 132.14, Math.toRadians(37)));
         }else{
             drive.setPose(new Pose(28,133.6, Math.toRadians(144)));
+            headingAngle = convertHeadingToBlueBasket(headingAngle);
+
 
         }
     }
 
-
-    public double convertHeadingToBlueBasket(double currentHeading){
-        currentHeading = headingAngle + 180;
-        if(currentHeading >360){
-            currentHeading= currentHeading - 360;
+    public double convertHeadingToBlueBasket(double currentHeading) {
+        currentHeading = currentHeading + 180;
+        if (currentHeading > 360) {
+            currentHeading = currentHeading - 360;
         }
-        return  currentHeading;
+        return currentHeading;
     }
 
 
@@ -1198,8 +1202,10 @@ public class ArtifactControl {
 
         }else{
             if(leftField){
+                headingAngle = convertHeadingToBlueBasket(headingAngle);
                 drive.setPose(new Pose(133.0,10.0, Math.toRadians(0)));
             }else{
+                headingAngle = convertHeadingToBlueBasket(headingAngle);
                 drive.setPose(new Pose(8.8,13.3, Math.toRadians(0)));
             }
         }

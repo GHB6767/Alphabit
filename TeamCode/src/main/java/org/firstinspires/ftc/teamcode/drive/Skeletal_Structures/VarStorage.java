@@ -13,8 +13,8 @@ public class VarStorage {
     public static double rightTurret_initPosition = 0.74;// daca vr sa resetezi pozitia de la angle turret dai init pui la pozitia de centru dupa pui pozitia de centru aici inapoi
     public static double angleTurret_initPosition = 0.45;
 
-    public static double min_leftturret_position = 0.15;
-    public static double min_rightturret_position = 0.15;
+    public static double min_leftturret_position = 0.45;
+    public static double min_rightturret_position = 0.45;
     public static double min_angleturret_position = 0.9;
 
     public static double max_leftturret_position = 0.95;
@@ -45,7 +45,7 @@ public class VarStorage {
     public static double targetFlyWheelSpeed = 2300.0;
     public static double intakeRunTime = 315.0;
     public static double intakeFirstRunTime = 435.0;
-    public static double intakeMaxIdleRunTime = 1000.0;
+    public static double intakeMaxIdleRunTime = 500.0;//era 1000
     public static double timeoutTime = 1000.0;
     public static double intakeRunTimeManual = 315.0;
     public static double intakeFirstRunTimeManual = 435.0;

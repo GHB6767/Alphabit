@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
+//@Autonomous
 @Configurable
 public class redBasketGoodAliance extends OpMode {
     private Timer pathTimer, opModeTimer,stayTimer;

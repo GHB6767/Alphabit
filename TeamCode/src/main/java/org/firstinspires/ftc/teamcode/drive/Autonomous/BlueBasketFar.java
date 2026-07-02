@@ -193,7 +193,7 @@ public class BlueBasketFar extends OpMode {
                 break;
             case PATH5:
                 if (!follower.isBusy()) {
-                    follower.followPath(Path5);
+                    follower.followPath(Path5, 0.6,true);
                     setPathState(PathState.SHOOT5);
                     runOnce = false;
                     RunOnce = false;
@@ -225,7 +225,7 @@ public class BlueBasketFar extends OpMode {
                 if (!follower.isBusy()) {
 
                     artifactControl.getArtifacts(false);
-                    follower.followPath(Path6, 0.65, true);
+                    follower.followPath(Path6, 0.7, true);
                     runOnce = false;
                     RunOnce = false;
                     setPathState(PathState.PATH7);
@@ -234,7 +234,7 @@ public class BlueBasketFar extends OpMode {
             case PATH7:
                 if (!follower.isBusy()) {
                     //artifactControl.getArtifacts(false);
-                    follower.followPath(Path7, 1, true);
+                    follower.followPath(Path7, 0.6, true);
                     setPathState(PathState.SHOOT7);
                 }
                 break;

@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.Skeletal_Structures.VarStorage;
 import org.firstinspires.ftc.teamcode.drive.Structure.ArtifactControl;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "FarRedBasket", group = "Autonomous")
+//@Autonomous(name = "FarRedBasket", group = "Autonomous")
 @Configurable
 public class FarRedBasket extends OpMode {
     private Timer pathTimer, opModeTimer;

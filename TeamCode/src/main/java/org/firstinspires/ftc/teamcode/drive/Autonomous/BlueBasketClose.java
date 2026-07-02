@@ -252,7 +252,7 @@ public class BlueBasketClose extends OpMode {
 
     @Override
     public void init(){
-        VarStorage.autonomous_case = 2;
+        VarStorage.autonomous_case = 3;
         artifactControl = new ArtifactControl(hardwareMap, gamepad2,gamepad1,telemetrys);
         pathState = PathState.PATH1;
         pathTimer = new Timer();

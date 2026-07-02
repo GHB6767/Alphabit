@@ -132,8 +132,8 @@ public class TeleOp_Decode extends LinearOpMode {
             telemetrys.addData("[Artifact] Current Target FlyWheel Velocity ", artifactControl.currentTargetFlyWheelVelocity);
             telemetrys.addData("[Artifact] Robot Wants to Auto Shoot ", artifactControl.robotWantsToAutoShoot);
             telemetrys.addData("[Artifact] Robot Wants to Start Intake ", artifactControl.robotWantsToStartIntake);
-            telemetrys.addData("[Artifact] leftDistanceSensor Distance ", artifactControl.leftDistanceSensor_distance);
-            telemetrys.addData("[Artifact] rightDistanceSensor Distance ", artifactControl.rightDistanceSensor_distance);
+            //telemetrys.addData("[Artifact] leftDistanceSensor Distance ", artifactControl.leftDistanceSensor_distance);
+            //telemetrys.addData("[Artifact] rightDistanceSensor Distance ", artifactControl.rightDistanceSensor_distance);
             telemetrys.addData("[Artifact] redNorm ", artifactControl.redNorm);
             telemetrys.addData("[Artifact] greenNorm ", artifactControl.greenNorm);
             telemetrys.addData("[Artifact] blueNorm ", artifactControl.blueNorm);
